@@ -2,17 +2,22 @@ package com.example.spinlog.user.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
-@RequiredArgsConstructor
-@Builder
+@NoArgsConstructor
 @Getter
 public class UpdateUserRequestDto {
 
-    private final String mbti;
+    private String mbti;
 
-    private final String gender;
+    private String gender;
 
-    private final Integer budget;
+    private Integer budget;
 
+    @Builder
+    private UpdateUserRequestDto(String mbti, String gender, Integer budget) {
+        this.mbti = mbti;
+        this.gender = gender;
+        this.budget = budget;
+    }
 }

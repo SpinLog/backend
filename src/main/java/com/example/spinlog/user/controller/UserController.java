@@ -53,7 +53,7 @@ public class UserController {
     ) {
         userService.updateUserInfo(userId, requestDto);
 
-        UserResponseApi<Object> responseApi = UserResponseApi.successWithoutData("User 정보 저장에 성공했습니다.");
+        UserResponseApi<Object> responseApi = UserResponseApi.success("User 정보 저장에 성공했습니다.");
 
         return ResponseEntity.ok(responseApi);
     }
