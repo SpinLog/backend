@@ -26,14 +26,8 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
     @Column(nullable = false)
-    private String name;
-
-    @Min(1) @Max(100) //TODO validation 코드를 entity 에 넣어도 되는지
-    private Integer age;
+    private String email;
 
     @Enumerated(EnumType.STRING)
     private Mbti mbti;
@@ -45,12 +39,16 @@ public class User extends BaseTimeEntity {
     private Integer budget;
 
     @Builder //Builder 에서 id 를 제외하기 위해, 클래스 레벨이 아닌 생성자 레벨에 @Builder 사용
-    public User(String email, String name, Integer age, Mbti mbti, Gender gender, Integer budget) {
+    public User(String email, Mbti mbti, Gender gender, Integer budget) {
         this.email = email;
-        this.name = name;
-        this.age = age;
         this.mbti = mbti;
         this.gender = gender;
+        this.budget = budget;
+    }
+
+    public void changeProfile(String mbti, String gender, Integer budget) {
+        this.mbti = Mbti.valueOf(mbti);
+        this.gender = Gender.valueOf(gender);
         this.budget = budget;
     }
 }
