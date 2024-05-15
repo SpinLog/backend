@@ -1,5 +1,6 @@
 package com.example.spinlog.global.security.oauth2.handler.login;
 
+import com.example.spinlog.global.security.oauth2.user.CustomOAuth2User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        response.sendRedirect("/api/authentication/login-result");
+        //response.sendRedirect("/api/authentication/login-result");
+        CustomOAuth2User principal = (CustomOAuth2User) authentication.getPrincipal();
+        Boolean isFirstLogin = principal.getFirstLogin();
+        if(isFirstLogin)
+            response.sendRedirect("http://localhost:5173?isFirstLogin=true");
+        response.sendRedirect("http://localhost:5173");
     }
 }
