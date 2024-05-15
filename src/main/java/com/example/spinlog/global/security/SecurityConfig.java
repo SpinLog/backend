@@ -7,6 +7,7 @@ import com.example.spinlog.global.security.oauth2.handler.login.OAuth2LoginSucce
 import com.example.spinlog.global.security.oauth2.handler.logout.OAuth2LogoutHandler;
 import com.example.spinlog.global.security.oauth2.handler.logout.OAuth2LogoutSuccessHandler;
 import com.example.spinlog.global.security.oauth2.service.CustomOAuth2UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -32,7 +38,7 @@ public class SecurityConfig {
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    private final CorsConfig corsConfig;
+//    private final CorsConfig corsConfig;
 
     /*
     TODO oauth2Login() 관련
@@ -43,6 +49,26 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors
+                        .configurationSource(new CorsConfigurationSource() {
+                            @Override
+                            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                                CorsConfiguration config = new CorsConfiguration();
+
+                                config.setAllowedOrigins(Collections.singletonList("https://frontend-chi-sage-83.vercel.app/"));
+                                config.setAllowedOrigins(Collections.singletonList("http://localhost:5173/"));
+
+                                config.setAllowedMethods(Collections.singletonList("*"));
+                                config.setAllowCredentials(true);
+                                config.setAllowedHeaders(Collections.singletonList("*"));
+                                config.setMaxAge(3600L);
+
+                                config.setExposedHeaders(Collections.singletonList("Authorization"));
+                                config.setExposedHeaders(Collections.singletonList("Set-Cookie"));
+
+                                return config;
+                            }
+                        }))
                 .csrf(csrf -> csrf
                         .disable()
                 )
@@ -82,8 +108,8 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(handling -> handling
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
-                )
-                .addFilterBefore(corsConfig.corsFilter(), LogoutFilter.class);
+                );
+//                .addFilterBefore(corsConfig.corsFilter(), LogoutFilter.class);
 
         return http.build();
     }
