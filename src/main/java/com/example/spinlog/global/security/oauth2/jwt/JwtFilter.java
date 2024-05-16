@@ -12,9 +12,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -74,15 +74,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 .firstLogin(jwtUtils.getFirstLogin(token))
                 .build();
 
-        Authentication authToken = new UsernamePasswordAuthenticationToken(
-                customOAuth2User, null, customOAuth2User.getAuthorities()
-        );
-        /*
-        TODO 아래의  Authentication 객체를 써도 되는지 확인하기
         Authentication authToken = new OAuth2AuthenticationToken(
                 customOAuth2User, customOAuth2User.getAuthorities(), customOAuth2User.getOAuth2Provider()
         );
-        */
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         log.info("JWT Authentication Success");
