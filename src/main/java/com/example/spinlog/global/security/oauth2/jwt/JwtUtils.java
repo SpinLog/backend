@@ -14,6 +14,16 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Component
 public class JwtUtils {
 
+    /*
+    TODO 유지보수 기간에 하면 좋을 것들 (프론트와 협의)
+        1. refresh token 추가
+            access token 의 생명주기는 짧게, refresh token 의 생명주기는 길게
+        2. access token, refresh token 을 각각 로컬 스토리지(csrf 방지), 쿠키에 저장(csrf 는 의미 없게. httpOnly 설정 -> xss 도 방지)
+        3. refresh token rotate
+            refresh token 을 사용해 access token 을 재발급할 때 refresh token 또한 같이 재발급.
+            즉 refresh token 을 한 번 쓰면 더이상 못 쓰도록 제한
+     */
+
     public static final String AUTHORIZATION_COOKIE = "Authorization";
 
     private SecretKey secretKey;
