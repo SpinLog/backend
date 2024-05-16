@@ -3,32 +3,32 @@ package com.example.spinlog.global.security;
 import com.example.spinlog.global.security.oauth2.client.CustomClientRegistrationRepository;
 import com.example.spinlog.global.security.oauth2.client.CustomOAuth2AuthorizedClientService;
 import com.example.spinlog.global.security.oauth2.handler.authentication.CustomAuthenticationEntryPoint;
-import com.example.spinlog.global.security.oauth2.handler.login.OAuth2LoginSuccessHandler;
+import com.example.spinlog.global.security.oauth2.handler.login.OAuth2JwtLoginSuccessHandler;
 import com.example.spinlog.global.security.oauth2.handler.logout.OAuth2LogoutHandler;
 import com.example.spinlog.global.security.oauth2.handler.logout.OAuth2LogoutSuccessHandler;
+import com.example.spinlog.global.security.oauth2.jwt.JwtFilter;
+import com.example.spinlog.global.security.oauth2.jwt.JwtUtils;
 import com.example.spinlog.global.security.oauth2.service.CustomOAuth2UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import static org.springframework.http.HttpHeaders.*;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -36,7 +36,9 @@ public class SecurityConfig {
     private final CustomOAuth2AuthorizedClientService customOAuth2AuthorizedClientService;
     private final JdbcTemplate jdbcTemplate;
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+//    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuth2JwtLoginSuccessHandler oAuth2JwtLoginSuccessHandler;
+    private final JwtUtils jwtUtils;
 
     private final OAuth2LogoutHandler oAuth2LogoutHandler;
     private final OAuth2LogoutSuccessHandler oAuth2LogoutSuccessHandler;
@@ -68,16 +70,16 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(url -> url
-                                .baseUri("/api/users/login")
+                                .baseUri("/api/users/login/")
                         )
                         .clientRegistrationRepository(customClientRegistrationRepository.clientRegistrationRepository())
                         .authorizedClientService(customOAuth2AuthorizedClientService.oAuth2AuthorizedClientService(
                                 jdbcTemplate, customClientRegistrationRepository.clientRegistrationRepository()
                         ))
-                        .userInfoEndpoint(userInfoEndpointConfig ->
-                                userInfoEndpointConfig.userService(customOAuth2UserService)
+                        .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService)
                         )
-                        .successHandler(oAuth2LoginSuccessHandler)
+                        .successHandler(oAuth2JwtLoginSuccessHandler)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/api/users/logout")
@@ -89,13 +91,19 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/oauth2/**", "/favicon.ico",
+                        .requestMatchers("/", "/oauth2/**", "/favicon.ico", "/error",
                                 "/api/authentication/logout-result",
                                 "/api/authentication/not-authenticated").permitAll()
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(handling -> handling
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(STATELESS)
+                )
+/*                .exceptionHandling(handling -> handling
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
+                )*/
+                .addFilterBefore(
+                        new JwtFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class
                 );
 //                .addFilterBefore(corsConfig.corsFilter(), LogoutFilter.class);
 
@@ -107,7 +115,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(Arrays.asList("https://frontend-chi-sage-83.vercel.app", "http://localhost:5173"));
+        configuration.setAllowedOrigins(Arrays.asList("https://frontend-chi-sage-83.vercel.app", "http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "Set-Cookie"));
         configuration.setExposedHeaders(Arrays.asList(AUTHORIZATION, SET_COOKIE));
