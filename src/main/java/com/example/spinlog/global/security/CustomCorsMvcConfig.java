@@ -13,7 +13,7 @@ public class CustomCorsMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .exposedHeaders(SET_COOKIE)
-                .allowedOrigins("http://localhost:3000");
+                .allowedOrigins("http://localhost:5173");
 
 //        registry.addMapping("/**")
 //                .allowedOrigins("https://frontend-chi-sage-83.vercel.app" , "http://localhost:5173")

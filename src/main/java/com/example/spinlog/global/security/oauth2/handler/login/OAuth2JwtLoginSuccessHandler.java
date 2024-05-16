@@ -41,7 +41,7 @@ public class OAuth2JwtLoginSuccessHandler extends SimpleUrlAuthenticationSuccess
         log.info("token created: {}", token);
 
         response.addCookie(createCookie(AUTHORIZATION_COOKIE, token));
-        response.sendRedirect("http://localhost:3000/"); //TODO 맞게 변경
+        response.sendRedirect("http://localhost:5173/"); //TODO 맞게 변경
 //        response.sendRedirect("http://localhost:8080/profile");
     }
 

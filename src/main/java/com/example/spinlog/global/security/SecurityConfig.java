@@ -1,5 +1,6 @@
 package com.example.spinlog.global.security;
 
+import com.example.spinlog.global.security.filter.TemporaryAuthFilter;
 import com.example.spinlog.global.security.oauth2.client.CustomClientRegistrationRepository;
 import com.example.spinlog.global.security.oauth2.client.CustomOAuth2AuthorizedClientService;
 import com.example.spinlog.global.security.oauth2.handler.authentication.CustomAuthenticationEntryPoint;
@@ -18,6 +19,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -104,7 +107,8 @@ public class SecurityConfig {
                 )*/
                 .addFilterBefore(
                         new JwtFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class
-                );
+                )
+                .addFilterAfter(new TemporaryAuthFilter(), ExceptionTranslationFilter.class);
 //                .addFilterBefore(corsConfig.corsFilter(), LogoutFilter.class);
 
         return http.build();
@@ -115,10 +119,10 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(Arrays.asList("https://frontend-chi-sage-83.vercel.app", "http://localhost:3000"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("https://frontend-chi-sage-83.vercel.app", "http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "Set-Cookie"));
-        configuration.setExposedHeaders(Arrays.asList(AUTHORIZATION, SET_COOKIE));
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "Set-Cookie", "TemporaryAuth"));
+        configuration.setExposedHeaders(Arrays.asList(AUTHORIZATION, SET_COOKIE, "TemporaryAuth"));
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
