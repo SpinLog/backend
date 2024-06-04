@@ -1,5 +1,10 @@
 env.data: dev
 
+temporary:
+  auth:
+    header: ${temporaryAuthHeader}
+    value: ${temporaryAuthValue}
+
 apiKey: ${secret_apiKey}
 morphemeApiKey: ${morphemeAPIKey}
 

@@ -1,6 +1,11 @@
 apiKey: "test-key"
 morphemeApiKey: "test-morp-key"
 
+temporary:
+  auth:
+    header: "test-header"
+    value: "test-value"
+
 base-url: "test-url"
 
 openai:
