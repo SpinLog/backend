@@ -25,6 +25,9 @@ client-secret.mock: ${mock_client_secret}
 public-mock-server-url: ${mock_oauth2_public_url}
 private-mock-server-url: ${mock_oauth2_private_url}
 
+server:
+  shutdown: graceful
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -41,7 +44,7 @@ logging:
 
 management:
   server:
-    port: 8081
+    port: ${monitoring_port}
   endpoint:
     health:
       show-components: always

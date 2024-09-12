@@ -2,19 +2,24 @@
 
 source ~/zips/mysql_secret.sh
 
-TARGET_PORT=8080
-TARGET_PID=$(sudo lsof -ti :${TARGET_PORT})
+CURRENT_PORT=$(cat /home/ubuntu/zips/path/service_url.inc | grep -Po '[0-9]+' | tail -1)
 
-echo "current running WAS's pid is ${TARGET_PID}"
-echo "start updating WAS version"
+TARGET_PORT=0
 
-if [ -z "${TARGET_PID}" ]; then
-    echo "current WAS is not running"
+if [ $CURRENT_PORT -eq 8082 ]; then
+  TARGET_PORT=8084
+elif [ $CURRENT_PORT -eq 8084 ]; then
+  TARGET_PORT=8082
+else
+  echo "Invalid port number. Exiting script."
+  exit 1
 fi
 
-sudo kill ${TARGET_PID}
+export monitoring_port=$(($TARGET_PORT + 1))
 
-nohup java -Xms256m -Xmx512m \
+echo "start updating WAS version"
+
+nohup java -Xms128m -Xmx512m \
         -XX:+HeapDumpOnOutOfMemoryError \
         -jar -Dserver.port=${TARGET_PORT} -Dspring.profiles.active=dev build/libs/spinlog-0.0.1-SNAPSHOT.jar \
         >> ../logs/was_out.log 2> ../logs/was_err.log < /dev/null &
