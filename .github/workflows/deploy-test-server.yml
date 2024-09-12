@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "test" ]
   pull_request:
-    branches: [ "test" ]
+    branches: [ "test", "main" ]
 
 env:
   S3_BUCKET_NAME: spinlog-files
@@ -27,10 +27,7 @@ jobs:
       run: ./gradlew build
       shell: bash
     - name: make zip file
-      run: zip -r ./$GITHUB_SHA.zip build/libs scripts
-    - run: uname -a
-    - run: ls -al
-      
+      run: zip -r ./$GITHUB_SHA.zip build/libs scripts/test_server
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -41,7 +38,7 @@ jobs:
     - name: Upload to S3
       run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/test/deploy.zip
       
-    - name: ssh to ec2
+    - name: Deploy new version
       uses: appleboy/ssh-action@master
       with:
         key: ${{ secrets.TEST_SSH_PRIVATE_KEY }}
@@ -52,7 +49,26 @@ jobs:
           echo "success to receive zip file from s3"
           cd zips
           unzip -o deploy.zip
-          chmod +x ./scripts/deploy-test-server.sh
-          ./scripts/deploy-test-server.sh
-          
+          chmod +x ./scripts/test_server/deploy.sh
+          ./scripts/test_server/deploy.sh
+    - name: sleep 2 minutes before health check
+      run: sleep 120
+    - name: health check
+      uses: appleboy/ssh-action@master
+      with:
+        key: ${{ secrets.TEST_SSH_PRIVATE_KEY }}
+        host: ${{ secrets.TEST_HOST }}
+        username: ${{ secrets.TEST_USER }}
+        script: |
+          chmod +x ./zips/scripts/test_server/health-check.sh
+          ./zips/scripts/test_server/health-check.sh
+    - name: reload nginx and kill old version
+      uses: appleboy/ssh-action@master
+      with:
+        key: ${{ secrets.TEST_SSH_PRIVATE_KEY }}
+        host: ${{ secrets.TEST_HOST }}
+        username: ${{ secrets.TEST_USER }}
+        script: |
+          chmod +x ./zips/scripts/test_server/reload-nginx.sh
+          ./zips/scripts/test_server/reload-nginx.sh
 
