@@ -1,8 +1,19 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 source ~/zips/mysql_secret.sh
 
-TARGET_PORT=8082
+CURRENT_PORT=$(cat /home/ubuntu/zips/path/service_url.inc | grep -Po '[0-9]+' | tail -1)
+
+TARGET_PORT=0
+
+if [ $CURRENT_PORT -eq 8082 ]; then
+  TARGET_PORT=8084
+elif [ $CURRENT_PORT -eq 8084 ]; then
+  TARGET_PORT=8082
+else
+  echo "Invalid port number. Exiting script."
+  exit 1
+fi
 
 export monitoring_port=$(($TARGET_PORT + 1))
 
