@@ -10,6 +10,7 @@ import com.example.spinlog.statistics.repository.dto.MBTIDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.MBTIEmotionAmountAverageDto;
 import com.example.spinlog.statistics.repository.dto.MemoDto;
 import com.example.spinlog.statistics.loginService.AuthenticatedUserService;
+import com.example.spinlog.statistics.service.workanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Mbti;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.*;

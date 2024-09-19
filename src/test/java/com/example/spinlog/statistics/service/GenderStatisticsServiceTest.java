@@ -5,6 +5,7 @@ import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.*;
 import com.example.spinlog.statistics.service.dto.*;
+import com.example.spinlog.statistics.service.workanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Gender;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayNameGeneration;
