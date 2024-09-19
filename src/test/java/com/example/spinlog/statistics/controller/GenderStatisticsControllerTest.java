@@ -41,7 +41,7 @@ class GenderStatisticsControllerTest {
 
             // then
             verify(genderStatisticsService, times(1))
-                    .getAmountAveragesEachGenderAndEmotionLast30Days(any(), any());
+                    .getAmountAveragesEachGenderAndEmotionLast30Days(any());
         }
 
         @Test
@@ -51,7 +51,7 @@ class GenderStatisticsControllerTest {
 
             // then
             verify(genderStatisticsService)
-                    .getAmountAveragesEachGenderAndEmotionLast30Days(any(), eq(RegisterType.SPEND));
+                    .getAmountAveragesEachGenderAndEmotionLast30Days(eq(RegisterType.SPEND));
         }
 
         @Test
@@ -73,7 +73,7 @@ class GenderStatisticsControllerTest {
 
             // then
             verify(genderStatisticsService, times(1))
-                    .getAmountAveragesEachGenderAndEmotionLast30Days(any(), eq(RegisterType.valueOf(registerType)));
+                    .getAmountAveragesEachGenderAndEmotionLast30Days(eq(RegisterType.valueOf(registerType)));
         }
     }
 
@@ -87,7 +87,7 @@ class GenderStatisticsControllerTest {
 
             // then
             verify(genderStatisticsService, times(1))
-                    .getAmountSumsEachGenderAndDayLast30Days(any(), any());
+                    .getAmountSumsEachGenderAndDayLast30Days(any());
         }
 
         @Test
@@ -97,7 +97,7 @@ class GenderStatisticsControllerTest {
 
             // then
             verify(genderStatisticsService)
-                    .getAmountSumsEachGenderAndDayLast30Days(any(), eq(RegisterType.SPEND));
+                    .getAmountSumsEachGenderAndDayLast30Days(eq(RegisterType.SPEND));
         }
 
         @Test
@@ -119,7 +119,7 @@ class GenderStatisticsControllerTest {
 
             // then
             verify(genderStatisticsService, times(1))
-                    .getAmountSumsEachGenderAndDayLast30Days(any(), eq(RegisterType.valueOf(registerType)));
+                    .getAmountSumsEachGenderAndDayLast30Days(eq(RegisterType.valueOf(registerType)));
         }
     }
 
@@ -133,7 +133,7 @@ class GenderStatisticsControllerTest {
 
             // then
             verify(genderStatisticsService, times(1))
-                    .getWordFrequenciesEachGenderLast30Days(any(), any());
+                    .getWordFrequenciesEachGenderLast30Days(any());
         }
 
         @Test
@@ -143,7 +143,7 @@ class GenderStatisticsControllerTest {
 
             // then
             verify(genderStatisticsService)
-                    .getWordFrequenciesEachGenderLast30Days(any(), eq(RegisterType.SPEND));
+                    .getWordFrequenciesEachGenderLast30Days(eq(RegisterType.SPEND));
         }
 
         @Test
@@ -165,7 +165,7 @@ class GenderStatisticsControllerTest {
 
             // then
             verify(genderStatisticsService, times(1))
-                    .getWordFrequenciesEachGenderLast30Days(any(), eq(RegisterType.valueOf(registerType)));
+                    .getWordFrequenciesEachGenderLast30Days(eq(RegisterType.valueOf(registerType)));
         }
     }
 
@@ -179,7 +179,7 @@ class GenderStatisticsControllerTest {
 
             // then
             verify(genderStatisticsService, times(1))
-                    .getSatisfactionAveragesEachGenderLast30Days(any(), any());
+                    .getSatisfactionAveragesEachGenderLast30Days(any());
         }
 
         @Test
@@ -189,7 +189,7 @@ class GenderStatisticsControllerTest {
 
             // then
             verify(genderStatisticsService)
-                    .getSatisfactionAveragesEachGenderLast30Days(any(), eq(RegisterType.SPEND));
+                    .getSatisfactionAveragesEachGenderLast30Days(eq(RegisterType.SPEND));
         }
 
         @Test
@@ -210,7 +210,7 @@ class GenderStatisticsControllerTest {
 
             // then
             verify(genderStatisticsService, times(1))
-                    .getSatisfactionAveragesEachGenderLast30Days(any(), eq(RegisterType.valueOf(registerType)));
+                    .getSatisfactionAveragesEachGenderLast30Days(eq(RegisterType.valueOf(registerType)));
         }
     }
 }

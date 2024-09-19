@@ -48,7 +48,7 @@ class GenderStatisticsServiceTest {
             LocalDate now = LocalDate.now();
 
             // when
-            statisticsService.getAmountAveragesEachGenderAndEmotionLast30Days(now, null);
+            statisticsService.getAmountAveragesEachGenderAndEmotionLast30Days(null);
 
             // then
             verify(genderStatisticsRepository)
@@ -62,7 +62,7 @@ class GenderStatisticsServiceTest {
         @ValueSource(strings = {"SPEND", "SAVE"})
         void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
             // when
-            statisticsService.getAmountAveragesEachGenderAndEmotionLast30Days(LocalDate.now(), registerType);
+            statisticsService.getAmountAveragesEachGenderAndEmotionLast30Days(registerType);
 
             // then
             verify(genderStatisticsRepository)
@@ -88,7 +88,7 @@ class GenderStatisticsServiceTest {
 
             // when
             List<GenderEmotionAmountAverageResponse> responses =
-                    statisticsService.getAmountAveragesEachGenderAndEmotionLast30Days(LocalDate.now(), null);
+                    statisticsService.getAmountAveragesEachGenderAndEmotionLast30Days(null);
 
             // then
             List<GenderEmotionAmountAverageResponse> responsesWithZeroFiltering = filterNonZeroAndNonEmptyAverages(responses);
@@ -122,7 +122,7 @@ class GenderStatisticsServiceTest {
 
             // when
             List<GenderEmotionAmountAverageResponse> responses =
-                    statisticsService.getAmountAveragesEachGenderAndEmotionLast30Days(LocalDate.now(), null);
+                    statisticsService.getAmountAveragesEachGenderAndEmotionLast30Days(null);
 
             // then
             assertThat(responses)
@@ -176,7 +176,7 @@ class GenderStatisticsServiceTest {
             LocalDate now = LocalDate.now();
 
             // when
-            statisticsService.getAmountSumsEachGenderAndDayLast30Days(now, null);
+            statisticsService.getAmountSumsEachGenderAndDayLast30Days(null);
 
             // then
             verify(genderStatisticsRepository)
@@ -190,7 +190,7 @@ class GenderStatisticsServiceTest {
         @ValueSource(strings = {"SPEND", "SAVE"})
         void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
             // when
-            statisticsService.getAmountSumsEachGenderAndDayLast30Days(LocalDate.now(), registerType);
+            statisticsService.getAmountSumsEachGenderAndDayLast30Days(registerType);
 
             // then
             verify(genderStatisticsRepository)
@@ -215,7 +215,7 @@ class GenderStatisticsServiceTest {
 
             // when
             List<GenderDailyAmountSumResponse> responses =
-                    statisticsService.getAmountSumsEachGenderAndDayLast30Days(LocalDate.now(), null);
+                    statisticsService.getAmountSumsEachGenderAndDayLast30Days(null);
 
             // then
             List<GenderDailyAmountSumResponse> responsesWithZeroFiltering = filterNonZeroAndNonEmptySums(responses);
@@ -248,7 +248,7 @@ class GenderStatisticsServiceTest {
 
             // when
             List<GenderDailyAmountSumResponse> responses =
-                    statisticsService.getAmountSumsEachGenderAndDayLast30Days(LocalDate.now(), null);
+                    statisticsService.getAmountSumsEachGenderAndDayLast30Days(null);
 
             // then
             assertThat(responses)
@@ -305,7 +305,7 @@ class GenderStatisticsServiceTest {
         @ValueSource(strings = {"SPEND", "SAVE"})
         void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
             // when
-            statisticsService.getWordFrequenciesEachGenderLast30Days(LocalDate.now(), registerType);
+            statisticsService.getWordFrequenciesEachGenderLast30Days(registerType);
 
             // then
             verify(genderStatisticsRepository, times(2))
@@ -323,7 +323,7 @@ class GenderStatisticsServiceTest {
             LocalDate now = LocalDate.now();
 
             // when
-            statisticsService.getWordFrequenciesEachGenderLast30Days(now, null);
+            statisticsService.getWordFrequenciesEachGenderLast30Days(null);
 
             // then
             verify(genderStatisticsRepository, times(2))
@@ -337,7 +337,7 @@ class GenderStatisticsServiceTest {
         @Test
         void 레포지토리에게_MALE에_대한_메모_정보와_FEMALE에_대한_메모_정보를_요청한다() throws Exception {
             // when
-            statisticsService.getWordFrequenciesEachGenderLast30Days(LocalDate.now(), null);
+            statisticsService.getWordFrequenciesEachGenderLast30Days(null);
 
             // then
             verify(genderStatisticsRepository)
@@ -368,7 +368,7 @@ class GenderStatisticsServiceTest {
                     .thenReturn(memos);
 
             // when
-            statisticsService.getWordFrequenciesEachGenderLast30Days(LocalDate.now(), null);
+            statisticsService.getWordFrequenciesEachGenderLast30Days(null);
 
             // then
             List<String> flattedMemos = memos.stream()
@@ -401,7 +401,7 @@ class GenderStatisticsServiceTest {
                     .thenReturn(returnedByWordExtractionService);
             
             // when
-            GenderWordFrequencyResponse response = statisticsService.getWordFrequenciesEachGenderLast30Days(LocalDate.now(), null);
+            GenderWordFrequencyResponse response = statisticsService.getWordFrequenciesEachGenderLast30Days(null);
 
             // then
             assertThat(response)
@@ -421,7 +421,7 @@ class GenderStatisticsServiceTest {
             LocalDate now = LocalDate.now();
 
             // when
-            statisticsService.getSatisfactionAveragesEachGenderLast30Days(now, null);
+            statisticsService.getSatisfactionAveragesEachGenderLast30Days(null);
 
             // then
             verify(genderStatisticsRepository)
@@ -435,7 +435,7 @@ class GenderStatisticsServiceTest {
         @ValueSource(strings = {"SPEND", "SAVE"})
         void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
             // when
-            statisticsService.getSatisfactionAveragesEachGenderLast30Days(LocalDate.now(), registerType);
+            statisticsService.getSatisfactionAveragesEachGenderLast30Days(registerType);
 
             // then
             verify(genderStatisticsRepository)
@@ -460,7 +460,7 @@ class GenderStatisticsServiceTest {
 
             // when
             List<GenderSatisfactionAverageDto> response = statisticsService
-                    .getSatisfactionAveragesEachGenderLast30Days(LocalDate.now(), null);
+                    .getSatisfactionAveragesEachGenderLast30Days(null);
 
             // then
             assertThat(response).isEqualTo(returned);

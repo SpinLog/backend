@@ -54,7 +54,7 @@ class MBTIStatisticsServiceTest {
             LocalDate now = LocalDate.now();
 
             // when
-            statisticsService.getAmountAveragesEachMBTIAndEmotionLast30Days(now, null);
+            statisticsService.getAmountAveragesEachMBTIAndEmotionLast30Days(null);
 
             // then
             verify(mbtiStatisticsRepository)
@@ -68,7 +68,7 @@ class MBTIStatisticsServiceTest {
         @ValueSource(strings = {"SPEND", "SAVE"})
         void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
             // when
-            statisticsService.getAmountAveragesEachMBTIAndEmotionLast30Days(LocalDate.now(), registerType);
+            statisticsService.getAmountAveragesEachMBTIAndEmotionLast30Days(registerType);
 
             // then
             verify(mbtiStatisticsRepository)
@@ -97,7 +97,7 @@ class MBTIStatisticsServiceTest {
 
             // when
             MBTIEmotionAmountAverageResponse response =
-                    statisticsService.getAmountAveragesEachMBTIAndEmotionLast30Days(LocalDate.now(), null);
+                    statisticsService.getAmountAveragesEachMBTIAndEmotionLast30Days(null);
 
             // then
             assertThat(response.getMbti())
@@ -140,7 +140,7 @@ class MBTIStatisticsServiceTest {
 
             // when
             MBTIEmotionAmountAverageResponse response =
-                    statisticsService.getAmountAveragesEachMBTIAndEmotionLast30Days(LocalDate.now(), null);
+                    statisticsService.getAmountAveragesEachMBTIAndEmotionLast30Days(null);
 
             // then
             List<MBTIEmotionAmountAverageResponse.MBTIEmotionAmountAverage> responseList = response.getMbtiEmotionAmountAverages();
@@ -196,7 +196,7 @@ class MBTIStatisticsServiceTest {
             LocalDate now = LocalDate.now();
 
             // when
-            statisticsService.getAmountSumsEachMBTIAndDayLast30Days(now, null);
+            statisticsService.getAmountSumsEachMBTIAndDayLast30Days(null);
 
             // then
             verify(mbtiStatisticsRepository)
@@ -210,7 +210,7 @@ class MBTIStatisticsServiceTest {
         @ValueSource(strings = {"SPEND", "SAVE"})
         void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
             // when
-            statisticsService.getAmountSumsEachMBTIAndDayLast30Days(LocalDate.now(), registerType);
+            statisticsService.getAmountSumsEachMBTIAndDayLast30Days(registerType);
 
             // then
             verify(mbtiStatisticsRepository)
@@ -237,7 +237,7 @@ class MBTIStatisticsServiceTest {
 
             // when
             MBTIDailyAmountSumResponse response =
-                    statisticsService.getAmountSumsEachMBTIAndDayLast30Days(LocalDate.now(), null);
+                    statisticsService.getAmountSumsEachMBTIAndDayLast30Days(null);
 
             // then
             assertThat(response.getMbti())
@@ -280,7 +280,7 @@ class MBTIStatisticsServiceTest {
 
             // when
             MBTIDailyAmountSumResponse response =
-                    statisticsService.getAmountSumsEachMBTIAndDayLast30Days(LocalDate.now(), null);
+                    statisticsService.getAmountSumsEachMBTIAndDayLast30Days(null);
 
             // then
             assertThat(response.getMbti())
@@ -343,7 +343,7 @@ class MBTIStatisticsServiceTest {
         @ValueSource(strings = {"SPEND", "SAVE"})
         void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
             // when
-            statisticsService.getWordFrequenciesLast30Days(LocalDate.now(), registerType);
+            statisticsService.getWordFrequenciesLast30Days(registerType);
 
             // then
             verify(mbtiStatisticsRepository)
@@ -362,7 +362,7 @@ class MBTIStatisticsServiceTest {
                     .thenReturn(Mbti.NONE);
 
             // when
-            statisticsService.getWordFrequenciesLast30Days(now, RegisterType.SPEND);
+            statisticsService.getWordFrequenciesLast30Days(RegisterType.SPEND);
 
             // then
             verify(mbtiStatisticsRepository)
@@ -380,7 +380,7 @@ class MBTIStatisticsServiceTest {
                     .thenReturn(Mbti.NONE);
 
             // when
-            statisticsService.getWordFrequenciesLast30Days(LocalDate.now(), null);
+            statisticsService.getWordFrequenciesLast30Days(null);
 
             // then
             verify(mbtiStatisticsRepository)
@@ -396,7 +396,7 @@ class MBTIStatisticsServiceTest {
                     .thenReturn(Mbti.ISTJ);
 
             // when
-            MBTIWordFrequencyResponse response = statisticsService.getWordFrequenciesLast30Days(LocalDate.now(), null);
+            MBTIWordFrequencyResponse response = statisticsService.getWordFrequenciesLast30Days(null);
 
             // then
             verify(mbtiStatisticsRepository, times(1))
@@ -429,7 +429,7 @@ class MBTIStatisticsServiceTest {
                     .thenReturn(Mbti.NONE);
 
             // when
-            statisticsService.getWordFrequenciesLast30Days(LocalDate.now(), null);
+            statisticsService.getWordFrequenciesLast30Days(null);
 
             // then
             List<String> flattedMemos = memos.stream()
@@ -465,7 +465,7 @@ class MBTIStatisticsServiceTest {
                     .thenReturn(returnedByWordExtractionService);
 
             // when
-            MBTIWordFrequencyResponse response = statisticsService.getWordFrequenciesLast30Days(LocalDate.now(), null);
+            MBTIWordFrequencyResponse response = statisticsService.getWordFrequenciesLast30Days(null);
 
             // then
             assertThat(response)
@@ -488,7 +488,7 @@ class MBTIStatisticsServiceTest {
             LocalDate now = LocalDate.now();
 
             // when
-            statisticsService.getSatisfactionAveragesEachMBTILast30Days(now, null);
+            statisticsService.getSatisfactionAveragesEachMBTILast30Days(null);
 
             // then
             verify(mbtiStatisticsRepository)
@@ -502,7 +502,7 @@ class MBTIStatisticsServiceTest {
         @ValueSource(strings = {"SPEND", "SAVE"})
         void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
             // when
-            statisticsService.getSatisfactionAveragesEachMBTILast30Days(LocalDate.now(), registerType);
+            statisticsService.getSatisfactionAveragesEachMBTILast30Days(registerType);
 
             // then
             verify(mbtiStatisticsRepository)
@@ -532,7 +532,7 @@ class MBTIStatisticsServiceTest {
 
             // when
             MBTISatisfactionAverageResponse response = statisticsService
-                    .getSatisfactionAveragesEachMBTILast30Days(LocalDate.now(), null);
+                    .getSatisfactionAveragesEachMBTILast30Days(null);
 
             // then
             assertThat(response.getMbti()).isEqualTo(Mbti.ISTJ);
