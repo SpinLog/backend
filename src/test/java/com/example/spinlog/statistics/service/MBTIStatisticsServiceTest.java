@@ -49,38 +49,7 @@ class MBTIStatisticsServiceTest {
     @Nested
     class getAmountAveragesEachMBTIAndEmotionLast30Days{
         @Test
-        void LocalDate_파라미터를_받아서_30일_전_LocalDate와_해당_LocalDate를_레포지토리에게_전달한다() throws Exception {
-            // given
-            LocalDate now = LocalDate.now();
-
-            // when
-            statisticsService.getAmountAveragesEachMBTIAndEmotionLast30Days(null);
-
-            // then
-            verify(mbtiStatisticsRepository)
-                    .getAmountAveragesEachMBTIAndEmotionBetweenStartDateAndEndDate(
-                            any(),
-                            eq(now.minusDays(30)),
-                            eq(now));
-        }
-
-        @ParameterizedTest
-        @ValueSource(strings = {"SPEND", "SAVE"})
-        void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
-            // when
-            statisticsService.getAmountAveragesEachMBTIAndEmotionLast30Days(registerType);
-
-            // then
-            verify(mbtiStatisticsRepository)
-                    .getAmountAveragesEachMBTIAndEmotionBetweenStartDateAndEndDate(
-                            eq(registerType),
-                            any(),
-                            any()
-                    );
-        }
-
-        @Test
-        void 레포지토리로부터_MBTI별_감정별_금액_평균_데이터를_받아_MBTI_별로_grouping해서_로그인_한_유저의_MBTI와_함께_반환한다() throws Exception {
+        void MBTI별_감정별_금액_평균_데이터를_조회한_뒤_MBTI_별로_grouping해서_로그인_한_유저의_MBTI와_함께_반환한다() throws Exception {
             // given
             List<MBTIEmotionAmountAverageDto> returned = List.of(
                     new MBTIEmotionAmountAverageDto(MBTIFactor.I, Emotion.PROUD, 1L),
@@ -125,7 +94,7 @@ class MBTIStatisticsServiceTest {
         }
 
         @Test
-        void 레포지토리로부터_데이터를_받아_zero_padding을_수행한다() throws Exception {
+        void 데이터를_조회한_뒤_zero_padding을_수행한다() throws Exception {
             // given
             List<MBTIEmotionAmountAverageDto> returned = List.of(
                     new MBTIEmotionAmountAverageDto(MBTIFactor.I, Emotion.PROUD, 1L),
@@ -191,38 +160,7 @@ class MBTIStatisticsServiceTest {
     @Nested
     class getAmountSumsEachMBTIAndDayLast30Days {
         @Test
-        void LocalDate_파라미터를_받아서_30일_전_LocalDate와_해당_LocalDate를_레포지토리에게_전달한다() throws Exception {
-            // given
-            LocalDate now = LocalDate.now();
-
-            // when
-            statisticsService.getAmountSumsEachMBTIAndDayLast30Days(null);
-
-            // then
-            verify(mbtiStatisticsRepository)
-                    .getAmountSumsEachMBTIAndDayBetweenStartDateAndEndDate(
-                            any(),
-                            eq(now.minusDays(30)),
-                            eq(now));
-        }
-
-        @ParameterizedTest
-        @ValueSource(strings = {"SPEND", "SAVE"})
-        void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
-            // when
-            statisticsService.getAmountSumsEachMBTIAndDayLast30Days(registerType);
-
-            // then
-            verify(mbtiStatisticsRepository)
-                    .getAmountSumsEachMBTIAndDayBetweenStartDateAndEndDate(
-                            eq(registerType),
-                            any(),
-                            any()
-                    );
-        }
-
-        @Test
-        void 레포지토리로부터_MBTI별_일별_금액_총합_데이터를_받아_MBTI_별로_grouping해서_로그인_한_유저의_MBTI와_함께_반환한다() throws Exception {
+        void MBTI별_일별_금액_총합_데이터를_조회한_뒤_MBTI_별로_grouping해서_로그인_한_유저의_MBTI와_함께_반환한다() throws Exception {
             // given
             List<MBTIDailyAmountSumDto> returned = List.of(
                     new MBTIDailyAmountSumDto(MBTIFactor.I, LocalDate.now().minusDays(2L), 1L),
@@ -265,7 +203,7 @@ class MBTIStatisticsServiceTest {
         }
 
         @Test
-        void 레포지토리로부터_데이터를_받아_zero_padding을_수행한다() throws Exception {
+        void 데이터를_조회한_뒤_zero_padding을_수행한다() throws Exception {
             // given
             List<MBTIDailyAmountSumDto> returned = List.of(
                     new MBTIDailyAmountSumDto(MBTIFactor.I, LocalDate.now().minusDays(2L), 1L),
@@ -339,42 +277,8 @@ class MBTIStatisticsServiceTest {
 
     @Nested
     class getWordFrequenciesLast30Days {
-        @ParameterizedTest
-        @ValueSource(strings = {"SPEND", "SAVE"})
-        void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
-            // when
-            statisticsService.getWordFrequenciesLast30Days(registerType);
-
-            // then
-            verify(mbtiStatisticsRepository)
-                    .getAllMemosByMBTIBetweenStartDateAndEndDate(
-                            eq(registerType),
-                            any(),
-                            any(),
-                            any()
-                    );
-        }
         @Test
-        void LocalDate_파라미터를_받아서_30일_전_LocalDate와_해당_LocalDate를_레포지토리에게_전달한다() throws Exception {
-            // given
-            LocalDate now = LocalDate.now();
-            when(authenticatedUserService.getUserMBTI())
-                    .thenReturn(Mbti.NONE);
-
-            // when
-            statisticsService.getWordFrequenciesLast30Days(RegisterType.SPEND);
-
-            // then
-            verify(mbtiStatisticsRepository)
-                    .getAllMemosByMBTIBetweenStartDateAndEndDate(
-                            any(),
-                            any(),
-                            eq(now.minusDays(30)),
-                            eq(now));
-        }
-
-        @Test
-        void UserInfoService로부터_유효하지_않은_MBTI를_받았다면_레포지토리에게_전체_유저들에_대한_메모만_요청한다() throws Exception {
+        void UserInfoService로부터_유효하지_않은_MBTI를_받았다면_전체_유저들에_대한_메모만_요청한다() throws Exception {
             // given
             when(authenticatedUserService.getUserMBTI())
                     .thenReturn(Mbti.NONE);
@@ -389,7 +293,7 @@ class MBTIStatisticsServiceTest {
         }
 
         @Test
-        @DisplayName("UserInfoService로부터 로그인 한 유저의 MBTI를 받아서, 레포지토리에게 전체 유저들의 메모와, 로그인 한 유저의 MBTI에 해당하는 유저들의 메모, 데이터를 총 2번 요청한다")
+        @DisplayName("UserInfoService로부터 로그인 한 유저의 MBTI를 받아서, 전체 유저들의 메모와, 로그인 한 유저의 MBTI에 해당하는 유저들의 메모, 데이터를 총 2번 요청한다")
         void requestDataToRepositoryTest() throws Exception {
             // given
             when(authenticatedUserService.getUserMBTI())
@@ -414,7 +318,7 @@ class MBTIStatisticsServiceTest {
         }
 
         @Test
-        void 레포지토리로부터_모든_메모_데이터를_받고_이를_평면화하여_WordExtractionService에게_보낸다() throws Exception {
+        void 모든_메모_데이터를_조회한_뒤_이를_평면화하여_WordExtractionService에게_보낸다() throws Exception {
             // given
             List<MemoDto> memos = List.of(
                     new MemoDto("c1", "e1", "t1", "r1", "i1"),
@@ -483,38 +387,7 @@ class MBTIStatisticsServiceTest {
     @Nested
     class getSatisfactionAveragesEachMBTILast30Days {
         @Test
-        void LocalDate_파라미터를_받아서_30일_전_LocalDate와_해당_LocalDate를_레포지토리에게_전달한다() throws Exception {
-            // given
-            LocalDate now = LocalDate.now();
-
-            // when
-            statisticsService.getSatisfactionAveragesEachMBTILast30Days(null);
-
-            // then
-            verify(mbtiStatisticsRepository)
-                    .getSatisfactionAveragesEachMBTIBetweenStartDateAndEndDate(
-                            any(),
-                            eq(now.minusDays(30)),
-                            eq(now));
-        }
-
-        @ParameterizedTest
-        @ValueSource(strings = {"SPEND", "SAVE"})
-        void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
-            // when
-            statisticsService.getSatisfactionAveragesEachMBTILast30Days(registerType);
-
-            // then
-            verify(mbtiStatisticsRepository)
-                    .getSatisfactionAveragesEachMBTIBetweenStartDateAndEndDate(
-                            eq(registerType),
-                            any(),
-                            any()
-                    );
-        }
-
-        @Test
-        void 레포지토리로부터_MBTI별_만족도_평균_데이터를_받아_로그인_한_유저의_MBTI와_함께_반환한다() throws Exception {
+        void MBTI별_만족도_평균_데이터를_조회한_뒤_로그인_한_유저의_MBTI와_함께_반환한다() throws Exception {
             // given
             List<MBTISatisfactionAverageDto> returned = List.of(
                     MBTISatisfactionAverageDto.builder()

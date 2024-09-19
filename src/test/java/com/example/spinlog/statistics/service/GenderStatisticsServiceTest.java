@@ -43,38 +43,7 @@ class GenderStatisticsServiceTest {
     @Nested
     class getAmountAveragesEachGenderAndEmotionLast30Days{
         @Test
-        void LocalDate_파라미터를_받아서_30일_전_LocalDate와_해당_LocalDate를_레포지토리에게_전달한다() throws Exception {
-            // given
-            LocalDate now = LocalDate.now();
-
-            // when
-            statisticsService.getAmountAveragesEachGenderAndEmotionLast30Days(null);
-
-            // then
-            verify(genderStatisticsRepository)
-                    .getAmountAveragesEachGenderAndEmotionBetweenStartDateAndEndDate(
-                            any(),
-                            eq(now.minusDays(30)),
-                            eq(now));
-        }
-
-        @ParameterizedTest
-        @ValueSource(strings = {"SPEND", "SAVE"})
-        void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
-            // when
-            statisticsService.getAmountAveragesEachGenderAndEmotionLast30Days(registerType);
-
-            // then
-            verify(genderStatisticsRepository)
-                    .getAmountAveragesEachGenderAndEmotionBetweenStartDateAndEndDate(
-                            eq(registerType),
-                            any(),
-                            any()
-                    );
-        }
-
-        @Test
-        void 레포지토리로부터_성별_감정별_금액_평균_데이터를_받아_성별로_grouping해서_반환한다() throws Exception {
+        void 성별_감정별_금액_평균_데이터를_조회한_뒤_성별로_grouping해서_반환한다() throws Exception {
             // given
             List<GenderEmotionAmountAverageDto> returned = List.of(
                     new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.PROUD, 1L),
@@ -110,7 +79,7 @@ class GenderStatisticsServiceTest {
         }
 
         @Test
-        void 레포지토리로부터_받은_데이터에_zero_padding을_수행한다() throws Exception {
+        void 조회한_데이터에_zero_padding을_수행한다() throws Exception {
             // given
             List<GenderEmotionAmountAverageDto> returned = List.of(
                     new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.PROUD, 1L),
@@ -171,38 +140,7 @@ class GenderStatisticsServiceTest {
     @Nested
     class getAmountSumsEachGenderAndDayLast30Days {
         @Test
-        void LocalDate_파라미터를_받아서_30일_전_LocalDate와_해당_LocalDate를_레포지토리에게_전달한다() throws Exception {
-            // given
-            LocalDate now = LocalDate.now();
-
-            // when
-            statisticsService.getAmountSumsEachGenderAndDayLast30Days(null);
-
-            // then
-            verify(genderStatisticsRepository)
-                    .getAmountSumsEachGenderAndDayBetweenStartDateAndEndDate(
-                            any(),
-                            eq(now.minusDays(30)),
-                            eq(now));
-        }
-
-        @ParameterizedTest
-        @ValueSource(strings = {"SPEND", "SAVE"})
-        void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
-            // when
-            statisticsService.getAmountSumsEachGenderAndDayLast30Days(registerType);
-
-            // then
-            verify(genderStatisticsRepository)
-                    .getAmountSumsEachGenderAndDayBetweenStartDateAndEndDate(
-                            eq(registerType),
-                            any(),
-                            any()
-                    );
-        }
-
-        @Test
-        void 레포지토리로부터_성별_일별_금액_총합_데이터를_받아_성별로_grouping해서_반환한다() throws Exception {
+        void 성별_일별_금액_총합_데이터를_조회한_뒤_성별로_grouping해서_반환한다() throws Exception {
             // given
             List<GenderDailyAmountSumDto> returned = List.of(
                     new GenderDailyAmountSumDto(Gender.MALE, LocalDate.now().minusDays(2L), 1L),
@@ -237,7 +175,7 @@ class GenderStatisticsServiceTest {
         }
 
         @Test
-        void 레포지토리로부터_받은_데이터에_zero_padding을_수행한다() throws Exception {
+        void 조회한_데이터에_zero_padding을_수행한다() throws Exception {
             // given
             List<GenderDailyAmountSumDto> returned = List.of(
                     new GenderDailyAmountSumDto(Gender.MALE, LocalDate.now().minusDays(2L), 1L),
@@ -301,61 +239,8 @@ class GenderStatisticsServiceTest {
 
     @Nested
     class getWordFrequenciesEachGenderLast30Days {
-        @ParameterizedTest
-        @ValueSource(strings = {"SPEND", "SAVE"})
-        void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
-            // when
-            statisticsService.getWordFrequenciesEachGenderLast30Days(registerType);
-
-            // then
-            verify(genderStatisticsRepository, times(2))
-                    .getAllMemosByGenderBetweenStartDateAndEndDate(
-                            eq(registerType),
-                            any(),
-                            any(),
-                            any()
-                    );
-        }
-
         @Test
-        void LocalDate_파라미터를_받아서_30일_전_LocalDate와_해당_LocalDate를_레포지토리에게_전달한다() throws Exception {
-            // given
-            LocalDate now = LocalDate.now();
-
-            // when
-            statisticsService.getWordFrequenciesEachGenderLast30Days(null);
-
-            // then
-            verify(genderStatisticsRepository, times(2))
-                    .getAllMemosByGenderBetweenStartDateAndEndDate(
-                            any(),
-                            any(),
-                            eq(now.minusDays(30)),
-                            eq(now));
-        }
-
-        @Test
-        void 레포지토리에게_MALE에_대한_메모_정보와_FEMALE에_대한_메모_정보를_요청한다() throws Exception {
-            // when
-            statisticsService.getWordFrequenciesEachGenderLast30Days(null);
-
-            // then
-            verify(genderStatisticsRepository)
-                    .getAllMemosByGenderBetweenStartDateAndEndDate(
-                            any(),
-                            eq(Gender.MALE),
-                            any(),
-                            any());
-            verify(genderStatisticsRepository)
-                    .getAllMemosByGenderBetweenStartDateAndEndDate(
-                            any(),
-                            eq(Gender.FEMALE),
-                            any(),
-                            any());
-        }
-
-        @Test
-        void 레포로부터_모든_메모_데이터를_받고_이를_평면화하여_WordExtractionService에게_보낸다() throws Exception {
+        void 모든_메모_데이터를_조회한_뒤_이를_평면화하여_WordExtractionService에게_보낸다() throws Exception {
             // given
             List<MemoDto> memos = List.of(
                     new MemoDto("c1", "e1", "t1", "r1", "i1"),
@@ -416,38 +301,7 @@ class GenderStatisticsServiceTest {
     @Nested
     class getSatisfactionAveragesEachGenderLast30Days {
         @Test
-        void LocalDate_파라미터를_받아서_30일_전_LocalDate와_해당_LocalDate를_레포지토리에게_전달한다() throws Exception {
-            // given
-            LocalDate now = LocalDate.now();
-
-            // when
-            statisticsService.getSatisfactionAveragesEachGenderLast30Days(null);
-
-            // then
-            verify(genderStatisticsRepository)
-                    .getSatisfactionAveragesEachGenderBetweenStartDateAndEndDate(
-                            any(),
-                            eq(now.minusDays(30)),
-                            eq(now));
-        }
-
-        @ParameterizedTest
-        @ValueSource(strings = {"SPEND", "SAVE"})
-        void RegisterType_파라미터를_그대로_레포지토리에게_전달한다(RegisterType registerType) throws Exception {
-            // when
-            statisticsService.getSatisfactionAveragesEachGenderLast30Days(registerType);
-
-            // then
-            verify(genderStatisticsRepository)
-                    .getSatisfactionAveragesEachGenderBetweenStartDateAndEndDate(
-                            eq(registerType),
-                            any(),
-                            any()
-                    );
-        }
-
-        @Test
-        void 레포지토리로부터_성별_만족도_평균_데이터를_받아_그대로_반환한다() throws Exception {
+        void 성별_만족도_평균_데이터를_조회한_뒤_그대로_반환한다() throws Exception {
             // given
             List<GenderSatisfactionAverageDto> returned = List.of(
                     GenderSatisfactionAverageDto.builder()
