@@ -53,12 +53,12 @@ public interface GenderStatisticsRepository {
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
 
-    List<GenderDataDto> getSatisfactionSumsEachGenderBetweenStartDateAndEndDate(
+    List<GenderDataDto<Double>> getSatisfactionSumsEachGenderBetweenStartDateAndEndDate(
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
 
-    List<GenderDataDto> getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(
+    List<GenderDataDto<Long>> getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);

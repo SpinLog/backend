@@ -95,11 +95,11 @@ class GenderStatisticsStartupService {
     }
 
     private Result getGenderSatisfactionResult(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
-        List<GenderDataDto> amountSums = genderStatisticsRepository.getSatisfactionSumsEachGenderBetweenStartDateAndEndDate(
+        List<GenderDataDto<Double>> amountSums = genderStatisticsRepository.getSatisfactionSumsEachGenderBetweenStartDateAndEndDate(
                 registerType,
                 startDate,
                 endDate);
-        List<GenderDataDto> amountCounts = genderStatisticsRepository.getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(
+        List<GenderDataDto<Long>> amountCounts = genderStatisticsRepository.getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(
                 registerType,
                 startDate,
                 endDate);

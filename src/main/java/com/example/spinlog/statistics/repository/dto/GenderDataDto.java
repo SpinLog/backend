@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class GenderDataDto {
+public class GenderDataDto<T extends Number> {
     private Gender gender;
-    private Long value;
+    private T value;
 }

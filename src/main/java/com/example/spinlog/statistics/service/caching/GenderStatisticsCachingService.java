@@ -30,6 +30,8 @@ public class GenderStatisticsCachingService {
 
         Map<String, Object> hashEntriesCount = redisService.getHashEntries("GenderEmotionStatisticsCount::" + registerType);
 
+        // todo null check -> DB 조회로 대체
+
         hashEntriesSum.forEach((key, value) -> {
             if (!hashEntriesCount.containsKey(key)) {
                 throw new IllegalStateException("Key " + key + " is missing in hashEntriesCount");
@@ -89,9 +91,9 @@ public class GenderStatisticsCachingService {
 
         Map<String, Float> genderSatisfactionAverage = new HashMap<>();
         hashEntriesSum.forEach((k,v) -> {
-            long amount = Long.parseLong(v.toString());
+            double satisfactionSum = Long.parseLong(v.toString());
             long count = Long.parseLong(hashEntriesCount.get(k).toString());
-            float average = (float) amount / (float) count;
+            float average = (float)(satisfactionSum / (double) count);
             genderSatisfactionAverage.put(k, average);
         });
 
