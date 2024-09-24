@@ -12,6 +12,7 @@ import com.example.spinlog.article.service.request.ArticleCreateRequest;
 import com.example.spinlog.global.error.exception.article.ArticleNotFoundException;
 import com.example.spinlog.global.error.exception.user.UnauthorizedArticleRequestException;
 import com.example.spinlog.global.error.exception.user.UserNotFoundException;
+import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheWriterService;
 import com.example.spinlog.user.entity.User;
 import com.example.spinlog.user.repository.UserRepository;
 import com.example.spinlog.user.service.UserService;
@@ -52,6 +53,9 @@ public class ArticleServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    GenderStatisticsCacheWriterService genderStatisticsCacheWriterService;
 
     @InjectMocks
     private ArticleService articleService;

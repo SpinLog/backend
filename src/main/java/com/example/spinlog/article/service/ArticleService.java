@@ -12,6 +12,7 @@ import com.example.spinlog.article.service.response.WriteArticleResponseDto;
 import com.example.spinlog.global.error.exception.article.ArticleNotFoundException;
 import com.example.spinlog.global.error.exception.user.UnauthorizedArticleRequestException;
 import com.example.spinlog.global.error.exception.user.UserNotFoundException;
+import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheWriterService;
 import com.example.spinlog.user.entity.User;
 import com.example.spinlog.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ArticleService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
+    private final GenderStatisticsCacheWriterService genderStatisticsCacheWriterService;
 
     @Transactional
     public WriteArticleResponseDto createArticle(String userName, ArticleCreateRequest requestDto) {
@@ -35,6 +37,10 @@ public class ArticleService {
         Article articleEntity = requestDto.toEntity(user);
         Article savedArticle = articleRepository.save(articleEntity);
         user.addArticle(savedArticle);
+
+        // todo update cache after transaction, after checking jpa transaction strategy
+        genderStatisticsCacheWriterService.updateStatisticsCacheFromNewData(savedArticle, user);
+
         log.info("게시글이 성공적으로 저장되었습니다. ID: {}", savedArticle.getArticleId());
         return WriteArticleResponseDto.from(savedArticle);
     }
@@ -60,7 +66,14 @@ public class ArticleService {
         User user = getUser(userName);
         Article updateArticle = findArticleById(id);
         validateUserArticle(user, updateArticle);
+
+        // copy article entity
+        Article originalArticle = updateArticle.copyEntity();
+
         updateArticle.update(requestDto);
+
+        genderStatisticsCacheWriterService.updateStatisticsCacheFromModifiedData(originalArticle, updateArticle, user);
+
         log.info("ID {}의 게시글이 업데이트되었습니다.", id);
     }
 
@@ -71,6 +84,9 @@ public class ArticleService {
         validateUserArticle(user, deleteArticle);
         articleRepository.delete(deleteArticle);
         user.removeArticle(deleteArticle);
+
+        genderStatisticsCacheWriterService.updateStatisticsCacheFromRemovedData(deleteArticle, user);
+
         log.info("ID {}의 게시글이 성공적으로 삭제되었습니다.", id);
     }
 

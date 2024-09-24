@@ -96,4 +96,23 @@ public class Article extends BaseTimeEntity {
     public void addAiComment(String aiComment) {
         this.aiComment = aiComment;
     }
+
+    public Article copyEntity(){
+        Article article = Article.builder()
+                .user(this.user)
+                .content(this.content)
+                .spendDate(this.spendDate)
+                .event(this.event)
+                .thought(this.thought)
+                .emotion(this.emotion)
+                .satisfaction(this.satisfaction)
+                .reason(this.reason)
+                .improvements(this.improvements)
+                .aiComment(this.aiComment)
+                .amount(this.amount)
+                .registerType(this.registerType)
+                .build();
+        article.articleId = this.articleId;
+        return article;
+    }
 }
