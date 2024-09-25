@@ -1,10 +1,10 @@
 package com.example.spinlog.global.startup;
 
 import com.example.spinlog.article.entity.RegisterType;
+import com.example.spinlog.global.cache.CacheService;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
-import com.example.spinlog.statistics.service.caching.RedisService;
 import com.example.spinlog.statistics.repository.dto.GenderDataDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 class GenderStatisticsStartupService {
-    private final RedisService redisService;
+    private final CacheService cacheService;
     private final GenderStatisticsRepository genderStatisticsRepository;
     private final int PERIOD_CRITERIA = 30;
 
@@ -45,18 +45,18 @@ class GenderStatisticsStartupService {
         Result genderSatisfactionSaveResult = getGenderSatisfactionResult(SAVE, startDate, endDate);
 
         // todo redis key 별도 클래스로 분리
-        redisService.putAllDataInHash("GenderEmotionStatisticsSum::" + SPEND, genderEmotionAmountSpendResult.sumsMap());
-        redisService.putAllDataInHash("GenderEmotionStatisticsCount::" + SPEND, genderEmotionAmountSpendResult.countsMap());
-        redisService.putAllDataInHash("GenderEmotionStatisticsSum::" + SAVE, genderEmotionAmountSaveResult.sumsMap());
-        redisService.putAllDataInHash("GenderEmotionStatisticsCount::" + SAVE, genderEmotionAmountSaveResult.countsMap());
+        cacheService.putAllDataInHash("GenderEmotionStatisticsSum::" + SPEND, genderEmotionAmountSpendResult.sumsMap());
+        cacheService.putAllDataInHash("GenderEmotionStatisticsCount::" + SPEND, genderEmotionAmountSpendResult.countsMap());
+        cacheService.putAllDataInHash("GenderEmotionStatisticsSum::" + SAVE, genderEmotionAmountSaveResult.sumsMap());
+        cacheService.putAllDataInHash("GenderEmotionStatisticsCount::" + SAVE, genderEmotionAmountSaveResult.countsMap());
 
-        redisService.putAllDataInHash("GenderDailyAmountStatisticsSum::" + SPEND, genderDailyAmountSpendSum);
-        redisService.putAllDataInHash("GenderDailyAmountStatisticsSum::" + SAVE, genderDailyAmountSaveSum);
+        cacheService.putAllDataInHash("GenderDailyAmountStatisticsSum::" + SPEND, genderDailyAmountSpendSum);
+        cacheService.putAllDataInHash("GenderDailyAmountStatisticsSum::" + SAVE, genderDailyAmountSaveSum);
 
-        redisService.putAllDataInHash("GenderSatisfactionStatisticsSum::" + SPEND, genderSatisfactionSpendResult.sumsMap());
-        redisService.putAllDataInHash("GenderSatisfactionStatisticsCount::" + SPEND, genderSatisfactionSpendResult.countsMap());
-        redisService.putAllDataInHash("GenderSatisfactionStatisticsSum::" + SAVE, genderSatisfactionSaveResult.sumsMap());
-        redisService.putAllDataInHash("GenderSatisfactionStatisticsCount::" + SAVE, genderSatisfactionSaveResult.countsMap());
+        cacheService.putAllDataInHash("GenderSatisfactionStatisticsSum::" + SPEND, genderSatisfactionSpendResult.sumsMap());
+        cacheService.putAllDataInHash("GenderSatisfactionStatisticsCount::" + SPEND, genderSatisfactionSpendResult.countsMap());
+        cacheService.putAllDataInHash("GenderSatisfactionStatisticsSum::" + SAVE, genderSatisfactionSaveResult.sumsMap());
+        cacheService.putAllDataInHash("GenderSatisfactionStatisticsCount::" + SAVE, genderSatisfactionSaveResult.countsMap());
 
         log.info("Finish initializing Caching to Redis");
     }

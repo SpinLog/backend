@@ -2,6 +2,7 @@ package com.example.spinlog.statistics.service.caching;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
+import com.example.spinlog.global.cache.CacheService;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
@@ -15,20 +16,17 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class GenderStatisticsCachingService {
-    private final RedisService redisService;
+    private final CacheService cacheService;
 
     public List<GenderEmotionAmountAverageDto> getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType registerType) {
-        Map<String, Object> hashEntriesSum = redisService.getHashEntries("GenderEmotionStatisticsSum::" + registerType);
+        Map<String, Object> hashEntriesSum = cacheService.getHashEntries("GenderEmotionStatisticsSum::" + registerType);
 
-        Map<String, Object> hashEntriesCount = redisService.getHashEntries("GenderEmotionStatisticsCount::" + registerType);
+        Map<String, Object> hashEntriesCount = cacheService.getHashEntries("GenderEmotionStatisticsCount::" + registerType);
 
         // todo null check -> DB 조회로 대체
 
@@ -58,7 +56,7 @@ public class GenderStatisticsCachingService {
     }
 
     public List<GenderDailyAmountSumDto> getAmountSumsEachGenderAndDayLast30Days(RegisterType registerType) {
-        Map<String, Object> hashEntriesSum = redisService.getHashEntries("GenderDailyAmountStatisticsSum::" + registerType);
+        Map<String, Object> hashEntriesSum = cacheService.getHashEntries("GenderDailyAmountStatisticsSum::" + registerType);
 
         return hashEntriesSum.entrySet().stream()
                 .map(e -> {
@@ -78,9 +76,9 @@ public class GenderStatisticsCachingService {
     }
 
     public List<GenderSatisfactionAverageDto> getSatisfactionAveragesEachGenderLast30Days(RegisterType registerType) {
-        Map<String, Object> hashEntriesSum = redisService.getHashEntries("GenderSatisfactionStatisticsSum::" + registerType);
+        Map<String, Object> hashEntriesSum = cacheService.getHashEntries("GenderSatisfactionStatisticsSum::" + registerType);
 
-        Map<String, Object> hashEntriesCount = redisService.getHashEntries("GenderSatisfactionStatisticsCount::" + registerType);
+        Map<String, Object> hashEntriesCount = cacheService.getHashEntries("GenderSatisfactionStatisticsCount::" + registerType);
 
         // tood 메서드로 분리
         hashEntriesSum.forEach((key, value) -> {

@@ -1,6 +1,7 @@
 package com.example.spinlog.statistics.service.caching;
 
 import com.example.spinlog.article.entity.Article;
+import com.example.spinlog.global.cache.CacheService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Slf4j
 public class GenderStatisticsCacheWriterService {
-    private final RedisService redisService;
+    private final CacheService cacheService;
 
     private final int PERIOD_CRITERIA = 30;
 
@@ -27,19 +28,19 @@ public class GenderStatisticsCacheWriterService {
         log.info("Update cached data, new article id: {}", article.getArticleId());
 
         // todo hashkey 구하는 로직 별도 util 클래스로 분리
-        redisService.incrementDataInHash("GenderEmotionStatisticsSum::" + article.getRegisterType(),
+        cacheService.incrementDataInHash("GenderEmotionStatisticsSum::" + article.getRegisterType(),
                 user.getGender() + "::" + article.getEmotion(), article.getAmount());
-        redisService.incrementDataInHash("GenderEmotionStatisticsCount::" + article.getRegisterType(),
+        cacheService.incrementDataInHash("GenderEmotionStatisticsCount::" + article.getRegisterType(),
                 user.getGender() + "::" + article.getEmotion(), 1L);
 
-        redisService.incrementDataInHash("GenderDailyAmountStatisticsSum::" + article.getRegisterType(),
+        cacheService.incrementDataInHash("GenderDailyAmountStatisticsSum::" + article.getRegisterType(),
                 user.getGender() + "::" + article.getSpendDate().toLocalDate(), article.getAmount());
-        redisService.incrementDataInHash("GenderDailyAmountStatisticsCount::" + article.getRegisterType(),
+        cacheService.incrementDataInHash("GenderDailyAmountStatisticsCount::" + article.getRegisterType(),
                 user.getGender() + "::" + article.getSpendDate().toLocalDate(), 1L);
 
-        redisService.incrementDataInHash("GenderSatisfactionStatisticsSum::" + article.getRegisterType(),
+        cacheService.incrementDataInHash("GenderSatisfactionStatisticsSum::" + article.getRegisterType(),
                 user.getGender().name(), article.getSatisfaction());
-        redisService.incrementDataInHash("GenderSatisfactionStatisticsCount::" + article.getRegisterType(),
+        cacheService.incrementDataInHash("GenderSatisfactionStatisticsCount::" + article.getRegisterType(),
                 user.getGender().name(), 1L);
 
     }
@@ -77,19 +78,19 @@ public class GenderStatisticsCacheWriterService {
             return;
         log.info("Remove cached data, removed article id: {}", article.getArticleId());
 
-        redisService.decrementDataInHash("GenderEmotionStatisticsSum::" + article.getRegisterType(),
+        cacheService.decrementDataInHash("GenderEmotionStatisticsSum::" + article.getRegisterType(),
                 user.getGender() + "::" + article.getEmotion(), article.getAmount());
-        redisService.decrementDataInHash("GenderEmotionStatisticsCount::" + article.getRegisterType(),
+        cacheService.decrementDataInHash("GenderEmotionStatisticsCount::" + article.getRegisterType(),
                 user.getGender() + "::" + article.getEmotion(), 1L);
 
-        redisService.decrementDataInHash("GenderDailyAmountStatisticsSum::" + article.getRegisterType(),
+        cacheService.decrementDataInHash("GenderDailyAmountStatisticsSum::" + article.getRegisterType(),
                 user.getGender() + "::" + article.getSpendDate().toLocalDate(), article.getAmount());
-        redisService.decrementDataInHash("GenderDailyAmountStatisticsCount::" + article.getRegisterType(),
+        cacheService.decrementDataInHash("GenderDailyAmountStatisticsCount::" + article.getRegisterType(),
                 user.getGender() + "::" + article.getSpendDate().toLocalDate(), 1L);
 
-        redisService.decrementDataInHash("GenderSatisfactionStatisticsSum::" + article.getRegisterType(),
+        cacheService.decrementDataInHash("GenderSatisfactionStatisticsSum::" + article.getRegisterType(),
                 user.getGender().name(), article.getSatisfaction());
-        redisService.decrementDataInHash("GenderSatisfactionStatisticsCount::" + article.getRegisterType(),
+        cacheService.decrementDataInHash("GenderSatisfactionStatisticsCount::" + article.getRegisterType(),
                 user.getGender().name(), 1L);
 
     }
