@@ -2,13 +2,15 @@ package com.example.spinlog.util;
 
 import com.example.spinlog.global.cache.CacheService;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class MockCacheService implements CacheService {
-    Map<String, Map<String, Object>> cache;
+    Map<String, Map<String, Object>> cache = new HashMap<>();
     @Override
     public void putDataInHash(String key, String hashKey, Object data) {
-        cache.get(key).put(hashKey, data);
+        Map<String, Object> objectMap = cache.computeIfAbsent(key, k -> new HashMap<>());
+        objectMap.put(hashKey, data);
     }
 
     @Override
@@ -19,7 +21,7 @@ public class MockCacheService implements CacheService {
         }
 
         Long value = (Long) dataFromHash;
-        cache.get(key).put(hashKey, value + delta);
+        putDataInHash(key, hashKey, value + delta);
     }
 
     @Override
@@ -57,7 +59,11 @@ public class MockCacheService implements CacheService {
 
     @Override
     public Object getDataFromHash(String key, String hashKey) {
-        return cache.get(key).get(hashKey);
+        Map<String, Object> map = cache.get(key);
+        if(map == null) {
+            return null;
+        }
+        return map.get(hashKey);
     }
 
     @Override
