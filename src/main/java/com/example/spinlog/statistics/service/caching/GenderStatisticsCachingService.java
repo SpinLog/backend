@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.spinlog.utils.CacheKeyNameUtils.*;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -24,9 +26,11 @@ public class GenderStatisticsCachingService {
     private final CacheService cacheService;
 
     public List<GenderEmotionAmountAverageDto> getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType registerType) {
-        Map<String, Object> hashEntriesSum = cacheService.getHashEntries("GenderEmotionStatisticsSum::" + registerType);
+        Map<String, Object> hashEntriesSum = cacheService.getHashEntries(
+                getGenderEmotionStatisticsAmountSumKeyName(registerType));
 
-        Map<String, Object> hashEntriesCount = cacheService.getHashEntries("GenderEmotionStatisticsCount::" + registerType);
+        Map<String, Object> hashEntriesCount = cacheService.getHashEntries(
+                getGenderEmotionStatisticsAmountCountKeyName(registerType));
 
         // todo null check -> DB 조회로 대체
 
@@ -56,7 +60,8 @@ public class GenderStatisticsCachingService {
     }
 
     public List<GenderDailyAmountSumDto> getAmountSumsEachGenderAndDayLast30Days(RegisterType registerType) {
-        Map<String, Object> hashEntriesSum = cacheService.getHashEntries("GenderDailyAmountStatisticsSum::" + registerType);
+        Map<String, Object> hashEntriesSum = cacheService.getHashEntries(
+                getGenderDailyStatisticsAmountSumKeyName(registerType));
 
         return hashEntriesSum.entrySet().stream()
                 .map(e -> {
@@ -76,9 +81,11 @@ public class GenderStatisticsCachingService {
     }
 
     public List<GenderSatisfactionAverageDto> getSatisfactionAveragesEachGenderLast30Days(RegisterType registerType) {
-        Map<String, Object> hashEntriesSum = cacheService.getHashEntries("GenderSatisfactionStatisticsSum::" + registerType);
+        Map<String, Object> hashEntriesSum = cacheService.getHashEntries(
+                getGenderStatisticsSatisfactionSumKeyName(registerType));
 
-        Map<String, Object> hashEntriesCount = cacheService.getHashEntries("GenderSatisfactionStatisticsCount::" + registerType);
+        Map<String, Object> hashEntriesCount = cacheService.getHashEntries(
+                getGenderStatisticsSatisfactionCountKeyName(registerType));
 
         // tood 메서드로 분리
         hashEntriesSum.forEach((key, value) -> {

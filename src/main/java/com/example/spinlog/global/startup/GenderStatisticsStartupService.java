@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.example.spinlog.utils.CacheKeyNameUtils.*;
+
 @Component // todo 다른 빈에서 접근 막기
 @Transactional(readOnly = true) // todo 범위 좁히기
 @RequiredArgsConstructor
@@ -44,19 +46,41 @@ class GenderStatisticsStartupService {
         Result genderSatisfactionSpendResult = getGenderSatisfactionResult(SPEND, startDate, endDate);
         Result genderSatisfactionSaveResult = getGenderSatisfactionResult(SAVE, startDate, endDate);
 
+        // todo 기존 데이터 검증 후 캐싱
+
         // todo redis key 별도 클래스로 분리
-        cacheService.putAllDataInHash("GenderEmotionStatisticsSum::" + SPEND, genderEmotionAmountSpendResult.sumsMap());
-        cacheService.putAllDataInHash("GenderEmotionStatisticsCount::" + SPEND, genderEmotionAmountSpendResult.countsMap());
-        cacheService.putAllDataInHash("GenderEmotionStatisticsSum::" + SAVE, genderEmotionAmountSaveResult.sumsMap());
-        cacheService.putAllDataInHash("GenderEmotionStatisticsCount::" + SAVE, genderEmotionAmountSaveResult.countsMap());
+        cacheService.putAllDataInHash(
+                getGenderEmotionStatisticsAmountSumKeyName(SPEND),
+                genderEmotionAmountSpendResult.sumsMap());
+        cacheService.putAllDataInHash(
+                getGenderEmotionStatisticsAmountCountKeyName(SPEND),
+                genderEmotionAmountSpendResult.countsMap());
+        cacheService.putAllDataInHash(
+                getGenderEmotionStatisticsAmountSumKeyName(SAVE),
+                genderEmotionAmountSaveResult.sumsMap());
+        cacheService.putAllDataInHash(
+                getGenderEmotionStatisticsAmountCountKeyName(SAVE),
+                genderEmotionAmountSaveResult.countsMap());
 
-        cacheService.putAllDataInHash("GenderDailyAmountStatisticsSum::" + SPEND, genderDailyAmountSpendSum);
-        cacheService.putAllDataInHash("GenderDailyAmountStatisticsSum::" + SAVE, genderDailyAmountSaveSum);
+        cacheService.putAllDataInHash(
+                getGenderDailyStatisticsAmountSumKeyName(SPEND),
+                genderDailyAmountSpendSum);
+        cacheService.putAllDataInHash(
+                getGenderDailyStatisticsAmountSumKeyName(SAVE),
+                genderDailyAmountSaveSum);
 
-        cacheService.putAllDataInHash("GenderSatisfactionStatisticsSum::" + SPEND, genderSatisfactionSpendResult.sumsMap());
-        cacheService.putAllDataInHash("GenderSatisfactionStatisticsCount::" + SPEND, genderSatisfactionSpendResult.countsMap());
-        cacheService.putAllDataInHash("GenderSatisfactionStatisticsSum::" + SAVE, genderSatisfactionSaveResult.sumsMap());
-        cacheService.putAllDataInHash("GenderSatisfactionStatisticsCount::" + SAVE, genderSatisfactionSaveResult.countsMap());
+        cacheService.putAllDataInHash(
+                getGenderStatisticsSatisfactionSumKeyName(SPEND),
+                genderSatisfactionSpendResult.sumsMap());
+        cacheService.putAllDataInHash(
+                getGenderStatisticsSatisfactionCountKeyName(SPEND),
+                genderSatisfactionSpendResult.countsMap());
+        cacheService.putAllDataInHash(
+                getGenderStatisticsSatisfactionSumKeyName(SAVE),
+                genderSatisfactionSaveResult.sumsMap());
+        cacheService.putAllDataInHash(
+                getGenderStatisticsSatisfactionCountKeyName(SAVE),
+                genderSatisfactionSaveResult.countsMap());
 
         log.info("Finish initializing Caching to Redis");
     }

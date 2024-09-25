@@ -1,6 +1,7 @@
 package com.example.spinlog.statistics.service.caching;
 
 import com.example.spinlog.article.entity.Article;
+import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.User;
@@ -9,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+
+import static com.example.spinlog.utils.CacheKeyNameUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,19 +31,23 @@ public class GenderStatisticsCacheWriterService {
         log.info("Update cached data, new article id: {}", article.getArticleId());
 
         // todo hashkey 구하는 로직 별도 util 클래스로 분리
-        cacheService.incrementDataInHash("GenderEmotionStatisticsSum::" + article.getRegisterType(),
+        RegisterType registerType = article.getRegisterType();
+        cacheService.incrementDataInHash(
+                getGenderEmotionStatisticsAmountSumKeyName(registerType),
                 user.getGender() + "::" + article.getEmotion(), article.getAmount());
-        cacheService.incrementDataInHash("GenderEmotionStatisticsCount::" + article.getRegisterType(),
+        cacheService.incrementDataInHash(
+                getGenderEmotionStatisticsAmountCountKeyName(registerType),
                 user.getGender() + "::" + article.getEmotion(), 1L);
 
-        cacheService.incrementDataInHash("GenderDailyAmountStatisticsSum::" + article.getRegisterType(),
+        cacheService.incrementDataInHash(
+                getGenderDailyStatisticsAmountSumKeyName(registerType),
                 user.getGender() + "::" + article.getSpendDate().toLocalDate(), article.getAmount());
-        cacheService.incrementDataInHash("GenderDailyAmountStatisticsCount::" + article.getRegisterType(),
-                user.getGender() + "::" + article.getSpendDate().toLocalDate(), 1L);
 
-        cacheService.incrementDataInHash("GenderSatisfactionStatisticsSum::" + article.getRegisterType(),
+        cacheService.incrementDataInHash(
+                getGenderStatisticsSatisfactionSumKeyName(registerType),
                 user.getGender().name(), article.getSatisfaction());
-        cacheService.incrementDataInHash("GenderSatisfactionStatisticsCount::" + article.getRegisterType(),
+        cacheService.incrementDataInHash(
+                getGenderStatisticsSatisfactionCountKeyName(registerType),
                 user.getGender().name(), 1L);
 
     }
@@ -78,19 +85,23 @@ public class GenderStatisticsCacheWriterService {
             return;
         log.info("Remove cached data, removed article id: {}", article.getArticleId());
 
-        cacheService.decrementDataInHash("GenderEmotionStatisticsSum::" + article.getRegisterType(),
+        RegisterType registerType = article.getRegisterType();
+        cacheService.decrementDataInHash(
+                getGenderEmotionStatisticsAmountSumKeyName(registerType),
                 user.getGender() + "::" + article.getEmotion(), article.getAmount());
-        cacheService.decrementDataInHash("GenderEmotionStatisticsCount::" + article.getRegisterType(),
+        cacheService.decrementDataInHash(
+                getGenderEmotionStatisticsAmountCountKeyName(registerType),
                 user.getGender() + "::" + article.getEmotion(), 1L);
 
-        cacheService.decrementDataInHash("GenderDailyAmountStatisticsSum::" + article.getRegisterType(),
+        cacheService.decrementDataInHash(
+                getGenderDailyStatisticsAmountSumKeyName(registerType),
                 user.getGender() + "::" + article.getSpendDate().toLocalDate(), article.getAmount());
-        cacheService.decrementDataInHash("GenderDailyAmountStatisticsCount::" + article.getRegisterType(),
-                user.getGender() + "::" + article.getSpendDate().toLocalDate(), 1L);
 
-        cacheService.decrementDataInHash("GenderSatisfactionStatisticsSum::" + article.getRegisterType(),
+        cacheService.decrementDataInHash(
+                getGenderStatisticsSatisfactionSumKeyName(registerType),
                 user.getGender().name(), article.getSatisfaction());
-        cacheService.decrementDataInHash("GenderSatisfactionStatisticsCount::" + article.getRegisterType(),
+        cacheService.decrementDataInHash(
+                getGenderStatisticsSatisfactionCountKeyName(registerType),
                 user.getGender().name(), 1L);
 
     }
