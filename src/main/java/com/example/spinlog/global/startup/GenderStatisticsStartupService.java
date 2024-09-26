@@ -18,10 +18,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.example.spinlog.article.entity.RegisterType.*;
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
 import static com.example.spinlog.utils.StatisticsValues.PERIOD_CRITERIA;
 
-@Component // todo 다른 빈에서 접근 막기
+@Component
 @Transactional(readOnly = true) // todo 범위 좁히기
 @RequiredArgsConstructor
 @Slf4j
@@ -34,8 +35,6 @@ class GenderStatisticsStartupService {
         log.info("Start initializing Caching to Redis");
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = endDate.minusDays(PERIOD_CRITERIA);
-        RegisterType SPEND = RegisterType.SPEND;
-        RegisterType SAVE = RegisterType.SAVE;
 
         Result genderEmotionAmountSpendResult = getGenderEmotionAmountResult(SPEND, startDate, endDate);
         Result genderEmotionAmountSaveResult = getGenderEmotionAmountResult(SAVE, startDate, endDate);
@@ -48,7 +47,6 @@ class GenderStatisticsStartupService {
 
         // todo 기존 데이터 검증 후 캐싱
 
-        // todo redis key 별도 클래스로 분리
         cacheService.putAllDataInHash(
                 getGenderEmotionStatisticsAmountSumKeyName(SPEND),
                 genderEmotionAmountSpendResult.sumsMap());

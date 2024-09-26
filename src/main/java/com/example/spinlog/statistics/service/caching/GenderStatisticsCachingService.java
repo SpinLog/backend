@@ -25,6 +25,7 @@ import static com.example.spinlog.utils.CacheKeyNameUtils.*;
 public class GenderStatisticsCachingService {
     private final CacheService cacheService;
 
+    // todo Last30Days 이름 변경
     public List<GenderEmotionAmountAverageDto> getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType registerType) {
         Map<String, Object> hashEntriesSum = cacheService.getHashEntries(
                 getGenderEmotionStatisticsAmountSumKeyName(registerType));
@@ -44,7 +45,7 @@ public class GenderStatisticsCachingService {
         hashEntriesSum.forEach((k,v) -> {
                     long amount = Long.parseLong(v.toString());
                     long count = Long.parseLong(hashEntriesCount.get(k).toString());
-                    long average = Math.round((double) amount / count);
+                    long average =  amount / count;
                     genderEmotionAmountAverage.put(k, average);
                 });
 

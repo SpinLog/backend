@@ -142,10 +142,8 @@ public class GenderStatisticsCacheIntegrationTest {
                     continue;
                 }
                 if(v.getGender().equals(Gender.MALE))
-                    // todo remove Math.round
                     assertThat(ea.getAmountAverage()).isEqualTo(
-                            Math.round(
-                                    (double) (maleAmountSum + request.getAmount()) / (maleArticleCount + 1)));
+                            (maleAmountSum + request.getAmount()) / (maleArticleCount + 1));
                 else
                     assertThat(ea.getAmountAverage()).isEqualTo(femaleAmountSum / femaleArticleCount);
             }
@@ -207,10 +205,8 @@ public class GenderStatisticsCacheIntegrationTest {
                     continue;
                 }
                 if(v.getGender().equals(Gender.MALE))
-                    // todo remove Math.round
                     assertThat(ea.getAmountAverage()).isEqualTo(
-                            Math.round(
-                                    (double) (maleAmountSum - target.getAmount()) / (maleArticleCount - 1)));
+                            (maleAmountSum - target.getAmount()) / (maleArticleCount - 1));
                 else
                     assertThat(ea.getAmountAverage()).isEqualTo(femaleAmountSum / femaleArticleCount);
             }
@@ -290,7 +286,7 @@ public class GenderStatisticsCacheIntegrationTest {
                 }
                 if(v.getGender().equals(Gender.MALE))
                     assertThat(ea.getAmountAverage()).isEqualTo(
-                            Math.round((double) (maleAmountSum - 1000 + 10000) / maleArticleCount));
+                            (maleAmountSum - 1000 + 10000) / maleArticleCount);
                 else
                     assertThat(ea.getAmountAverage()).isEqualTo(femaleAmountSum / femaleArticleCount);
             }
