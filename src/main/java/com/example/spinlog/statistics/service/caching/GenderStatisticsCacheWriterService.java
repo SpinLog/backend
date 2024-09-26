@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.StatisticsValues.PERIOD_CRITERIA;
+import static com.example.spinlog.utils.StatisticsUtils.PERIOD_CRITERIA;
 
 @Service
 @RequiredArgsConstructor

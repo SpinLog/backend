@@ -6,6 +6,7 @@ import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.repository.dto.GenderDataDto;
+import com.example.spinlog.utils.StatisticsUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 import static com.example.spinlog.article.entity.RegisterType.*;
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.StatisticsValues.PERIOD_CRITERIA;
+import static com.example.spinlog.utils.StatisticsUtils.*;
 
 @Component
 @Transactional(readOnly = true) // todo 범위 좁히기
@@ -93,49 +94,34 @@ class GenderStatisticsStartupService {
                 startDate,
                 endDate);
 
-        Map<String, Object> amountSumsMap = amountSums.stream()
-                .collect(Collectors.toMap(
-                        dto -> dto.getGender() + "::" + dto.getEmotion(),
-                        GenderEmotionAmountAverageDto::getAmountAverage));
+        Map<String, Object> amountSumsMap = toGenderEmotionMap(amountSums);
+        Map<String, Object> amountCountsMap = toGenderEmotionMap(amountCounts);
 
-        Map<String, Object> amountCountsMap = amountCounts.stream()
-                .collect(Collectors.toMap(
-                        dto -> dto.getGender() + "::" + dto.getEmotion(),
-                        GenderEmotionAmountAverageDto::getAmountAverage));
         return new Result(amountSumsMap, amountCountsMap);
     }
 
     private Map<String, Object> getGenderDateAmountSum(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
-        return genderStatisticsRepository.getAmountSumsEachGenderAndDayBetweenStartDateAndEndDate(
-                        registerType,
-                        startDate,
-                        endDate)
-                .stream()
-                .collect(Collectors.toMap(
-                        dto -> dto.getGender() + "::" + dto.getLocalDate(),
-                        GenderDailyAmountSumDto::getAmountSum));
+        List<GenderDailyAmountSumDto> amountSums = genderStatisticsRepository.getAmountSumsEachGenderAndDayBetweenStartDateAndEndDate(
+                registerType,
+                startDate,
+                endDate);
+        return toGenderDateMap(amountSums);
     }
 
     private Result getGenderSatisfactionResult(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
-        List<GenderDataDto<Double>> amountSums = genderStatisticsRepository.getSatisfactionSumsEachGenderBetweenStartDateAndEndDate(
+        List<GenderDataDto<Double>> satisfactionSums = genderStatisticsRepository.getSatisfactionSumsEachGenderBetweenStartDateAndEndDate(
                 registerType,
                 startDate,
                 endDate);
-        List<GenderDataDto<Long>> amountCounts = genderStatisticsRepository.getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(
+        List<GenderDataDto<Long>> satisfactionCounts = genderStatisticsRepository.getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(
                 registerType,
                 startDate,
                 endDate);
 
-        Map<String, Object> amountSumsMap = amountSums.stream()
-                .collect(Collectors.toMap(
-                        dto -> dto.getGender().toString(),
-                        GenderDataDto::getValue));
+        Map<String, Object> satisfactionSumsMap = toGenderMap(satisfactionSums);
+        Map<String, Object> satisfactionCountsMap = toGenderMap(satisfactionCounts);
 
-        Map<String, Object> amountCountsMap = amountCounts.stream()
-                .collect(Collectors.toMap(
-                        dto -> dto.getGender().toString(),
-                        GenderDataDto::getValue));
-        return new Result(amountSumsMap, amountCountsMap);
+        return new Result(satisfactionSumsMap, satisfactionCountsMap);
     }
 
     private record Result(Map<String, Object> sumsMap, Map<String, Object> countsMap) { }
