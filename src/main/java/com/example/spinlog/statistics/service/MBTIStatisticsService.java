@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.example.spinlog.utils.StatisticsValues.PERIOD_CRITERIA;
 import static java.util.stream.Collectors.groupingBy;
 
 @Slf4j
@@ -33,7 +34,6 @@ public class MBTIStatisticsService {
     private final MBTIStatisticsRepository mbtiStatisticsRepository;
     private final WordExtractionService wordExtractionService;
     private final AuthenticatedUserService authenticatedUserService;
-    private final int PERIOD_CRITERIA = 30;
 
     public MBTIStatisticsService(MBTIStatisticsRepository mbtiStatisticsRepository, WordExtractionService wordExtractionService, AuthenticatedUserService authenticatedUserService) {
         this.mbtiStatisticsRepository = mbtiStatisticsRepository;

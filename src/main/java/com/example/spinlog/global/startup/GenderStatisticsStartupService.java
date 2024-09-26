@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
+import static com.example.spinlog.utils.StatisticsValues.PERIOD_CRITERIA;
 
 @Component // todo 다른 빈에서 접근 막기
 @Transactional(readOnly = true) // todo 범위 좁히기
@@ -27,7 +28,6 @@ import static com.example.spinlog.utils.CacheKeyNameUtils.*;
 class GenderStatisticsStartupService {
     private final CacheService cacheService;
     private final GenderStatisticsRepository genderStatisticsRepository;
-    private final int PERIOD_CRITERIA = 30;
 
     @EventListener(ApplicationReadyEvent.class)
     public void initGenderStatisticsCache() {

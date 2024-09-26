@@ -12,14 +12,13 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
+import static com.example.spinlog.utils.StatisticsValues.PERIOD_CRITERIA;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class GenderStatisticsCacheWriterService {
     private final CacheService cacheService;
-
-    private final int PERIOD_CRITERIA = 30;
 
     public void updateStatisticsCacheFromNewData(Article article, User user) {
         if(isNotInStatisticsPeriodCriteria(article.getSpendDate()))
@@ -30,7 +29,6 @@ public class GenderStatisticsCacheWriterService {
             return;
         log.info("Update cached data, new article id: {}", article.getArticleId());
 
-        // todo hashkey 구하는 로직 별도 util 클래스로 분리
         RegisterType registerType = article.getRegisterType();
         cacheService.incrementDataInHash(
                 getGenderEmotionStatisticsAmountSumKeyName(registerType),
