@@ -10,7 +10,7 @@ import com.example.spinlog.statistics.service.dto.MBTISatisfactionAverageRespons
 import com.example.spinlog.statistics.service.dto.MBTIWordFrequencyResponse;
 import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
 import com.example.spinlog.statistics.loginService.AuthenticatedUserService;
-import com.example.spinlog.statistics.service.workanalysis.WordExtractionService;
+import com.example.spinlog.statistics.service.wordanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Mbti;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

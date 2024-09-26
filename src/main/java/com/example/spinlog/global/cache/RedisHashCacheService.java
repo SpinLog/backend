@@ -1,4 +1,4 @@
-package com.example.spinlog.statistics.service.caching;
+package com.example.spinlog.global.cache;
 
 import com.example.spinlog.global.cache.CacheService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RedisHashCacheService implements CacheService { // todo common package로 분리
+public class RedisHashCacheService implements CacheService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Override

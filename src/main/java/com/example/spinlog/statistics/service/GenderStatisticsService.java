@@ -8,7 +8,7 @@ import com.example.spinlog.statistics.service.caching.GenderStatisticsCachingSer
 import com.example.spinlog.statistics.service.dto.GenderDailyAmountSumResponse;
 import com.example.spinlog.statistics.service.dto.GenderEmotionAmountAverageResponse;
 import com.example.spinlog.statistics.service.dto.GenderWordFrequencyResponse;
-import com.example.spinlog.statistics.service.workanalysis.WordExtractionService;
+import com.example.spinlog.statistics.service.wordanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.Mbti;
 import lombok.extern.slf4j.Slf4j;

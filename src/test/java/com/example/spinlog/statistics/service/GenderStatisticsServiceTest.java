@@ -1,12 +1,11 @@
 package com.example.spinlog.statistics.service;
 
 import com.example.spinlog.article.entity.Emotion;
-import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.*;
 import com.example.spinlog.statistics.service.caching.GenderStatisticsCachingService;
 import com.example.spinlog.statistics.service.dto.*;
-import com.example.spinlog.statistics.service.workanalysis.WordExtractionService;
+import com.example.spinlog.statistics.service.wordanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Gender;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -14,8 +13,6 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
