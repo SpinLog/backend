@@ -96,7 +96,7 @@ public class GenderStatisticsCachingService {
 
         Map<String, Float> genderSatisfactionAverage = new HashMap<>();
         hashEntriesSum.forEach((k,v) -> {
-            double satisfactionSum = Long.parseLong(v.toString());
+            double satisfactionSum = Double.parseDouble(v.toString());
             long count = Long.parseLong(hashEntriesCount.get(k).toString());
             float average = (float)(satisfactionSum / (double) count);
             genderSatisfactionAverage.put(k, average);
