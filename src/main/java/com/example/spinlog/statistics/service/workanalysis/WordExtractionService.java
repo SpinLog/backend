@@ -1,4 +1,4 @@
-package com.example.spinlog.statistics.service;
+package com.example.spinlog.statistics.service.workanalysis;
 
 import com.example.spinlog.statistics.service.dto.Token;
 import com.example.spinlog.statistics.service.dto.WordFrequency;

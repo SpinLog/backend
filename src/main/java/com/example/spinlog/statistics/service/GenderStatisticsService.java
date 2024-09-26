@@ -4,9 +4,11 @@ import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.*;
+import com.example.spinlog.statistics.service.caching.GenderStatisticsCachingService;
 import com.example.spinlog.statistics.service.dto.GenderDailyAmountSumResponse;
 import com.example.spinlog.statistics.service.dto.GenderEmotionAmountAverageResponse;
 import com.example.spinlog.statistics.service.dto.GenderWordFrequencyResponse;
+import com.example.spinlog.statistics.service.workanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.Mbti;
 import lombok.extern.slf4j.Slf4j;
@@ -25,22 +27,26 @@ import static java.util.stream.Collectors.groupingBy;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = true) // todo 범위 좁히기
 public class GenderStatisticsService {
     private final GenderStatisticsRepository genderStatisticsRepository;
+    private final GenderStatisticsCachingService genderStatisticsCachingService;
     private final WordExtractionService wordExtractionService;
+
+    // TODO 별도 클래스로 분리
     private final int PERIOD_CRITERIA = 30;
 
-    public GenderStatisticsService(GenderStatisticsRepository genderStatisticsRepository, WordExtractionService wordExtractionService) {
+    public GenderStatisticsService(GenderStatisticsRepository genderStatisticsRepository, GenderStatisticsCachingService genderStatisticsCachingService, WordExtractionService wordExtractionService) {
         this.genderStatisticsRepository = genderStatisticsRepository;
+        this.genderStatisticsCachingService = genderStatisticsCachingService;
         this.wordExtractionService = wordExtractionService;
     }
 
-    public List<GenderEmotionAmountAverageResponse> getAmountAveragesEachGenderAndEmotionLast30Days(LocalDate today, RegisterType registerType){
-        LocalDate startDate = today.minusDays(PERIOD_CRITERIA);
-        List<GenderEmotionAmountAverageDto> dtos = genderStatisticsRepository.
-                getAmountAveragesEachGenderAndEmotionBetweenStartDateAndEndDate(registerType, startDate, today);
+    public List<GenderEmotionAmountAverageResponse> getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType registerType){
+        List<GenderEmotionAmountAverageDto> dtos = genderStatisticsCachingService.
+                getAmountAveragesEachGenderAndEmotionLast30Days(registerType);
 
+        // TODO 데이터 프로세싱 작업 별도 클래스로 분리
         List<GenderEmotionAmountAverageDto> dtosWithZeroPadding = addZeroAverageForMissingGenderEmotionPairs(dtos);
 
         return dtosWithZeroPadding.stream()
@@ -72,10 +78,9 @@ public class GenderStatisticsService {
                 .toList();
     }
 
-    public List<GenderDailyAmountSumResponse> getAmountSumsEachGenderAndDayLast30Days(LocalDate today, RegisterType registerType) {
-        LocalDate startDate = today.minusDays(PERIOD_CRITERIA);
-        List<GenderDailyAmountSumDto> dtos = genderStatisticsRepository
-                .getAmountSumsEachGenderAndDayBetweenStartDateAndEndDate(registerType, startDate, today);
+    public List<GenderDailyAmountSumResponse> getAmountSumsEachGenderAndDayLast30Days(RegisterType registerType) {
+        List<GenderDailyAmountSumDto> dtos = genderStatisticsCachingService
+                .getAmountSumsEachGenderAndDayLast30Days(registerType);
 
         List<GenderDailyAmountSumDto> dtosWithZeroPadding = addZeroAverageForMissingGenderLocalDatePairs(dtos);
 
@@ -114,7 +119,8 @@ public class GenderStatisticsService {
                 .toList();
     }
 
-    public GenderWordFrequencyResponse getWordFrequenciesEachGenderLast30Days(LocalDate today, RegisterType registerType){
+    public GenderWordFrequencyResponse getWordFrequenciesEachGenderLast30Days(RegisterType registerType){
+        LocalDate today = LocalDate.now();
         LocalDate startDate = today.minusDays(PERIOD_CRITERIA);
         List<MemoDto> maleMemos = genderStatisticsRepository.getAllMemosByGenderBetweenStartDateAndEndDate(registerType, Gender.MALE, startDate, today);
         List<MemoDto> femaleMemos = genderStatisticsRepository.getAllMemosByGenderBetweenStartDateAndEndDate(registerType, Gender.FEMALE, startDate, today);
@@ -149,8 +155,7 @@ public class GenderStatisticsService {
         return mbti == null || mbti == Mbti.NONE;
     }
 
-    public List<GenderSatisfactionAverageDto> getSatisfactionAveragesEachGenderLast30Days(LocalDate today, RegisterType registerType){
-        LocalDate startDate = today.minusDays(PERIOD_CRITERIA);
-        return genderStatisticsRepository.getSatisfactionAveragesEachGenderBetweenStartDateAndEndDate(registerType, startDate, today);
+    public List<GenderSatisfactionAverageDto> getSatisfactionAveragesEachGenderLast30Days(RegisterType registerType){
+        return genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(registerType);
     }
 }

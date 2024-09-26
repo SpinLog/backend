@@ -6,6 +6,7 @@ import com.example.spinlog.user.entity.Gender;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,9 +28,22 @@ public class GenderEmotionAmountAverageResponse {
                 .build();
     }
 
+    @Override
+    public String toString() {
+        return "GenderEmotionAmountAverageResponse\n" +
+                "gender=" + gender + "\n" +
+                "emotionCount=\n" +
+                emotionAmountAverages.stream()
+                        .map(EmotionAmountAverage::toString)
+                        .map(ea -> ea+"\n")
+                        .toList()
+                + "\n";
+    }
+
     @Getter
     @Builder
     @EqualsAndHashCode
+    @ToString
     public static class EmotionAmountAverage {
         private Emotion emotion;
         private Long amountAverage;

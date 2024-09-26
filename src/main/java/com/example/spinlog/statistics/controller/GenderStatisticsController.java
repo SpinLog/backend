@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -27,7 +26,6 @@ public class GenderStatisticsController {
             @RequestParam(defaultValue = "SPEND") String registerType){
         return ResponseUtils.ok(
                 genderStatisticsService.getAmountAveragesEachGenderAndEmotionLast30Days(
-                        LocalDate.now(),
                         RegisterType.valueOf(registerType)),
                 "성별 감정별 금액 평균");
     }
@@ -37,7 +35,6 @@ public class GenderStatisticsController {
             @RequestParam(defaultValue = "SPEND") String registerType){
         return ResponseUtils.ok(
                 genderStatisticsService.getAmountSumsEachGenderAndDayLast30Days(
-                        LocalDate.now(),
                         RegisterType.valueOf(registerType)),
                 "성별 일별 금액 총합");
     }
@@ -48,7 +45,6 @@ public class GenderStatisticsController {
         return ResponseUtils.ok(
                 genderStatisticsService
                         .getWordFrequenciesEachGenderLast30Days(
-                                LocalDate.now(),
                                 RegisterType.valueOf(registerType)),
                 "성별 단어 빈도수");
     }
@@ -58,7 +54,6 @@ public class GenderStatisticsController {
             @RequestParam(defaultValue = "SPEND") String registerType){
         return ResponseUtils.ok(
                 genderStatisticsService.getSatisfactionAveragesEachGenderLast30Days(
-                        LocalDate.now(),
                         RegisterType.valueOf(registerType)),
                 "성별 만족도 평균");
     }
