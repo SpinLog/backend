@@ -1,23 +1,18 @@
-package com.example.spinlog.statistics.service.caching;
+package com.example.spinlog.statistics.scheduled;
 
 import com.example.spinlog.article.entity.Emotion;
-import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.global.cache.CacheService;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.scheduled.GenderStatisticsCacheScheduledService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.util.CacheConfiguration;
 import com.example.spinlog.util.MockCacheService;
-import com.example.spinlog.utils.CacheKeyNameUtils;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import static com.example.spinlog.article.entity.RegisterType.SPEND;
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;

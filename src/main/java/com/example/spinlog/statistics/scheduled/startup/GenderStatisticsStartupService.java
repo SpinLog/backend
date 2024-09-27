@@ -1,4 +1,4 @@
-package com.example.spinlog.global.startup;
+package com.example.spinlog.statistics.scheduled.startup;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheService;

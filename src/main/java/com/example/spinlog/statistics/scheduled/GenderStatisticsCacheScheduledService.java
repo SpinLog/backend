@@ -1,4 +1,4 @@
-package com.example.spinlog.statistics.service.caching;
+package com.example.spinlog.statistics.scheduled;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheService;
