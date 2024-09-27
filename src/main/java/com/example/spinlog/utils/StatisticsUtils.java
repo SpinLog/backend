@@ -3,11 +3,14 @@ package com.example.spinlog.utils;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderDataDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StatisticsUtils {
     public static final int PERIOD_CRITERIA = 30;
 

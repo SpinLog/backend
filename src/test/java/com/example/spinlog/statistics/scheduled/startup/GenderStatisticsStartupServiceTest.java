@@ -5,6 +5,7 @@ import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheService;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.service.GenderStatisticsDataAggregationService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.util.MockCacheService;
 import org.junit.jupiter.api.DisplayName;
@@ -21,10 +22,12 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("test")
 class GenderStatisticsStartupServiceTest {
     GenderStatisticsRepository genderStatisticsRepository = mock(GenderStatisticsRepository.class);
+    GenderStatisticsDataAggregationService genderStatisticsDataAggregationService =
+            new GenderStatisticsDataAggregationService(genderStatisticsRepository);
     CacheService cacheService = new MockCacheService();
 
     GenderStatisticsStartupService genderStatisticsStartupService =
-            new GenderStatisticsStartupService(cacheService, genderStatisticsRepository);
+            new GenderStatisticsStartupService(cacheService, genderStatisticsDataAggregationService);
 
     @Test
     @DisplayName("레포지토리로부터 통계 데이터를 받아 캐시에 저장한다.")
