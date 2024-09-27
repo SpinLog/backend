@@ -51,6 +51,7 @@ public class GenderStatisticsCacheWriterService {
     }
 
     private boolean isNotInStatisticsPeriodCriteria(LocalDateTime spendDate) {
+        // todo 새벽 시간 캐시 데이터 정합성 해결 위해 별도의 클래스로 분리
         LocalDateTime endDate = LocalDateTime.now();
         LocalDateTime startDate = endDate.minusDays(PERIOD_CRITERIA);
         return !(spendDate.isAfter(startDate) && spendDate.isBefore(endDate));

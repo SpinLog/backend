@@ -75,4 +75,8 @@ public class MockCacheService implements CacheService {
     public void putAllDataInHash(String key, Map<String, Object> data) {
         cache.put(key, data);
     }
+
+    public void clear(){
+        cache.clear();
+    }
 }
