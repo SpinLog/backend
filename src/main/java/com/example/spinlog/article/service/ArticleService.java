@@ -1,6 +1,9 @@
 package com.example.spinlog.article.service;
 
 import com.example.spinlog.article.entity.Article;
+import com.example.spinlog.article.event.ArticleCreatedEvent;
+import com.example.spinlog.article.event.ArticleDeletedEvent;
+import com.example.spinlog.article.event.ArticleUpdatedEvent;
 import com.example.spinlog.article.repository.ArticleRepository;
 import com.example.spinlog.article.service.request.ArticleCreateRequest;
 import com.example.spinlog.article.service.request.ArticleUpdateRequest;
@@ -17,8 +20,10 @@ import com.example.spinlog.user.entity.User;
 import com.example.spinlog.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.relational.core.mapping.event.AfterDeleteEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ArticleService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
-    private final GenderStatisticsCacheWriterService genderStatisticsCacheWriterService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public WriteArticleResponseDto createArticle(String userName, ArticleCreateRequest requestDto) {
@@ -39,7 +44,8 @@ public class ArticleService {
         user.addArticle(savedArticle);
 
         // todo update cache after transaction, after checking jpa transaction strategy
-        genderStatisticsCacheWriterService.updateStatisticsCacheFromNewData(savedArticle, user);
+        //genderStatisticsCacheWriterService.updateStatisticsCacheFromNewData(savedArticle, user);
+        eventPublisher.publishEvent(new ArticleCreatedEvent(savedArticle, user));
 
         log.info("게시글이 성공적으로 저장되었습니다. ID: {}", savedArticle.getArticleId());
         return WriteArticleResponseDto.from(savedArticle);
@@ -72,7 +78,8 @@ public class ArticleService {
 
         updateArticle.update(requestDto);
 
-        genderStatisticsCacheWriterService.updateStatisticsCacheFromModifiedData(originalArticle, updateArticle, user);
+        //genderStatisticsCacheWriterService.updateStatisticsCacheFromModifiedData(originalArticle, updateArticle, user);
+        eventPublisher.publishEvent(new ArticleUpdatedEvent(originalArticle, updateArticle, user));
 
         log.info("ID {}의 게시글이 업데이트되었습니다.", id);
     }
@@ -85,7 +92,8 @@ public class ArticleService {
         articleRepository.delete(deleteArticle);
         user.removeArticle(deleteArticle);
 
-        genderStatisticsCacheWriterService.updateStatisticsCacheFromRemovedData(deleteArticle, user);
+        //genderStatisticsCacheWriterService.updateStatisticsCacheFromRemovedData(deleteArticle, user);
+        eventPublisher.publishEvent(new ArticleDeletedEvent(deleteArticle, user));
 
         log.info("ID {}의 게시글이 성공적으로 삭제되었습니다.", id);
     }

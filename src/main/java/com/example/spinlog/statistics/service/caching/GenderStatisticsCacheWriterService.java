@@ -2,12 +2,16 @@ package com.example.spinlog.statistics.service.caching;
 
 import com.example.spinlog.article.entity.Article;
 import com.example.spinlog.article.entity.RegisterType;
+import com.example.spinlog.article.event.ArticleCreatedEvent;
+import com.example.spinlog.article.event.ArticleDeletedEvent;
+import com.example.spinlog.article.event.ArticleUpdatedEvent;
 import com.example.spinlog.global.cache.CacheService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +24,11 @@ import static com.example.spinlog.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
 public class GenderStatisticsCacheWriterService { // todo 이름 수정 (Artcile이 업데이트 될 때마다 캐시 업데이트 되는 걸 의미하는 이름으로)
     private final CacheService cacheService;
 
-    public void updateStatisticsCacheFromNewData(Article article, User user) {
+    @TransactionalEventListener
+    public void updateStatisticsCacheFromNewData(ArticleCreatedEvent event) {
+        Article article = event.getArticle();
+        User user = event.getUser();
+
         if(isNotInStatisticsPeriodCriteria(article.getSpendDate()))
             return;
 
@@ -57,15 +65,21 @@ public class GenderStatisticsCacheWriterService { // todo 이름 수정 (Artcile
         return !(spendDate.isAfter(startDate) && spendDate.isBefore(endDate));
     }
 
-    public void updateStatisticsCacheFromModifiedData(Article originalArticle, Article updateArticle, User user) {
+    @TransactionalEventListener
+    public void updateStatisticsCacheFromModifiedData(ArticleUpdatedEvent event) {
+        Article originalArticle = event.getOriginalArticle();
+        Article updateArticle = event.getUpdatedArticle();
+        User user = event.getUser();
+
         if(user.getGender() == Gender.NONE)
             return;
         if(isNotChanged(originalArticle, updateArticle))
             return;
         log.info("Update cached data, modified originalArticle id: {}", updateArticle.getArticleId());
 
-        updateStatisticsCacheFromRemovedData(originalArticle, user);
-        updateStatisticsCacheFromNewData(updateArticle, user);
+        // 캐싱 작업을 private 메서드로 선언하여 public 메서드 호출 삭제
+        updateStatisticsCacheFromRemovedData(new ArticleDeletedEvent(originalArticle, user));
+        updateStatisticsCacheFromNewData(new ArticleCreatedEvent(updateArticle, user));
 
     }
 
@@ -77,7 +91,11 @@ public class GenderStatisticsCacheWriterService { // todo 이름 수정 (Artcile
                 originalArticle.getSatisfaction().equals(updateArticle.getSatisfaction());
     }
 
-    public void updateStatisticsCacheFromRemovedData(Article article, User user) {
+    @TransactionalEventListener
+    public void updateStatisticsCacheFromRemovedData(ArticleDeletedEvent event) {
+        Article article = event.getArticle();
+        User user = event.getUser();
+
         if(isNotInStatisticsPeriodCriteria(article.getSpendDate()))
             return;
         if(user.getGender() == Gender.NONE)

@@ -3,6 +3,8 @@ package com.example.spinlog.statistics.service.caching;
 import com.example.spinlog.article.entity.Article;
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
+import com.example.spinlog.article.event.ArticleCreatedEvent;
+import com.example.spinlog.article.event.ArticleDeletedEvent;
 import com.example.spinlog.global.cache.CacheService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.User;
@@ -77,7 +79,7 @@ class GenderStatisticsCacheWriterServiceTest {
                     1L);
 
             // when
-            targetService.updateStatisticsCacheFromNewData(article, user);
+            targetService.updateStatisticsCacheFromNewData(new ArticleCreatedEvent(article, user));
 
             // then
             Object sum = cacheService.getDataFromHash(
@@ -99,7 +101,7 @@ class GenderStatisticsCacheWriterServiceTest {
                     1000L);
 
             // when
-            targetService.updateStatisticsCacheFromNewData(article, user);
+            targetService.updateStatisticsCacheFromNewData(new ArticleCreatedEvent(article, user));
 
             // then
             Object sum = cacheService.getDataFromHash(
@@ -121,7 +123,7 @@ class GenderStatisticsCacheWriterServiceTest {
                     1L);
 
             // when
-            targetService.updateStatisticsCacheFromNewData(article, user);
+            targetService.updateStatisticsCacheFromNewData(new ArticleCreatedEvent(article, user));
 
             // then
             Object sum = cacheService.getDataFromHash(
@@ -133,6 +135,11 @@ class GenderStatisticsCacheWriterServiceTest {
             assertThat(sum).isEqualTo(5.0 + article.getSatisfaction());
             assertThat(count).isEqualTo(2L);
         }
+    }
+
+    @Nested
+    class updateStatisticsCacheFromModifiedData{
+
     }
 
     @Nested
@@ -150,7 +157,7 @@ class GenderStatisticsCacheWriterServiceTest {
                     1L);
 
             // when
-            targetService.updateStatisticsCacheFromRemovedData(article, user);
+            targetService.updateStatisticsCacheFromRemovedData(new ArticleDeletedEvent(article, user));
 
             // then
             Object sum = cacheService.getDataFromHash(
@@ -172,7 +179,7 @@ class GenderStatisticsCacheWriterServiceTest {
                     1000L);
 
             // when
-            targetService.updateStatisticsCacheFromRemovedData(article, user);
+            targetService.updateStatisticsCacheFromRemovedData(new ArticleDeletedEvent(article, user));
 
             // then
             Object sum = cacheService.getDataFromHash(
@@ -194,7 +201,7 @@ class GenderStatisticsCacheWriterServiceTest {
                     1L);
 
             // when
-            targetService.updateStatisticsCacheFromRemovedData(article, user);
+            targetService.updateStatisticsCacheFromRemovedData(new ArticleDeletedEvent(article, user));
 
             // then
             Object sum = cacheService.getDataFromHash(
