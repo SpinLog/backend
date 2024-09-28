@@ -3,6 +3,7 @@ package com.example.spinlog.statistics.service.caching;
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheService;
+import com.example.spinlog.statistics.exception.InvalidCacheException;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,53 +29,49 @@ public class GenderStatisticsCachingService {
 
     // todo Last30Days 이름 변경
     public List<GenderEmotionAmountAverageDto> getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType registerType) {
-        Map<String, Object> hashEntriesSum = cacheService.getHashEntries(
+        Map<String, Object> sumsMap = cacheService.getHashEntries(
                 getGenderEmotionStatisticsAmountSumKeyName(registerType));
 
-        Map<String, Object> hashEntriesCount = cacheService.getHashEntries(
+        Map<String, Object> countsMap = cacheService.getHashEntries(
                 getGenderEmotionStatisticsAmountCountKeyName(registerType));
 
-        // todo null check -> DB 조회로 대체
-
-        hashEntriesSum.forEach((key, value) -> {
-            if (!hashEntriesCount.containsKey(key)) {
-                throw new IllegalStateException("Key " + key + " is missing in hashEntriesCount");
-            }
-        });
+        verifyCacheSumsAndCountsEntries(sumsMap, countsMap);
 
         Map<String, Long> genderEmotionAmountAverage = new HashMap<>();
-        hashEntriesSum.forEach((k,v) -> {
-                    long amount = Long.parseLong(v.toString());
-                    long count = Long.parseLong(hashEntriesCount.get(k).toString());
-                    long average =  amount / count;
+        sumsMap.forEach((k,v) -> {
+            long amount = castLong(v);
+            long count = castLong(countsMap.get(k));
+            long average =  amount / count;
                     genderEmotionAmountAverage.put(k, average);
                 });
 
         return genderEmotionAmountAverage.entrySet().stream()
                 .map(e -> {
+                    verifyKeyName(e.getKey());
+                    // todo combine verify method & use builder pattern
                     String[] key = e.getKey().split("::");
-                    assert key.length == 2;
                     return new GenderEmotionAmountAverageDto(
-                            Gender.valueOf(key[0]),
-                            Emotion.valueOf(key[1]),
-                            Long.parseLong(e.getValue().toString()));
+                            castGender(key[0]),
+                            castEmotion(key[1]),
+                            e.getValue());
                 }).toList();
     }
 
     public List<GenderDailyAmountSumDto> getAmountSumsEachGenderAndDayLast30Days(RegisterType registerType) {
-        Map<String, Object> hashEntriesSum = cacheService.getHashEntries(
+        Map<String, Object> sumsMap = cacheService.getHashEntries(
                 getGenderDailyStatisticsAmountSumKeyName(registerType));
 
-        return hashEntriesSum.entrySet().stream()
+        verifyCacheEntries(sumsMap);
+
+        return sumsMap.entrySet().stream()
                 .map(e -> {
+                    verifyKeyName(e.getKey());
                     String[] key = e.getKey().split("::");
-                    assert key.length == 2;
-                    // todo exception handling
-                    LocalDate date = LocalDate.parse(key[1]);
+                    LocalDate date = castLocalDate(key[1]);
                     return new GenderDailyAmountSumDto(
-                            Gender.valueOf(key[0]),
+                            castGender(key[0]),
                             date,
-                            Long.parseLong(e.getValue().toString()));
+                            castLong(e.getValue()));
                 }).toList();
     }
 
@@ -82,32 +80,99 @@ public class GenderStatisticsCachingService {
     }
 
     public List<GenderSatisfactionAverageDto> getSatisfactionAveragesEachGenderLast30Days(RegisterType registerType) {
-        Map<String, Object> hashEntriesSum = cacheService.getHashEntries(
+        Map<String, Object> sumsMap = cacheService.getHashEntries(
                 getGenderStatisticsSatisfactionSumKeyName(registerType));
 
-        Map<String, Object> hashEntriesCount = cacheService.getHashEntries(
+        Map<String, Object> countsMap = cacheService.getHashEntries(
                 getGenderStatisticsSatisfactionCountKeyName(registerType));
 
-        // tood 메서드로 분리
-        hashEntriesSum.forEach((key, value) -> {
-            if (!hashEntriesCount.containsKey(key)) {
-                throw new IllegalStateException("Key " + key + " is missing in hashEntriesCount");
-            }
-        });
+        verifyCacheSumsAndCountsEntries(sumsMap, countsMap);
 
         Map<String, Float> genderSatisfactionAverage = new HashMap<>();
-        hashEntriesSum.forEach((k,v) -> {
-            double satisfactionSum = Double.parseDouble(v.toString());
-            long count = Long.parseLong(hashEntriesCount.get(k).toString());
+        sumsMap.forEach((k,v) -> {
+            double satisfactionSum = castDouble(v);
+            long count = castLong(countsMap.get(k));
             float average = (float)(satisfactionSum / (double) count);
             genderSatisfactionAverage.put(k, average);
         });
 
         return genderSatisfactionAverage.entrySet().stream()
                 .map(e -> GenderSatisfactionAverageDto.builder()
-                        .gender(Gender.valueOf(e.getKey()))
+                        .gender(castGender(e.getKey()))
                         .satisfactionAverage(e.getValue())
                         .build())
                 .toList();
+    }
+
+    private void verifyCacheSumsAndCountsEntries(Map<String, Object> sumsMap, Map<String, Object> countsMap) {
+        if(sumsMap == null) {
+            throw new InvalidCacheException("Cache sum entries are null");
+        }
+        if(countsMap == null) {
+            throw new InvalidCacheException("Cache count entries are null");
+        }
+
+        if(sumsMap.size() != countsMap.size()) {
+            throw new InvalidCacheException("Cache sum entries and count entries are not matched");
+        }
+
+        sumsMap.forEach((key, value) -> {
+            if (!countsMap.containsKey(key)) {
+                throw new InvalidCacheException("Cache sum entries and count entries are not matched");
+            }
+        });
+    }
+
+    private void verifyCacheEntries(Map<String, Object> cacheEntries) {
+        if(cacheEntries == null) {
+            throw new InvalidCacheException("Cache entries are null");
+        }
+    }
+
+    private void verifyKeyName(String key) {
+        String[] strings = key.split("::");
+        if(strings.length != 2) {
+            throw new InvalidCacheException("Invalid cache key format");
+        }
+    }
+
+    private long castLong(Object o) {
+        try {
+            return Long.parseLong(o.toString());
+        } catch (NumberFormatException e) {
+            throw new InvalidCacheException("Invalid long format", e);
+        }
+    }
+
+    private double castDouble(Object o) {
+        try {
+            return Double.parseDouble(o.toString());
+        } catch (NumberFormatException e) {
+            throw new InvalidCacheException("Invalid double format", e);
+        }
+    }
+
+    private LocalDate castLocalDate(String key) {
+        try {
+            return LocalDate.parse(key);
+        } catch (DateTimeParseException e) {
+            throw new InvalidCacheException("Invalid date format", e);
+        }
+    }
+
+    private static Gender castGender(String key) {
+        try {
+            return Gender.valueOf(key);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidCacheException("Invalid gender format", e);
+        }
+    }
+
+    private static Emotion castEmotion(String key) {
+            try {
+                return Emotion.valueOf(key);
+            } catch (IllegalArgumentException e) {
+                throw new InvalidCacheException("Invalid emotion format", e);
+            }
     }
 }

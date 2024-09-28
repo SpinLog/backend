@@ -2,14 +2,14 @@ package com.example.spinlog.statistics.service.caching;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheService;
+import com.example.spinlog.statistics.exception.InvalidCacheException;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.util.MockCacheService;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
+import static com.example.spinlog.utils.CacheKeyNameUtils.getGenderEmotionStatisticsAmountSumKeyName;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -69,6 +70,115 @@ class GenderStatisticsCachingServiceTest {
                 }
             }
         }
+        
+        @Test
+        void sumsMap이_null이라면_실패한다() throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(null);
+            when(cacheService.getHashEntries(
+                    eq(getGenderEmotionStatisticsAmountCountKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of());
+            
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
+
+        @Test
+        void countsMap이_null이라면_실패한다() throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of());
+            when(cacheService.getHashEntries(
+                    eq(getGenderEmotionStatisticsAmountCountKeyName(RegisterType.SPEND))))
+                    .thenReturn(null);
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
+
+        @Test
+        void sumsMap과_countsMap의_개수가_맞지_않는다면_실패한다() throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", 1000L));
+            when(cacheService.getHashEntries(
+                    eq(getGenderEmotionStatisticsAmountCountKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", 5L, "key2", 10L));
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
+        
+        @Test
+        void sumsMap의_key와_countsMap의_key가_맞지_않는다면_실패한다() throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", 1000L, "key2", 2000L));
+            when(cacheService.getHashEntries(
+                    eq(getGenderEmotionStatisticsAmountCountKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", 5L, "key3", 10L));
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
+        
+        @ParameterizedTest
+        @ValueSource(strings = {"string", "1.0f", "1.0"})
+        void sumsMap의_value가_long_타입이_아니라면_실패한다(String value) throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", value));
+            when(cacheService.getHashEntries(
+                    eq(getGenderEmotionStatisticsAmountCountKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", 5L));
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"string", "1.0f", "1.0"})
+        void countsMap의_value가_long_타입이_아니라면_실패한다(String value) throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", 10000L));
+            when(cacheService.getHashEntries(
+                    eq(getGenderEmotionStatisticsAmountCountKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", value));
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
+        
+        @ParameterizedTest
+        @ValueSource(strings = {"Stiring1", "InvalidGender::SAD", "MALE::InvalidEmotion"})
+        @DisplayName("key 형식이 {Gender}::{Emotion}이 아니라면 실패한다")
+        void test_map_key(String key) throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of(key, 10000L));
+            when(cacheService.getHashEntries(
+                    eq(getGenderEmotionStatisticsAmountCountKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of(key, 5L));
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
     }
 
     @Nested
@@ -105,6 +215,45 @@ class GenderStatisticsCachingServiceTest {
                         break;
                 }
             }
+        }
+
+        @Test
+        void sumsMap이_null이면_실패한다() throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderDailyStatisticsAmountSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(null);
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountSumsEachGenderAndDayLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"Stiring1", "InvalidGender::2024-07-11", "MALE::InvalidDate"})
+        @DisplayName("key 형식이 {Gender}::{Date}가 아니라면 실패한다")
+        void sumsMap_key_test(String key) throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderDailyStatisticsAmountSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of(key, 1000L));
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountSumsEachGenderAndDayLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"string", "1.0f", "1.0"})
+        void sumsMap의_value가_long_타입이_아니라면_실패한다(String value) throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderDailyStatisticsAmountSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", value));
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountSumsEachGenderAndDayLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
         }
     }
 
@@ -149,6 +298,115 @@ class GenderStatisticsCachingServiceTest {
                         break;
                 }
             }
+        }
+
+        @Test
+        void sumsMap이_null이라면_실패한다() throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderStatisticsSatisfactionSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(null);
+            when(cacheService.getHashEntries(
+                    eq(getGenderStatisticsSatisfactionCountKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of());
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
+
+        @Test
+        void countsMap이_null이라면_실패한다() throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderStatisticsSatisfactionSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of());
+            when(cacheService.getHashEntries(
+                    eq(getGenderStatisticsSatisfactionCountKeyName(RegisterType.SPEND))))
+                    .thenReturn(null);
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
+
+        @Test
+        void sumsMap과_countsMap의_개수가_맞지_않는다면_실패한다() throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderStatisticsSatisfactionSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", 10.0));
+            when(cacheService.getHashEntries(
+                    eq(getGenderStatisticsSatisfactionCountKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", 5L, "key2", 10L));
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
+
+        @Test
+        void sumsMap의_key와_countsMap의_key가_맞지_않는다면_실패한다() throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderStatisticsSatisfactionSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", 12.0, "key2", 10.0));
+            when(cacheService.getHashEntries(
+                    eq(getGenderStatisticsSatisfactionCountKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", 5L, "key3", 10L));
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"string", "1000"})
+        void sumsMap의_value가_double_타입이_아니라면_실패한다(String value) throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderStatisticsSatisfactionSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", value));
+            when(cacheService.getHashEntries(
+                    eq(getGenderStatisticsSatisfactionCountKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", 5L));
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"string", "1.0f", "1.0"})
+        void countsMap의_value가_long_타입이_아니라면_실패한다(String value) throws Exception {
+            // given
+            when(cacheService.getHashEntries(
+                    eq(getGenderStatisticsSatisfactionSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", 10000L));
+            when(cacheService.getHashEntries(
+                    eq(getGenderStatisticsSatisfactionCountKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of("key1", value));
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
+        }
+
+        @Test
+        @DisplayName("key 형식이 {Gender}이 아니라면 실패한다")
+        void test_map_key() throws Exception {
+            // given
+            String key = "InvalidGender";
+            when(cacheService.getHashEntries(
+                    eq(getGenderStatisticsSatisfactionSumKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of(key, 10000L));
+            when(cacheService.getHashEntries(
+                    eq(getGenderStatisticsSatisfactionCountKeyName(RegisterType.SPEND))))
+                    .thenReturn(Map.of(key, 5L));
+
+            // when // then
+            assertThatThrownBy(() -> genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND))
+                    .isInstanceOf(InvalidCacheException.class);
         }
     }
 }
