@@ -1,4 +1,4 @@
-package com.example.spinlog.statistics.service.caching;
+package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
@@ -24,11 +24,11 @@ import static com.example.spinlog.utils.CacheKeyNameUtils.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class GenderStatisticsCachingService {
+public class GenderStatisticsCacheFetchService {
     private final CacheService cacheService;
 
     // todo Last30Days 이름 변경
-    public List<GenderEmotionAmountAverageDto> getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType registerType) {
+    public List<GenderEmotionAmountAverageDto> getAmountAveragesEachGenderAndEmotion(RegisterType registerType) {
         Map<String, Object> sumsMap = cacheService.getHashEntries(
                 getGenderEmotionStatisticsAmountSumKeyName(registerType));
 
@@ -57,7 +57,7 @@ public class GenderStatisticsCachingService {
                 }).toList();
     }
 
-    public List<GenderDailyAmountSumDto> getAmountSumsEachGenderAndDayLast30Days(RegisterType registerType) {
+    public List<GenderDailyAmountSumDto> getAmountSumsEachGenderAndDay(RegisterType registerType) {
         Map<String, Object> sumsMap = cacheService.getHashEntries(
                 getGenderDailyStatisticsAmountSumKeyName(registerType));
 
@@ -75,11 +75,11 @@ public class GenderStatisticsCachingService {
                 }).toList();
     }
 
-    public List<MemoDto> getAllMemosByGenderLast30Days(RegisterType registerType, Gender gender) {
+    public List<MemoDto> getAllMemosByGender(RegisterType registerType, Gender gender) {
         return null;
     }
 
-    public List<GenderSatisfactionAverageDto> getSatisfactionAveragesEachGenderLast30Days(RegisterType registerType) {
+    public List<GenderSatisfactionAverageDto> getSatisfactionAveragesEachGender(RegisterType registerType) {
         Map<String, Object> sumsMap = cacheService.getHashEntries(
                 getGenderStatisticsSatisfactionSumKeyName(registerType));
 

@@ -1,16 +1,14 @@
-package com.example.spinlog.statistics.service.caching;
+package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheService;
 import com.example.spinlog.statistics.exception.InvalidCacheException;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
-import com.example.spinlog.util.MockCacheService;
-import org.assertj.core.api.Assertions;
+import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mockito;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -23,10 +21,10 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class GenderStatisticsCachingServiceTest {
+class GenderStatisticsCacheFetchServiceTest {
     CacheService cacheService = mock(CacheService.class);
-    GenderStatisticsCachingService genderStatisticsCachingService =
-            new GenderStatisticsCachingService(cacheService);
+    GenderStatisticsCacheFetchService genderStatisticsCacheFetchService =
+            new GenderStatisticsCacheFetchService(cacheService);
 
     @Nested
     class getAmountAveragesEachGenderAndEmotionLast30Days {
@@ -50,7 +48,7 @@ class GenderStatisticsCachingServiceTest {
                             "FEMALE::SAD", 5L));
 
             // when
-            List<GenderEmotionAmountAverageDto> results = genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(registerType);
+            List<GenderEmotionAmountAverageDto> results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
 
             // then
             for(GenderEmotionAmountAverageDto result : results) {
@@ -82,7 +80,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(Map.of());
             
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
@@ -97,7 +95,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(null);
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
@@ -112,7 +110,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(Map.of("key1", 5L, "key2", 10L));
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
         
@@ -127,7 +125,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(Map.of("key1", 5L, "key3", 10L));
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
         
@@ -143,7 +141,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(Map.of("key1", 5L));
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
@@ -159,7 +157,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(Map.of("key1", value));
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
         
@@ -176,7 +174,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(Map.of(key, 5L));
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
     }
@@ -196,7 +194,7 @@ class GenderStatisticsCachingServiceTest {
                             "FEMALE::2024-07-02", 4000L));
             
             // when
-            List<GenderDailyAmountSumDto> results = genderStatisticsCachingService.getAmountSumsEachGenderAndDayLast30Days(registerType);
+            List<GenderDailyAmountSumDto> results = genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(registerType);
 
             // then
             for(GenderDailyAmountSumDto result : results) {
@@ -225,7 +223,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(null);
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountSumsEachGenderAndDayLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
@@ -239,7 +237,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(Map.of(key, 1000L));
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountSumsEachGenderAndDayLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
@@ -252,7 +250,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(Map.of("key1", value));
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getAmountSumsEachGenderAndDayLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
     }
@@ -279,7 +277,7 @@ class GenderStatisticsCachingServiceTest {
                             "FEMALE::SAD", 20L));
 
             // when
-            List<GenderEmotionAmountAverageDto> results = genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(registerType);
+            List<GenderEmotionAmountAverageDto> results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
 
             // then
             for(GenderEmotionAmountAverageDto result : results) {
@@ -311,7 +309,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(Map.of());
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
@@ -326,7 +324,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(null);
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
@@ -341,7 +339,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(Map.of("key1", 5L, "key2", 10L));
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
@@ -356,7 +354,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(Map.of("key1", 5L, "key3", 10L));
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
@@ -372,7 +370,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(Map.of("key1", 5L));
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
@@ -388,7 +386,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(Map.of("key1", value));
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
@@ -405,7 +403,7 @@ class GenderStatisticsCachingServiceTest {
                     .thenReturn(Map.of(key, 5L));
 
             // when // then
-            assertThatThrownBy(() -> genderStatisticsCachingService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND))
+            assertThatThrownBy(() -> genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(RegisterType.SPEND))
                     .isInstanceOf(InvalidCacheException.class);
         }
     }
