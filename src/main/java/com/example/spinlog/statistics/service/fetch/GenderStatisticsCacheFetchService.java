@@ -31,17 +31,12 @@ public class GenderStatisticsCacheFetchService {
         Map<String, Object> countsMap = cacheService.getHashEntries(
                 getGenderEmotionStatisticsAmountCountKeyName(registerType));
 
-        // todo verify를 여기서 하는게 맞는지
-        verifyCacheSumsAndCountsEntries(sumsMap, countsMap);
-
         return convertToGenderEmotionAmountAverageDto(sumsMap, countsMap);
     }
 
     public List<GenderDailyAmountSumDto> getAmountSumsEachGenderAndDay(RegisterType registerType) {
         Map<String, Object> sumsMap = cacheService.getHashEntries(
                 getGenderDailyStatisticsAmountSumKeyName(registerType));
-
-        verifyCacheEntries(sumsMap);
 
         return convertToGenderDailyAmountSumDto(sumsMap);
     }
@@ -57,33 +52,6 @@ public class GenderStatisticsCacheFetchService {
         Map<String, Object> countsMap = cacheService.getHashEntries(
                 getGenderStatisticsSatisfactionCountKeyName(registerType));
 
-        verifyCacheSumsAndCountsEntries(sumsMap, countsMap);
-
         return convertToGenderSatisfactionAverageDto(sumsMap, countsMap);
-    }
-
-    private void verifyCacheSumsAndCountsEntries(Map<String, Object> sumsMap, Map<String, Object> countsMap) {
-        if(sumsMap == null) {
-            throw new InvalidCacheException("Cache sum entries are null");
-        }
-        if(countsMap == null) {
-            throw new InvalidCacheException("Cache count entries are null");
-        }
-
-        if(sumsMap.size() != countsMap.size()) {
-            throw new InvalidCacheException("Cache sum entries and count entries are not matched");
-        }
-
-        sumsMap.forEach((key, value) -> {
-            if (!countsMap.containsKey(key)) {
-                throw new InvalidCacheException("Cache sum entries and count entries are not matched");
-            }
-        });
-    }
-
-    private void verifyCacheEntries(Map<String, Object> cacheEntries) {
-        if(cacheEntries == null) {
-            throw new InvalidCacheException("Cache entries are null");
-        }
     }
 }

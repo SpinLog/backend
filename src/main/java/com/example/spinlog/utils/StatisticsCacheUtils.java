@@ -42,7 +42,10 @@ public class StatisticsCacheUtils {
                         GenderDataDto::getValue));
     }
 
+    // todo CountsAndSums 파라미터로 받아서 처리
     public static List<GenderEmotionAmountAverageDto> convertToGenderEmotionAmountAverageDto(Map<String, Object> sumsMap, Map<String, Object> countsMap) {
+        verifyCacheSumsAndCountsMap(sumsMap, countsMap);
+
         Map<String, Long> genderEmotionAmountAverage = new HashMap<>();
         sumsMap.forEach((k, v) -> {
             long amount = castLong(v);
@@ -64,6 +67,8 @@ public class StatisticsCacheUtils {
     }
 
     public static List<GenderDailyAmountSumDto> convertToGenderDailyAmountSumDto(Map<String, Object> sumsMap) {
+        verifyEntries(sumsMap);
+
         return sumsMap.entrySet().stream()
                 .map(e -> {
                     verifyKeyName(e.getKey());
@@ -77,6 +82,8 @@ public class StatisticsCacheUtils {
     }
 
     public static List<GenderSatisfactionAverageDto> convertToGenderSatisfactionAverageDto(Map<String, Object> sumsMap, Map<String, Object> countsMap) {
+        verifyCacheSumsAndCountsMap(sumsMap, countsMap);
+
         Map<String, Float> genderSatisfactionAverage = new HashMap<>();
         sumsMap.forEach((k, v) -> {
             double satisfactionSum = castDouble(v);
@@ -91,6 +98,31 @@ public class StatisticsCacheUtils {
                         .satisfactionAverage(e.getValue())
                         .build())
                 .toList();
+    }
+
+    private static void verifyCacheSumsAndCountsMap(Map<String, Object> sumsMap, Map<String, Object> countsMap) {
+        if(sumsMap == null) {
+            throw new InvalidCacheException("Cache sum entries are null");
+        }
+        if(countsMap == null) {
+            throw new InvalidCacheException("Cache count entries are null");
+        }
+
+        if(sumsMap.size() != countsMap.size()) {
+            throw new InvalidCacheException("Cache sum entries and count entries are not matched");
+        }
+
+        sumsMap.forEach((key, value) -> {
+            if (!countsMap.containsKey(key)) {
+                throw new InvalidCacheException("Cache sum entries and count entries are not matched");
+            }
+        });
+    }
+
+    private static void verifyEntries(Map<String, Object> entries) {
+        if(entries == null) {
+            throw new InvalidCacheException("Cache entries are null");
+        }
     }
 
     private static void verifyKeyName(String key) {
