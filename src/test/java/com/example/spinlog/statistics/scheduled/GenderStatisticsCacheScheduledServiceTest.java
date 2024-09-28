@@ -3,8 +3,7 @@ package com.example.spinlog.statistics.scheduled;
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
-import com.example.spinlog.statistics.scheduled.GenderStatisticsCacheScheduledService;
-import com.example.spinlog.statistics.service.GenderStatisticsDataAggregationService;
+import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.util.CacheConfiguration;
 import com.example.spinlog.util.MockCacheService;
@@ -26,12 +25,12 @@ import static org.mockito.Mockito.*;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class GenderStatisticsCacheScheduledServiceTest {
     GenderStatisticsRepository genderStatisticsRepository = mock(GenderStatisticsRepository.class);
-    GenderStatisticsDataAggregationService genderStatisticsDataAggregationService =
-            new GenderStatisticsDataAggregationService(genderStatisticsRepository);
+    GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService =
+            new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
     MockCacheService cacheService = new MockCacheService();
 
     GenderStatisticsCacheScheduledService targetService =
-            new GenderStatisticsCacheScheduledService(cacheService, genderStatisticsDataAggregationService);
+            new GenderStatisticsCacheScheduledService(cacheService, genderStatisticsRepositoryFetchService);
 
     @AfterEach
     void tearDown() {

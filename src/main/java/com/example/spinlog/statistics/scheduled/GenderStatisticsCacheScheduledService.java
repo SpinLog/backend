@@ -1,25 +1,17 @@
 package com.example.spinlog.statistics.scheduled;
 
-import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheService;
-import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
-import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
-import com.example.spinlog.statistics.repository.dto.GenderDataDto;
-import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
-import com.example.spinlog.statistics.service.GenderStatisticsDataAggregationService;
-import lombok.Builder;
+import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
 
 import static com.example.spinlog.article.entity.RegisterType.SAVE;
 import static com.example.spinlog.article.entity.RegisterType.SPEND;
-import static com.example.spinlog.statistics.service.GenderStatisticsDataAggregationService.*;
+import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
 import static com.example.spinlog.utils.StatisticsUtils.*;
 
@@ -28,7 +20,7 @@ import static com.example.spinlog.utils.StatisticsUtils.*;
 @Slf4j
 public class GenderStatisticsCacheScheduledService {
     private final CacheService cacheService;
-    private final GenderStatisticsDataAggregationService genderStatisticsDataAggregationService;
+    private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
 
     // todo prometheus & grafana로 성공 여부 확인
     // todo 0~4시 사이 캐시 데이터 정합성 문제 확인
@@ -39,12 +31,12 @@ public class GenderStatisticsCacheScheduledService {
     public void refreshGenderStatisticsCache() {
         LocalDate todayEndDate = LocalDate.now();
         LocalDate todayStartDate = todayEndDate.minusDays(1);
-        AllStatisticsMap newStatisticsData = genderStatisticsDataAggregationService
+        AllStatisticsMap newStatisticsData = genderStatisticsRepositoryFetchService
                 .getGenderStatisticsAllData(todayStartDate, todayEndDate);
 
         LocalDate oldEndDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
         LocalDate oldStartDate = oldEndDate.minusDays(1);
-        AllStatisticsMap expiringStatisticsData = genderStatisticsDataAggregationService
+        AllStatisticsMap expiringStatisticsData = genderStatisticsRepositoryFetchService
                 .getGenderStatisticsAllData(oldStartDate, oldEndDate);
 
         // todo lock

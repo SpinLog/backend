@@ -1,4 +1,4 @@
-package com.example.spinlog.statistics.service;
+package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
@@ -21,7 +21,7 @@ import static com.example.spinlog.utils.StatisticsUtils.toGenderMap;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class GenderStatisticsDataAggregationService {
+public class GenderStatisticsRepositoryFetchService {
     private final GenderStatisticsRepository genderStatisticsRepository;
 
     public AllStatisticsMap getGenderStatisticsAllData(LocalDate startDate, LocalDate endDate) {

@@ -1,13 +1,7 @@
 package com.example.spinlog.statistics.scheduled.startup;
 
-import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheService;
-import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
-import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
-import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
-import com.example.spinlog.statistics.repository.dto.GenderDataDto;
-import com.example.spinlog.statistics.service.GenderStatisticsDataAggregationService;
-import com.example.spinlog.utils.StatisticsUtils;
+import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -16,12 +10,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.example.spinlog.article.entity.RegisterType.*;
-import static com.example.spinlog.statistics.service.GenderStatisticsDataAggregationService.*;
+import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
 import static com.example.spinlog.utils.StatisticsUtils.*;
 
@@ -31,7 +22,7 @@ import static com.example.spinlog.utils.StatisticsUtils.*;
 @Slf4j
 class GenderStatisticsStartupService {
     private final CacheService cacheService;
-    private final GenderStatisticsDataAggregationService genderStatisticsDataAggregationService;
+    private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
 
     @EventListener(ApplicationReadyEvent.class)
     public void initGenderStatisticsCache() {
@@ -39,7 +30,7 @@ class GenderStatisticsStartupService {
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = endDate.minusDays(PERIOD_CRITERIA);
 
-        AllStatisticsMap allData = genderStatisticsDataAggregationService.getGenderStatisticsAllData(startDate, endDate);
+        AllStatisticsMap allData = genderStatisticsRepositoryFetchService.getGenderStatisticsAllData(startDate, endDate);
 
         // todo 기존 데이터 검증 후 캐싱
 
