@@ -43,7 +43,7 @@ public class GenderStatisticsDataAggregationService {
                 .genderSatisfactionSaveCountsAndSums(genderSatisfactionSaveCountsAndSums)
                 .build();
     };
-    private CountsAndSums getGenderEmotionAmountCountsAndSums(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
+    public CountsAndSums getGenderEmotionAmountCountsAndSums(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
         List<GenderEmotionAmountAverageDto> amountSums = genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
                 registerType,
                 startDate,
@@ -59,7 +59,7 @@ public class GenderStatisticsDataAggregationService {
         return new CountsAndSums(amountSumsMap, amountCountsMap);
     }
 
-    private Map<String, Object> getGenderDateAmountSums(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
+    public Map<String, Object> getGenderDateAmountSums(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
         List<GenderDailyAmountSumDto> amountSums = genderStatisticsRepository.getAmountSumsEachGenderAndDayBetweenStartDateAndEndDate(
                 registerType,
                 startDate,
@@ -67,7 +67,7 @@ public class GenderStatisticsDataAggregationService {
         return toGenderDateMap(amountSums);
     }
 
-    private CountsAndSums getGenderSatisfactionCountsAndSums(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
+    public CountsAndSums getGenderSatisfactionCountsAndSums(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
         List<GenderDataDto<Double>> satisfactionSums = genderStatisticsRepository.getSatisfactionSumsEachGenderBetweenStartDateAndEndDate(
                 registerType,
                 startDate,
