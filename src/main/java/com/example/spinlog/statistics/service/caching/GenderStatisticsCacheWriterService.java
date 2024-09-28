@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.StatisticsUtils.PERIOD_CRITERIA;
+import static com.example.spinlog.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class GenderStatisticsCacheWriterService {
+public class GenderStatisticsCacheWriterService { // todo 이름 수정 (Artcile이 업데이트 될 때마다 캐시 업데이트 되는 걸 의미하는 이름으로)
     private final CacheService cacheService;
 
     public void updateStatisticsCacheFromNewData(Article article, User user) {

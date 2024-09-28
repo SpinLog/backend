@@ -16,7 +16,7 @@ import java.util.List;
 
 import static com.example.spinlog.article.entity.RegisterType.SPEND;
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.StatisticsUtils.PERIOD_CRITERIA;
+import static com.example.spinlog.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

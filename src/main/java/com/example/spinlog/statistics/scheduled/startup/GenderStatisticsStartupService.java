@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import static com.example.spinlog.article.entity.RegisterType.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.StatisticsUtils.*;
+import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 
 @Component
 @Transactional(readOnly = true) // todo 범위 좁히기
@@ -33,6 +33,8 @@ class GenderStatisticsStartupService {
         AllStatisticsMap allData = genderStatisticsRepositoryFetchService.getGenderStatisticsAllData(startDate, endDate);
 
         // todo 기존 데이터 검증 후 캐싱
+        // todo 이거 필요 없지 않나??? - 어차피 @Scheduled로 주기적으로 검증해준다.
+        // todo scheduled verify method 작성 후 삭제
 
         cacheService.putAllDataInHash(
                 getGenderEmotionStatisticsAmountSumKeyName(SPEND),

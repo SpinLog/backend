@@ -1,6 +1,5 @@
 package com.example.spinlog.statistics.service.fetch;
 
-import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheService;
 import com.example.spinlog.statistics.exception.InvalidCacheException;
@@ -13,13 +12,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
+import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +24,6 @@ import static com.example.spinlog.utils.CacheKeyNameUtils.*;
 public class GenderStatisticsCacheFetchService {
     private final CacheService cacheService;
 
-    // todo Last30Days 이름 변경
     public List<GenderEmotionAmountAverageDto> getAmountAveragesEachGenderAndEmotion(RegisterType registerType) {
         Map<String, Object> sumsMap = cacheService.getHashEntries(
                 getGenderEmotionStatisticsAmountSumKeyName(registerType));
@@ -35,26 +31,10 @@ public class GenderStatisticsCacheFetchService {
         Map<String, Object> countsMap = cacheService.getHashEntries(
                 getGenderEmotionStatisticsAmountCountKeyName(registerType));
 
+        // todo verify를 여기서 하는게 맞는지
         verifyCacheSumsAndCountsEntries(sumsMap, countsMap);
 
-        Map<String, Long> genderEmotionAmountAverage = new HashMap<>();
-        sumsMap.forEach((k,v) -> {
-            long amount = castLong(v);
-            long count = castLong(countsMap.get(k));
-            long average =  amount / count;
-                    genderEmotionAmountAverage.put(k, average);
-                });
-
-        return genderEmotionAmountAverage.entrySet().stream()
-                .map(e -> {
-                    verifyKeyName(e.getKey());
-                    // todo combine verify method & use builder pattern
-                    String[] key = e.getKey().split("::");
-                    return new GenderEmotionAmountAverageDto(
-                            castGender(key[0]),
-                            castEmotion(key[1]),
-                            e.getValue());
-                }).toList();
+        return convertToGenderEmotionAmountAverageDto(sumsMap, countsMap);
     }
 
     public List<GenderDailyAmountSumDto> getAmountSumsEachGenderAndDay(RegisterType registerType) {
@@ -63,16 +43,7 @@ public class GenderStatisticsCacheFetchService {
 
         verifyCacheEntries(sumsMap);
 
-        return sumsMap.entrySet().stream()
-                .map(e -> {
-                    verifyKeyName(e.getKey());
-                    String[] key = e.getKey().split("::");
-                    LocalDate date = castLocalDate(key[1]);
-                    return new GenderDailyAmountSumDto(
-                            castGender(key[0]),
-                            date,
-                            castLong(e.getValue()));
-                }).toList();
+        return convertToGenderDailyAmountSumDto(sumsMap);
     }
 
     public List<MemoDto> getAllMemosByGender(RegisterType registerType, Gender gender) {
@@ -88,20 +59,7 @@ public class GenderStatisticsCacheFetchService {
 
         verifyCacheSumsAndCountsEntries(sumsMap, countsMap);
 
-        Map<String, Float> genderSatisfactionAverage = new HashMap<>();
-        sumsMap.forEach((k,v) -> {
-            double satisfactionSum = castDouble(v);
-            long count = castLong(countsMap.get(k));
-            float average = (float)(satisfactionSum / (double) count);
-            genderSatisfactionAverage.put(k, average);
-        });
-
-        return genderSatisfactionAverage.entrySet().stream()
-                .map(e -> GenderSatisfactionAverageDto.builder()
-                        .gender(castGender(e.getKey()))
-                        .satisfactionAverage(e.getValue())
-                        .build())
-                .toList();
+        return convertToGenderSatisfactionAverageDto(sumsMap, countsMap);
     }
 
     private void verifyCacheSumsAndCountsEntries(Map<String, Object> sumsMap, Map<String, Object> countsMap) {
@@ -127,52 +85,5 @@ public class GenderStatisticsCacheFetchService {
         if(cacheEntries == null) {
             throw new InvalidCacheException("Cache entries are null");
         }
-    }
-
-    private void verifyKeyName(String key) {
-        String[] strings = key.split("::");
-        if(strings.length != 2) {
-            throw new InvalidCacheException("Invalid cache key format");
-        }
-    }
-
-    private long castLong(Object o) {
-        try {
-            return Long.parseLong(o.toString());
-        } catch (NumberFormatException e) {
-            throw new InvalidCacheException("Invalid long format", e);
-        }
-    }
-
-    private double castDouble(Object o) {
-        try {
-            return Double.parseDouble(o.toString());
-        } catch (NumberFormatException e) {
-            throw new InvalidCacheException("Invalid double format", e);
-        }
-    }
-
-    private LocalDate castLocalDate(String key) {
-        try {
-            return LocalDate.parse(key);
-        } catch (DateTimeParseException e) {
-            throw new InvalidCacheException("Invalid date format", e);
-        }
-    }
-
-    private static Gender castGender(String key) {
-        try {
-            return Gender.valueOf(key);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidCacheException("Invalid gender format", e);
-        }
-    }
-
-    private static Emotion castEmotion(String key) {
-            try {
-                return Emotion.valueOf(key);
-            } catch (IllegalArgumentException e) {
-                throw new InvalidCacheException("Invalid emotion format", e);
-            }
     }
 }

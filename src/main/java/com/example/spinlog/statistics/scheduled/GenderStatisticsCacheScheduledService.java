@@ -13,7 +13,7 @@ import static com.example.spinlog.article.entity.RegisterType.SAVE;
 import static com.example.spinlog.article.entity.RegisterType.SPEND;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.StatisticsUtils.*;
+import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 
 @Service
 @RequiredArgsConstructor

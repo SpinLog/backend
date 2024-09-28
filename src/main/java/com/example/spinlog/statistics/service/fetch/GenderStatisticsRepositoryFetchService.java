@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.example.spinlog.article.entity.RegisterType.*;
-import static com.example.spinlog.utils.StatisticsUtils.*;
-import static com.example.spinlog.utils.StatisticsUtils.toGenderMap;
+import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -83,9 +82,11 @@ public class GenderStatisticsRepositoryFetchService {
         return new CountsAndSums(satisfactionSumsMap, satisfactionCountsMap);
     }
 
+    // todo 별도의 클래스로 분리
     public record CountsAndSums(Map<String, Object> sumsMap, Map<String, Object> countsMap) { }
     @Builder
     public record AllStatisticsMap(
+            // todo 필드 이름 수정
             CountsAndSums genderEmotionAmountSpendCountsAndSums,
             CountsAndSums genderEmotionAmountSaveCountsAndSums,
             Map<String, Object> genderDailyAmountSpendSums,

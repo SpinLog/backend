@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.example.spinlog.utils.StatisticsUtils.PERIOD_CRITERIA;
+import static com.example.spinlog.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
 import static java.util.stream.Collectors.groupingBy;
 
 @Slf4j
