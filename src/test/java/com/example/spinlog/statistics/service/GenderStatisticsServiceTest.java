@@ -3,7 +3,7 @@ package com.example.spinlog.statistics.service;
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.*;
-import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
+import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheFallbackService;
 import com.example.spinlog.statistics.service.dto.*;
 import com.example.spinlog.statistics.service.wordanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Gender;
@@ -29,13 +29,13 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class GenderStatisticsServiceTest {
+class GenderStatisticsServiceTest { // todo 통합테스트로 변경
     @Mock
     WordExtractionService wordExtractionService;
     @Mock
     GenderStatisticsRepository genderStatisticsRepository;
     @Mock
-    GenderStatisticsCacheFetchService genderStatisticsCacheFetchService;
+    GenderStatisticsCacheFallbackService genderStatisticsCacheFallbackService;
 
     @InjectMocks
     GenderStatisticsService statisticsService;
@@ -52,7 +52,7 @@ class GenderStatisticsServiceTest {
                     new GenderEmotionAmountAverageDto(Gender.FEMALE, Emotion.SAD, 4L)
             );
 
-            when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
+            when(genderStatisticsCacheFallbackService.getAmountAveragesEachGenderAndEmotion(any()))
                     .thenReturn(returned);
 
             // when
@@ -86,7 +86,7 @@ class GenderStatisticsServiceTest {
                     new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 2L)
             );
 
-            when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
+            when(genderStatisticsCacheFallbackService.getAmountAveragesEachGenderAndEmotion(any()))
                     .thenReturn(returned);
 
             // when
@@ -148,7 +148,7 @@ class GenderStatisticsServiceTest {
                     new GenderDailyAmountSumDto(Gender.FEMALE, LocalDate.now().minusDays(2L), 3L),
                     new GenderDailyAmountSumDto(Gender.FEMALE, LocalDate.now().minusDays(1L), 4L)
             );
-            when(genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(any()))
+            when(genderStatisticsCacheFallbackService.getAmountSumsEachGenderAndDay(any()))
                     .thenReturn(returned);
 
             // when
@@ -181,7 +181,7 @@ class GenderStatisticsServiceTest {
                     new GenderDailyAmountSumDto(Gender.MALE, LocalDate.now().minusDays(2L), 1L),
                     new GenderDailyAmountSumDto(Gender.MALE, LocalDate.now().minusDays(1L), 2L)
             );
-            when(genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(any()))
+            when(genderStatisticsCacheFallbackService.getAmountSumsEachGenderAndDay(any()))
                     .thenReturn(returned);
 
             // when
@@ -308,7 +308,7 @@ class GenderStatisticsServiceTest {
                             .gender(Gender.MALE)
                             .satisfactionAverage(1.0f)
                             .build());
-            when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
+            when(genderStatisticsCacheFallbackService.getSatisfactionAveragesEachGender(any()))
                     .thenReturn(returned);
 
             // when
