@@ -20,4 +20,6 @@ public interface CacheService {
     Map<String, Object> getHashEntries(String key);
 
     void putAllDataInHash(String key, Map<String, Object> data);
+
+    void deleteHashKey(String key, String hashKey);
 }

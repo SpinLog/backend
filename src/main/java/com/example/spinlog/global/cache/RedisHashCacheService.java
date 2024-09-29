@@ -35,6 +35,10 @@ public class RedisHashCacheService implements CacheService {
         redisTemplate.opsForHash().increment(key, hashKey, delta);
     }
 
+    public void deleteHashKey(String key, String hashKey) {
+        redisTemplate.opsForHash().delete(key, hashKey);
+    }
+
     @Override
     public void decrementDataInHash(String key, String hashKey, double delta) {
         redisTemplate.opsForHash().increment(key, hashKey, -delta);

@@ -104,11 +104,17 @@ public class GenderStatisticsCacheScheduledService {
             cacheService.decrementDataInHash(getGenderEmotionStatisticsAmountCountKeyName(SAVE), k, (long)v);
         });
 
-        expiringStatisticsData.genderDailyAmountSpendSums().forEach((k, v) -> {
-            cacheService.decrementDataInHash(getGenderDailyStatisticsAmountSumKeyName(SPEND), k, (long)v);
+        expiringStatisticsData.genderDailyAmountSpendSums().forEach((k, v) -> { // todo 이렇게 되면, 계속 값이 0인 키가 쌓임
+            long data = (long) cacheService.getDataFromHash(getGenderDailyStatisticsAmountSumKeyName(SPEND), k);
+            if(data != (long)v)
+                log.warn("Data is not same. key: {}, repository: {}, cache: {}", k, data, v);
+            cacheService.deleteHashKey(getGenderDailyStatisticsAmountSumKeyName(SPEND), k);
         });
         expiringStatisticsData.genderDailyAmountSaveSums().forEach((k, v) -> {
-            cacheService.decrementDataInHash(getGenderDailyStatisticsAmountSumKeyName(SAVE), k, (long)v);
+            long data = (long) cacheService.getDataFromHash(getGenderDailyStatisticsAmountSumKeyName(SAVE), k);
+            if(data != (long)v)
+                log.warn("Data is not same. key: {}, repository: {}, cache: {}", k, data, v);
+            cacheService.deleteHashKey(getGenderDailyStatisticsAmountSumKeyName(SAVE), k);
         });
 
         expiringStatisticsData.genderSatisfactionSpendCountsAndSums().sumsMap().forEach((k, v) -> {

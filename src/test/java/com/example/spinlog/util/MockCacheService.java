@@ -76,6 +76,11 @@ public class MockCacheService implements CacheService {
         cache.put(key, data);
     }
 
+    @Override
+    public void deleteHashKey(String key, String hashKey) {
+        cache.get(key).remove(hashKey);
+    }
+
     public void clear(){
         cache.clear();
     }
