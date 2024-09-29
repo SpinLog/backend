@@ -21,7 +21,7 @@ import static com.example.spinlog.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class GenderStatisticsCacheWriterService { // todo 이름 수정 (Artcile이 업데이트 될 때마다 캐시 업데이트 되는 걸 의미하는 이름으로)
+public class GenderStatisticsCacheSynchronizer {
     private final CacheService cacheService;
 
     @TransactionalEventListener
@@ -77,7 +77,7 @@ public class GenderStatisticsCacheWriterService { // todo 이름 수정 (Artcile
             return;
         log.info("Update cached data, modified originalArticle id: {}", updateArticle.getArticleId());
 
-        // 캐싱 작업을 private 메서드로 선언하여 public 메서드 호출 삭제
+        // todo 캐싱 작업을 private 별도의 메서드로 구현하여 public 메서드 호출 삭제
         updateStatisticsCacheFromRemovedData(new ArticleDeletedEvent(originalArticle, user));
         updateStatisticsCacheFromNewData(new ArticleCreatedEvent(updateArticle, user));
 

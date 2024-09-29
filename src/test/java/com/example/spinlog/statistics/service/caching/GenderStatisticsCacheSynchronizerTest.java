@@ -10,9 +10,7 @@ import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.User;
 import com.example.spinlog.util.ArticleFactory;
 import com.example.spinlog.util.MockCacheService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
-import org.mockito.Mockito;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
@@ -24,10 +22,10 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class GenderStatisticsCacheWriterServiceTest {
+class GenderStatisticsCacheSynchronizerTest {
     CacheService cacheService = spy(MockCacheService.class);
-    GenderStatisticsCacheWriterService targetService =
-            new GenderStatisticsCacheWriterService(cacheService);
+    GenderStatisticsCacheSynchronizer targetService =
+            new GenderStatisticsCacheSynchronizer(cacheService);
 
     RegisterType registerType = RegisterType.SPEND;
     User user = User.builder()
