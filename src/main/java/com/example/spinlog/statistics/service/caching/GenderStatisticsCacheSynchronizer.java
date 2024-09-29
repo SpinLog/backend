@@ -5,7 +5,7 @@ import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.article.event.ArticleCreatedEvent;
 import com.example.spinlog.article.event.ArticleDeletedEvent;
 import com.example.spinlog.article.event.ArticleUpdatedEvent;
-import com.example.spinlog.global.cache.CacheService;
+import com.example.spinlog.global.cache.HashCacheService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import static com.example.spinlog.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
 @RequiredArgsConstructor
 @Slf4j
 public class GenderStatisticsCacheSynchronizer {
-    private final CacheService cacheService;
+    private final HashCacheService hashCacheService;
 
     @TransactionalEventListener
     public void updateStatisticsCacheFromNewData(ArticleCreatedEvent event) {
@@ -38,21 +38,21 @@ public class GenderStatisticsCacheSynchronizer {
         log.info("Update cached data, new article id: {}", article.getArticleId());
 
         RegisterType registerType = article.getRegisterType();
-        cacheService.incrementDataInHash(
+        hashCacheService.incrementDataInHash(
                 getGenderEmotionStatisticsAmountSumKeyName(registerType),
                 user.getGender() + "::" + article.getEmotion(), article.getAmount());
-        cacheService.incrementDataInHash(
+        hashCacheService.incrementDataInHash(
                 getGenderEmotionStatisticsAmountCountKeyName(registerType),
                 user.getGender() + "::" + article.getEmotion(), 1L);
 
-        cacheService.incrementDataInHash(
+        hashCacheService.incrementDataInHash(
                 getGenderDailyStatisticsAmountSumKeyName(registerType),
                 user.getGender() + "::" + article.getSpendDate().toLocalDate(), article.getAmount());
 
-        cacheService.incrementDataInHash(
+        hashCacheService.incrementDataInHash(
                 getGenderStatisticsSatisfactionSumKeyName(registerType),
                 user.getGender().name(), article.getSatisfaction());
-        cacheService.incrementDataInHash(
+        hashCacheService.incrementDataInHash(
                 getGenderStatisticsSatisfactionCountKeyName(registerType),
                 user.getGender().name(), 1L);
 
@@ -103,21 +103,21 @@ public class GenderStatisticsCacheSynchronizer {
         log.info("Remove cached data, removed article id: {}", article.getArticleId());
 
         RegisterType registerType = article.getRegisterType();
-        cacheService.decrementDataInHash(
+        hashCacheService.decrementDataInHash(
                 getGenderEmotionStatisticsAmountSumKeyName(registerType),
                 user.getGender() + "::" + article.getEmotion(), article.getAmount());
-        cacheService.decrementDataInHash(
+        hashCacheService.decrementDataInHash(
                 getGenderEmotionStatisticsAmountCountKeyName(registerType),
                 user.getGender() + "::" + article.getEmotion(), 1L);
 
-        cacheService.decrementDataInHash(
+        hashCacheService.decrementDataInHash(
                 getGenderDailyStatisticsAmountSumKeyName(registerType),
                 user.getGender() + "::" + article.getSpendDate().toLocalDate(), article.getAmount());
 
-        cacheService.decrementDataInHash(
+        hashCacheService.decrementDataInHash(
                 getGenderStatisticsSatisfactionSumKeyName(registerType),
                 user.getGender().name(), article.getSatisfaction());
-        cacheService.decrementDataInHash(
+        hashCacheService.decrementDataInHash(
                 getGenderStatisticsSatisfactionCountKeyName(registerType),
                 user.getGender().name(), 1L);
 

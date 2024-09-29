@@ -2,12 +2,12 @@ package com.example.spinlog.statistics.scheduled.startup;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.global.cache.CacheService;
+import com.example.spinlog.global.cache.HashCacheService;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.user.entity.Gender;
-import com.example.spinlog.util.MockCacheService;
+import com.example.spinlog.util.MockHashCacheService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
@@ -24,10 +24,10 @@ class GenderStatisticsStartupServiceTest {
     GenderStatisticsRepository genderStatisticsRepository = mock(GenderStatisticsRepository.class);
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService =
             new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
-    CacheService cacheService = new MockCacheService();
+    HashCacheService hashCacheService = new MockHashCacheService();
 
     GenderStatisticsStartupService genderStatisticsStartupService =
-            new GenderStatisticsStartupService(cacheService, genderStatisticsRepositoryFetchService);
+            new GenderStatisticsStartupService(hashCacheService, genderStatisticsRepositoryFetchService);
 
     @Test
     @DisplayName("레포지토리로부터 통계 데이터를 받아 캐시에 저장한다.")
@@ -55,7 +55,7 @@ class GenderStatisticsStartupServiceTest {
         genderStatisticsStartupService.initGenderStatisticsCache();
 
         // then
-        Map<String, Object> genderEmotionAmountSums = cacheService.getHashEntries(
+        Map<String, Object> genderEmotionAmountSums = hashCacheService.getHashEntries(
                 getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SPEND));
         assertThat(genderEmotionAmountSums.size()).isEqualTo(4);
         assertThat(genderEmotionAmountSums.get("MALE::PROUD")).isEqualTo(1L);
@@ -63,10 +63,10 @@ class GenderStatisticsStartupServiceTest {
         assertThat(genderEmotionAmountSums.get("FEMALE::PROUD")).isEqualTo(3L);
         assertThat(genderEmotionAmountSums.get("FEMALE::SAD")).isEqualTo(4L);
 
-        assertThat(cacheService.getHashEntries(getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SAVE)))
+        assertThat(hashCacheService.getHashEntries(getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SAVE)))
                 .hasSize(0);
 
-        Map<String, Object> genderEmotionAmountCounts = cacheService.getHashEntries(
+        Map<String, Object> genderEmotionAmountCounts = hashCacheService.getHashEntries(
                 getGenderEmotionStatisticsAmountCountKeyName(RegisterType.SPEND));
         assertThat(genderEmotionAmountCounts.size()).isEqualTo(4);
         assertThat(genderEmotionAmountCounts.get("MALE::PROUD")).isEqualTo(1L);
@@ -78,7 +78,7 @@ class GenderStatisticsStartupServiceTest {
             if (key.equals(getGenderEmotionStatisticsAmountCountKeyName(RegisterType.SPEND)) ||
                     key.equals(getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SPEND)))
                 continue;
-            assertThat(cacheService.getHashEntries(key).size()).isZero();
+            assertThat(hashCacheService.getHashEntries(key).size()).isZero();
         }
 
     }

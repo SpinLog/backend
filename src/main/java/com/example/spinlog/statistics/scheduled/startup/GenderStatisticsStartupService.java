@@ -1,6 +1,6 @@
 package com.example.spinlog.statistics.scheduled.startup;
 
-import com.example.spinlog.global.cache.CacheService;
+import com.example.spinlog.global.cache.HashCacheService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 @RequiredArgsConstructor
 @Slf4j
 class GenderStatisticsStartupService {
-    private final CacheService cacheService;
+    private final HashCacheService hashCacheService;
     private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
 
     @EventListener(ApplicationReadyEvent.class)
@@ -36,36 +36,36 @@ class GenderStatisticsStartupService {
         // todo 이거 필요 없지 않나??? - 어차피 @Scheduled로 주기적으로 검증해준다.
         // todo scheduled verify method 작성 후 삭제
 
-        cacheService.putAllDataInHash(
+        hashCacheService.putAllDataInHash(
                 getGenderEmotionStatisticsAmountSumKeyName(SPEND),
                 allData.genderEmotionAmountSpendCountsAndSums().sumsMap());
-        cacheService.putAllDataInHash(
+        hashCacheService.putAllDataInHash(
                 getGenderEmotionStatisticsAmountCountKeyName(SPEND),
                 allData.genderEmotionAmountSpendCountsAndSums().countsMap());
-        cacheService.putAllDataInHash(
+        hashCacheService.putAllDataInHash(
                 getGenderEmotionStatisticsAmountSumKeyName(SAVE),
                 allData.genderEmotionAmountSaveCountsAndSums().sumsMap());
-        cacheService.putAllDataInHash(
+        hashCacheService.putAllDataInHash(
                 getGenderEmotionStatisticsAmountCountKeyName(SAVE),
                 allData.genderEmotionAmountSaveCountsAndSums().countsMap());
 
-        cacheService.putAllDataInHash(
+        hashCacheService.putAllDataInHash(
                 getGenderDailyStatisticsAmountSumKeyName(SPEND),
                 allData.genderDailyAmountSpendSums());
-        cacheService.putAllDataInHash(
+        hashCacheService.putAllDataInHash(
                 getGenderDailyStatisticsAmountSumKeyName(SAVE),
                 allData.genderDailyAmountSaveSums());
 
-        cacheService.putAllDataInHash(
+        hashCacheService.putAllDataInHash(
                 getGenderStatisticsSatisfactionSumKeyName(SPEND),
                 allData.genderSatisfactionSpendCountsAndSums().sumsMap());
-        cacheService.putAllDataInHash(
+        hashCacheService.putAllDataInHash(
                 getGenderStatisticsSatisfactionCountKeyName(SPEND),
                 allData.genderSatisfactionSpendCountsAndSums().countsMap());
-        cacheService.putAllDataInHash(
+        hashCacheService.putAllDataInHash(
                 getGenderStatisticsSatisfactionSumKeyName(SAVE),
                 allData.genderSatisfactionSaveCountsAndSums().sumsMap());
-        cacheService.putAllDataInHash(
+        hashCacheService.putAllDataInHash(
                 getGenderStatisticsSatisfactionCountKeyName(SAVE),
                 allData.genderSatisfactionSaveCountsAndSums().countsMap());
 

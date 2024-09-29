@@ -6,7 +6,7 @@ import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageD
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.util.CacheConfiguration;
-import com.example.spinlog.util.MockCacheService;
+import com.example.spinlog.util.MockHashCacheService;
 import org.junit.jupiter.api.*;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,7 +27,7 @@ class GenderStatisticsCacheScheduledServiceTest {
     GenderStatisticsRepository genderStatisticsRepository = mock(GenderStatisticsRepository.class);
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService =
             new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
-    MockCacheService cacheService = new MockCacheService();
+    MockHashCacheService cacheService = new MockHashCacheService();
 
     GenderStatisticsCacheScheduledService targetService =
             new GenderStatisticsCacheScheduledService(cacheService, genderStatisticsRepositoryFetchService);

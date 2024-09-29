@@ -1,6 +1,5 @@
 package com.example.spinlog.global.cache;
 
-import com.example.spinlog.global.cache.CacheService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
@@ -12,7 +11,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RedisHashCacheService implements CacheService {
+public class RedisHashCacheService implements HashCacheService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Override

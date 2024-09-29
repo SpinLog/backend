@@ -1,11 +1,11 @@
 package com.example.spinlog.util;
 
-import com.example.spinlog.global.cache.CacheService;
+import com.example.spinlog.global.cache.HashCacheService;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MockCacheService implements CacheService {
+public class MockHashCacheService implements HashCacheService {
     Map<String, Map<String, Object>> cache = new HashMap<>();
     @Override
     public void putDataInHash(String key, String hashKey, Object data) {

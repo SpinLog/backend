@@ -1,10 +1,8 @@
 package com.example.spinlog.global.cache;
 
-import org.springframework.data.redis.core.HashOperations;
-
 import java.util.Map;
 
-public interface CacheService {
+public interface HashCacheService {
     void putDataInHash(String key, String hashKey, Object data);
 
     void incrementDataInHash(String key, String hashKey, long delta);
