@@ -8,6 +8,7 @@ import com.example.spinlog.article.service.ArticleService;
 import com.example.spinlog.article.service.request.ArticleCreateRequest;
 import com.example.spinlog.article.service.request.ArticleUpdateRequest;
 import com.example.spinlog.article.service.response.WriteArticleResponseDto;
+import com.example.spinlog.integration.config.TestConfig;
 import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
 import com.example.spinlog.statistics.service.GenderStatisticsService;
 import com.example.spinlog.statistics.service.dto.GenderDailyAmountSumResponse;
@@ -15,10 +16,8 @@ import com.example.spinlog.statistics.service.dto.GenderEmotionAmountAverageResp
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.User;
 import com.example.spinlog.user.repository.UserRepository;
-import com.example.spinlog.user.service.UserService;
-import com.example.spinlog.util.ArticleFactory;
 import com.example.spinlog.util.CacheConfiguration;
-import com.example.spinlog.util.DataSetupService;
+import com.example.spinlog.integration.config.DataSetupService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import({CacheConfiguration.class, GenderStatisticsCacheIntegrationTest.TestConfig.class})
+@Import({CacheConfiguration.class, TestConfig.class})
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class GenderStatisticsCacheIntegrationTest {
     @Autowired
@@ -327,15 +326,5 @@ public class GenderStatisticsCacheIntegrationTest {
                         .registerType(target.getRegisterType().name())
                         .build()
         );
-    }
-
-    @TestConfiguration
-    static class TestConfig {
-        @Autowired ArticleRepository articleRepository;
-        @Autowired UserRepository userRepository;
-        @Bean
-        public DataSetupService dataSetupService() {
-            return new DataSetupService(articleRepository, userRepository);
-        }
     }
 }

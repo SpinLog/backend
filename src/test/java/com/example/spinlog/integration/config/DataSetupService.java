@@ -1,10 +1,11 @@
-package com.example.spinlog.util;
+package com.example.spinlog.integration.config;
 
 import com.example.spinlog.article.repository.ArticleRepository;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.Mbti;
 import com.example.spinlog.user.entity.User;
 import com.example.spinlog.user.repository.UserRepository;
+import com.example.spinlog.util.ArticleFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
