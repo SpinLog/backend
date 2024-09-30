@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 @TestConfiguration
 public class CacheConfiguration {
     @Bean
-    public HashCacheService cacheService() {
+    public HashCacheService hashCacheService() {
         return new MockHashCacheService();
     }
 }
