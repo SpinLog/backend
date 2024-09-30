@@ -42,6 +42,8 @@ public interface GenderStatisticsRepository {
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
 
+    // ---
+
     // todo 별도 클래스로 분리
     List<GenderEmotionAmountAverageDto> getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
             @Param("registerType") RegisterType registerType,
@@ -59,6 +61,38 @@ public interface GenderStatisticsRepository {
             @Param("endDate") LocalDate endDate);
 
     List<GenderDataDto<Long>> getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    // ---
+
+    List<GenderEmotionAmountAverageDto> getAmountSumsEachEmotionByGenderBetweenStartDateAndEndDate(
+            @Param("gender") Gender gender,
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    List<GenderEmotionAmountAverageDto> getAmountCountsEachEmotionByGenderBetweenStartDateAndEndDate(
+            @Param("gender") Gender gender,
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    List<GenderDailyAmountSumDto> getAmountSumsEachDayByGenderBetweenStartDateAndEndDate(
+            @Param("gender") Gender gender,
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    List<GenderDataDto<Double>> getSatisfactionSumsByGenderBetweenStartDateAndEndDate(
+            @Param("gender") Gender gender,
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    List<GenderDataDto<Long>> getSatisfactionCountsByGenderBetweenStartDateAndEndDate(
+            @Param("gender") Gender gender,
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
