@@ -20,4 +20,7 @@ public interface HashCacheService {
     void putAllDataInHash(String key, Map<String, Object> data);
 
     void deleteHashKey(String key, String hashKey);
+
+    void decrementAllDataInHash(String key, Map<String, Object> data);
+    void incrementAllDataInHash(String key, Map<String, Object> data);
 }

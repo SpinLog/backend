@@ -84,4 +84,26 @@ public class MockHashCacheService implements HashCacheService {
     public void clear(){
         cache.clear();
     }
+
+    @Override
+    public void decrementAllDataInHash(String key, Map<String, Object> data) {
+        data.forEach((hashKey, value) -> {
+            if (value instanceof Long) {
+                decrementDataInHash(key, hashKey, (Long) value);
+            } else if (value instanceof Double) {
+                decrementDataInHash(key, hashKey, (Double) value);
+            }
+        });
+    }
+
+    @Override
+    public void incrementAllDataInHash(String key, Map<String, Object> data) {
+        data.forEach((hashKey, value) -> {
+            if (value instanceof Long) {
+                incrementDataInHash(key, hashKey, (Long) value);
+            } else if (value instanceof Double) {
+                incrementDataInHash(key, hashKey, (Double) value);
+            }
+        });
+    }
 }
