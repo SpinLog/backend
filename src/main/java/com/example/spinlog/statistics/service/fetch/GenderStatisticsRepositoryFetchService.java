@@ -5,6 +5,7 @@ import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderDataDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
+import com.example.spinlog.user.entity.Gender;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,8 @@ public class GenderStatisticsRepositoryFetchService {
                 .genderSatisfactionSaveCountsAndSums(genderSatisfactionSaveCountsAndSums)
                 .build();
     };
+
+    // todo convert 하지 않고 그대로 반환 (재사용성)
     public CountsAndSums getGenderEmotionAmountCountsAndSums(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
         List<GenderEmotionAmountAverageDto> amountSums = genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
                 registerType,
@@ -80,6 +83,59 @@ public class GenderStatisticsRepositoryFetchService {
         Map<String, Object> satisfactionCountsMap = toGenderMap(satisfactionCounts);
 
         return new CountsAndSums(satisfactionSumsMap, satisfactionCountsMap);
+    }
+
+    public AllStatisticsMap getGenderStatisticsAllDataByGender(Gender gender, LocalDate startDate, LocalDate endDate) {
+        List<GenderEmotionAmountAverageDto> genderEmotionAmountSpendSums = genderStatisticsRepository
+                .getAmountSumsEachEmotionByGenderBetweenStartDateAndEndDate(
+                        gender, SPEND, startDate, endDate);
+        List<GenderEmotionAmountAverageDto> genderEmotionAmountSpendCounts = genderStatisticsRepository
+                .getAmountCountsEachEmotionByGenderBetweenStartDateAndEndDate(
+                        gender, SPEND, startDate, endDate);
+        List<GenderEmotionAmountAverageDto> genderEmotionAmountSaveSums = genderStatisticsRepository
+                .getAmountSumsEachEmotionByGenderBetweenStartDateAndEndDate(
+                        gender, SAVE, startDate, endDate);
+        List<GenderEmotionAmountAverageDto> genderEmotionAmountSaveCounts = genderStatisticsRepository
+                .getAmountCountsEachEmotionByGenderBetweenStartDateAndEndDate(
+                        gender, SAVE, startDate, endDate);
+
+        List<GenderDailyAmountSumDto> genderDailyAmountSpendSums = genderStatisticsRepository
+                .getAmountSumsEachDayByGenderBetweenStartDateAndEndDate(
+                        gender, SPEND, startDate, endDate);
+        List<GenderDailyAmountSumDto> genderDailyAmountSaveSums = genderStatisticsRepository
+                .getAmountSumsEachDayByGenderBetweenStartDateAndEndDate(
+                        gender, SAVE, startDate, endDate);
+
+        List<GenderDataDto<Double>> genderSatisfactionSpendSums = genderStatisticsRepository
+                .getSatisfactionSumsByGenderBetweenStartDateAndEndDate(
+                        gender, SPEND, startDate, endDate);
+        List<GenderDataDto<Long>> genderSatisfactionSpendCounts = genderStatisticsRepository
+                .getSatisfactionCountsByGenderBetweenStartDateAndEndDate(
+                        gender, SPEND, startDate, endDate);
+        List<GenderDataDto<Double>> genderSatisfactionSaveSums = genderStatisticsRepository
+                .getSatisfactionSumsByGenderBetweenStartDateAndEndDate(
+                        gender, SAVE, startDate, endDate);
+        List<GenderDataDto<Long>> genderSatisfactionSaveCounts = genderStatisticsRepository
+                .getSatisfactionCountsByGenderBetweenStartDateAndEndDate(
+                        gender, SAVE, startDate, endDate);
+
+        return AllStatisticsMap.builder()
+                .genderEmotionAmountSpendCountsAndSums(
+                        new CountsAndSums(toGenderEmotionMap(genderEmotionAmountSpendSums),
+                                toGenderEmotionMap(genderEmotionAmountSpendCounts)))
+                .genderEmotionAmountSaveCountsAndSums(
+                        new CountsAndSums(toGenderEmotionMap(genderEmotionAmountSaveSums),
+                                toGenderEmotionMap(genderEmotionAmountSaveCounts)))
+                .genderDailyAmountSpendSums(toGenderDateMap(genderDailyAmountSpendSums))
+                .genderDailyAmountSaveSums(toGenderDateMap(genderDailyAmountSaveSums))
+                .genderSatisfactionSpendCountsAndSums(
+                        new CountsAndSums(toGenderMap(genderSatisfactionSpendSums),
+                                toGenderMap(genderSatisfactionSpendCounts)))
+                .genderSatisfactionSaveCountsAndSums(
+                        new CountsAndSums(toGenderMap(genderSatisfactionSaveSums),
+                                toGenderMap(genderSatisfactionSaveCounts)))
+                .build();
+
     }
 
     // todo 별도의 클래스로 분리

@@ -15,7 +15,6 @@ import com.example.spinlog.article.service.response.WriteArticleResponseDto;
 import com.example.spinlog.global.error.exception.article.ArticleNotFoundException;
 import com.example.spinlog.global.error.exception.user.UnauthorizedArticleRequestException;
 import com.example.spinlog.global.error.exception.user.UserNotFoundException;
-import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheWriterService;
 import com.example.spinlog.user.entity.User;
 import com.example.spinlog.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.relational.core.mapping.event.AfterDeleteEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +41,6 @@ public class ArticleService {
         Article savedArticle = articleRepository.save(articleEntity);
         user.addArticle(savedArticle);
 
-        // todo update cache after transaction, after checking jpa transaction strategy
-        //genderStatisticsCacheWriterService.updateStatisticsCacheFromNewData(savedArticle, user);
         eventPublisher.publishEvent(new ArticleCreatedEvent(savedArticle, user));
 
         log.info("게시글이 성공적으로 저장되었습니다. ID: {}", savedArticle.getArticleId());
@@ -78,7 +74,6 @@ public class ArticleService {
 
         updateArticle.update(requestDto);
 
-        //genderStatisticsCacheWriterService.updateStatisticsCacheFromModifiedData(originalArticle, updateArticle, user);
         eventPublisher.publishEvent(new ArticleUpdatedEvent(originalArticle, updateArticle, user));
 
         log.info("ID {}의 게시글이 업데이트되었습니다.", id);
@@ -92,7 +87,6 @@ public class ArticleService {
         articleRepository.delete(deleteArticle);
         user.removeArticle(deleteArticle);
 
-        //genderStatisticsCacheWriterService.updateStatisticsCacheFromRemovedData(deleteArticle, user);
         eventPublisher.publishEvent(new ArticleDeletedEvent(deleteArticle, user));
 
         log.info("ID {}의 게시글이 성공적으로 삭제되었습니다.", id);
