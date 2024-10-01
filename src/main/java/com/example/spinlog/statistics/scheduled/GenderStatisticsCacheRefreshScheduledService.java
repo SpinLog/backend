@@ -18,7 +18,7 @@ import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class GenderStatisticsCacheScheduledService {
+public class GenderStatisticsCacheRefreshScheduledService {
     private final HashCacheService hashCacheService;
     private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
 
