@@ -67,32 +67,32 @@ public interface GenderStatisticsRepository {
 
     // ---
 
-    List<GenderEmotionAmountAverageDto> getAmountSumsEachEmotionByGenderBetweenStartDateAndEndDate(
-            @Param("gender") Gender gender,
+    List<GenderEmotionAmountAverageDto> getAmountSumsEachEmotionByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
 
-    List<GenderEmotionAmountAverageDto> getAmountCountsEachEmotionByGenderBetweenStartDateAndEndDate(
-            @Param("gender") Gender gender,
+    List<GenderEmotionAmountAverageDto> getAmountCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
 
-    List<GenderDailyAmountSumDto> getAmountSumsEachDayByGenderBetweenStartDateAndEndDate(
-            @Param("gender") Gender gender,
+    List<GenderDailyAmountSumDto> getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
 
-    List<GenderDataDto<Double>> getSatisfactionSumsByGenderBetweenStartDateAndEndDate(
-            @Param("gender") Gender gender,
+    List<GenderDataDto<Double>> getSatisfactionSumsByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
 
-    List<GenderDataDto<Long>> getSatisfactionCountsByGenderBetweenStartDateAndEndDate(
-            @Param("gender") Gender gender,
+    List<GenderDataDto<Long>> getSatisfactionCountsByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
