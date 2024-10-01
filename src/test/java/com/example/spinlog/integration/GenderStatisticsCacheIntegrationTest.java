@@ -8,8 +8,8 @@ import com.example.spinlog.article.service.ArticleService;
 import com.example.spinlog.article.service.request.ArticleCreateRequest;
 import com.example.spinlog.article.service.request.ArticleUpdateRequest;
 import com.example.spinlog.article.service.response.WriteArticleResponseDto;
-import com.example.spinlog.integration.config.TestConfig;
 import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
+import com.example.spinlog.integration.init.GenderStatisticsCacheStartupService;
 import com.example.spinlog.statistics.service.GenderStatisticsService;
 import com.example.spinlog.statistics.service.dto.GenderDailyAmountSumResponse;
 import com.example.spinlog.statistics.service.dto.GenderEmotionAmountAverageResponse;
@@ -17,13 +17,11 @@ import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.User;
 import com.example.spinlog.user.repository.UserRepository;
 import com.example.spinlog.util.CacheConfiguration;
-import com.example.spinlog.integration.config.DataSetupService;
+import com.example.spinlog.integration.init.DataSetupService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -35,7 +33,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import({CacheConfiguration.class, TestConfig.class})
+@Import({CacheConfiguration.class})
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class GenderStatisticsCacheIntegrationTest {
     @Autowired
@@ -46,6 +44,10 @@ public class GenderStatisticsCacheIntegrationTest {
     UserRepository userRepository;
     @Autowired
     GenderStatisticsService genderStatisticsService;
+    @Autowired
+    GenderStatisticsCacheStartupService genderStatisticsCacheStartupService;
+    @Autowired
+    DataSetupService dataSetupService;
 
     LocalDate spendDate = LocalDate.now().minusDays(1);
     Emotion emotion = Emotion.SAD;
@@ -56,6 +58,18 @@ public class GenderStatisticsCacheIntegrationTest {
     int femaleAmountSum = 3000 + 4000;
     float maleSatisfactionSum = 1.0f + 2.0f;
     float femaleSatisfactionSum = 3.0f + 4.0f;
+
+    @BeforeEach
+    public void setUp() {
+        dataSetupService.setUp();
+        genderStatisticsCacheStartupService.initGenderStatisticsCache();
+    }
+
+    @AfterEach
+    public void cleanup() {
+        articleRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @Test
     @Order(1)
@@ -169,11 +183,11 @@ public class GenderStatisticsCacheIntegrationTest {
                 assertThat(v.getSatisfactionAverage()).isEqualTo(femaleSatisfactionSum / femaleArticleCount);
         }
 
-        // todo 서비스가 아닌 롤백을 이용할 수 있는지 확인
+        /*// todo 서비스가 아닌 롤백을 이용할 수 있는지 확인
         // cleanup
         articleService.deleteArticle(
                 male.getAuthenticationName(),
-                responseDto.getArticleId());
+                responseDto.getArticleId());*/
     }
     
     @Test
@@ -232,7 +246,7 @@ public class GenderStatisticsCacheIntegrationTest {
                 assertThat(v.getSatisfactionAverage()).isEqualTo(femaleSatisfactionSum / femaleArticleCount);
         }
 
-        // cleanup
+        /*// cleanup
         articleService.createArticle(
                 user.getAuthenticationName(),
                 ArticleCreateRequest.builder()
@@ -243,7 +257,7 @@ public class GenderStatisticsCacheIntegrationTest {
                         .spendDate(target.getSpendDate().toString())
                         .emotion(target.getEmotion().name())
                         .build()
-        );
+        );*/
     }
 
     @Test
@@ -312,7 +326,7 @@ public class GenderStatisticsCacheIntegrationTest {
                 assertThat(v.getSatisfactionAverage()).isEqualTo(femaleSatisfactionSum / femaleArticleCount);
         }
 
-        // cleanup
+        /*// cleanup
         articleService.updateArticle(
                 user.getAuthenticationName(),
                 target.getArticleId(),
@@ -325,6 +339,6 @@ public class GenderStatisticsCacheIntegrationTest {
                         .amount(1000)
                         .registerType(target.getRegisterType().name())
                         .build()
-        );
+        );*/
     }
 }
