@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.example.spinlog.user.entity.Gender.*;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StatisticsCacheUtils {
     public static final int PERIOD_CRITERIA = 30;
@@ -42,6 +44,27 @@ public class StatisticsCacheUtils {
                         GenderDataDto::getValue));
     }
 
+    public static Map<String, Object> toReverseGenderEmotionMap(List<GenderEmotionAmountAverageDto> dtos){
+        return dtos.stream()
+                .collect(Collectors.toMap(
+                        dto -> ((dto.getGender()== MALE)?FEMALE:MALE) + "::" + dto.getEmotion(),
+                        GenderEmotionAmountAverageDto::getAmountAverage));
+    }
+
+    public static Map<String, Object> toReverseGenderDateMap(List<GenderDailyAmountSumDto> dtos){
+        return dtos.stream()
+                .collect(Collectors.toMap(
+                        dto -> ((dto.getGender()== MALE)?FEMALE:MALE) + "::" + dto.getLocalDate(),
+                        GenderDailyAmountSumDto::getAmountSum));
+    }
+
+    public static <T extends Number> Map<String, Object> toReverseGenderMap(List<GenderDataDto<T>> dtos){
+        return dtos.stream()
+                .collect(Collectors.toMap(
+                        dto -> ((dto.getGender()== MALE)?FEMALE:MALE).name(),
+                        GenderDataDto::getValue));
+    }
+
     // todo CountsAndSums 파라미터로 받아서 처리
     public static List<GenderEmotionAmountAverageDto> convertToGenderEmotionAmountAverageDto(Map<String, Object> sumsMap, Map<String, Object> countsMap) {
         verifyCacheSumsAndCountsMap(sumsMap, countsMap);
@@ -49,7 +72,14 @@ public class StatisticsCacheUtils {
         Map<String, Long> genderEmotionAmountAverage = new HashMap<>();
         sumsMap.forEach((k, v) -> {
             long amount = castLong(v);
+            if(amount == 0) {
+                genderEmotionAmountAverage.put(k, 0L);
+                return;
+            }
             long count = castLong(countsMap.get(k));
+            if(count == 0) {
+                throw new InvalidCacheException("sum is not zero, but count is zero");
+            }
             long average =  amount / count;
             genderEmotionAmountAverage.put(k, average);
         });
@@ -87,7 +117,14 @@ public class StatisticsCacheUtils {
         Map<String, Float> genderSatisfactionAverage = new HashMap<>();
         sumsMap.forEach((k, v) -> {
             double satisfactionSum = castDouble(v);
+            if(satisfactionSum == 0.0) {
+                genderSatisfactionAverage.put(k, 0f);
+                return;
+            }
             long count = castLong(countsMap.get(k));
+            if(count == 0) {
+                throw new InvalidCacheException("sum is not zero, but count is zero");
+            }
             float average = (float)(satisfactionSum / (double) count);
             genderSatisfactionAverage.put(k, average);
         });
@@ -159,7 +196,7 @@ public class StatisticsCacheUtils {
 
     private static Gender castGender(String key) {
         try {
-            return Gender.valueOf(key);
+            return valueOf(key);
         } catch (IllegalArgumentException e) {
             throw new InvalidCacheException("Invalid gender format", e);
         }

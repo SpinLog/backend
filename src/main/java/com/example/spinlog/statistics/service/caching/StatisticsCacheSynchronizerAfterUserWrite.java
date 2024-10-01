@@ -1,11 +1,9 @@
 package com.example.spinlog.statistics.service.caching;
 
-import com.example.spinlog.global.cache.HashCacheService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.User;
 import com.example.spinlog.user.event.UserUpdatedEvent;
-import com.example.spinlog.utils.StatisticsCacheUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,9 +11,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.LocalDate;
 
-import static com.example.spinlog.article.entity.RegisterType.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
-import static com.example.spinlog.utils.CacheKeyNameUtils.*;
 import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 
 @Component
@@ -36,10 +32,43 @@ public class StatisticsCacheSynchronizerAfterUserWrite {
         if(isGenderChanged(originalUser, updatedUser)) {
             LocalDate endDate = LocalDate.now();
             LocalDate startDate = endDate.minusDays(PERIOD_CRITERIA);
-            AllStatisticsMap statisticsAllData = genderStatisticsRepositoryFetchService
-                    .getGenderStatisticsAllDataByGender(updatedUser.getGender(), startDate, endDate);
+            AllStatisticsResult repositoryResult = genderStatisticsRepositoryFetchService
+                    .getGenderStatisticsAllDataByUserId(updatedUser.getId(), startDate, endDate);
 
-            genderStatisticsCacheWriteService.decrementAllData(statisticsAllData);
+            AllStatisticsMap statisticsAllData = AllStatisticsMap.builder()
+                    .genderEmotionAmountSpendCountsAndSums(
+                            new CountsAndSums(toGenderEmotionMap(repositoryResult.genderEmotionAmountSpendSums()),
+                                    toGenderEmotionMap(repositoryResult.genderEmotionAmountSpendCounts())))
+                    .genderEmotionAmountSaveCountsAndSums(
+                            new CountsAndSums(toGenderEmotionMap(repositoryResult.genderEmotionAmountSaveSums()),
+                                    toGenderEmotionMap(repositoryResult.genderEmotionAmountSaveCounts())))
+                    .genderDailyAmountSpendSums(toGenderDateMap(repositoryResult.genderDailyAmountSpendSums()))
+                    .genderDailyAmountSaveSums(toGenderDateMap(repositoryResult.genderDailyAmountSaveSums()))
+                    .genderSatisfactionSpendCountsAndSums(
+                            new CountsAndSums(toGenderMap(repositoryResult.genderSatisfactionSpendSums()),
+                                    toGenderMap(repositoryResult.genderSatisfactionSpendCounts())))
+                    .genderSatisfactionSaveCountsAndSums(
+                            new CountsAndSums(toGenderMap(repositoryResult.genderSatisfactionSaveSums()),
+                                    toGenderMap(repositoryResult.genderSatisfactionSaveCounts())))
+                    .build();
+            AllStatisticsMap genderReversedData = AllStatisticsMap.builder()
+                    .genderEmotionAmountSpendCountsAndSums(
+                            new CountsAndSums(toReverseGenderEmotionMap(repositoryResult.genderEmotionAmountSpendSums()),
+                                    toReverseGenderEmotionMap(repositoryResult.genderEmotionAmountSpendCounts())))
+                    .genderEmotionAmountSaveCountsAndSums(
+                            new CountsAndSums(toReverseGenderEmotionMap(repositoryResult.genderEmotionAmountSaveSums()),
+                                    toReverseGenderEmotionMap(repositoryResult.genderEmotionAmountSaveCounts())))
+                    .genderDailyAmountSpendSums(toReverseGenderDateMap(repositoryResult.genderDailyAmountSpendSums()))
+                    .genderDailyAmountSaveSums(toReverseGenderDateMap(repositoryResult.genderDailyAmountSaveSums()))
+                    .genderSatisfactionSpendCountsAndSums(
+                            new CountsAndSums(toReverseGenderMap(repositoryResult.genderSatisfactionSpendSums()),
+                                    toReverseGenderMap(repositoryResult.genderSatisfactionSpendCounts())))
+                    .genderSatisfactionSaveCountsAndSums(
+                            new CountsAndSums(toReverseGenderMap(repositoryResult.genderSatisfactionSaveSums()),
+                                    toReverseGenderMap(repositoryResult.genderSatisfactionSaveCounts())))
+                    .build();
+
+            genderStatisticsCacheWriteService.decrementAllData(genderReversedData);
             genderStatisticsCacheWriteService.incrementAllData(statisticsAllData);
 
         }
