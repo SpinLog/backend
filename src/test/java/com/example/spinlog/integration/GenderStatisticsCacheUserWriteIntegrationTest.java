@@ -183,19 +183,6 @@ public class GenderStatisticsCacheUserWriteIntegrationTest {
                 assertThat(v.getSatisfactionAverage()).isEqualTo(
                         (femaleSatisfactionSum + maleSatisfactionSum) / (femaleArticleCount + maleArticleCount));
         }
-
-        System.out.println(geaa);
-        System.out.println(gdas);
-        System.out.println(gsa);
-
-        /*// todo cleanup
-        // cleanup
-        userService.updateUserInfo(
-                UpdateUserRequestDto.builder()
-                        .gender(Gender.MALE.name())
-                        .mbti(male.getMbti().name())
-                        .budget(1)
-                        .build());*/
     }
 
     private static void setSecurityContext(User male) {

@@ -42,8 +42,7 @@ public class GenderStatisticsCacheFallbackService {
             genderStatisticsCacheWriteService.putAmountCountsAndSumsByGenderAndEmotion(genderEmotionAmountCountsAndSums, registerType);
 
             return convertToGenderEmotionAmountAverageDto(
-                    genderEmotionAmountCountsAndSums.sumsMap(),
-                    genderEmotionAmountCountsAndSums.countsMap());
+                    genderEmotionAmountCountsAndSums);
         }
     }
 
@@ -78,8 +77,7 @@ public class GenderStatisticsCacheFallbackService {
             genderStatisticsCacheWriteService.putSatisfactionCountsAndSumsByGender(genderSatisfactionCountsAndSums, registerType);
 
             return convertToGenderSatisfactionAverageDto(
-                    genderSatisfactionCountsAndSums.sumsMap(),
-                    genderSatisfactionCountsAndSums.countsMap());
+                    genderSatisfactionCountsAndSums);
         }
     }
 }

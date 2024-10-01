@@ -182,12 +182,6 @@ public class GenderStatisticsCacheIntegrationTest {
             else
                 assertThat(v.getSatisfactionAverage()).isEqualTo(femaleSatisfactionSum / femaleArticleCount);
         }
-
-        /*// todo 서비스가 아닌 롤백을 이용할 수 있는지 확인
-        // cleanup
-        articleService.deleteArticle(
-                male.getAuthenticationName(),
-                responseDto.getArticleId());*/
     }
     
     @Test
@@ -245,19 +239,6 @@ public class GenderStatisticsCacheIntegrationTest {
             else
                 assertThat(v.getSatisfactionAverage()).isEqualTo(femaleSatisfactionSum / femaleArticleCount);
         }
-
-        /*// cleanup
-        articleService.createArticle(
-                user.getAuthenticationName(),
-                ArticleCreateRequest.builder()
-                        .content(target.getContent())
-                        .amount(target.getAmount())
-                        .satisfaction(target.getSatisfaction())
-                        .registerType(target.getRegisterType().name())
-                        .spendDate(target.getSpendDate().toString())
-                        .emotion(target.getEmotion().name())
-                        .build()
-        );*/
     }
 
     @Test
@@ -325,20 +306,5 @@ public class GenderStatisticsCacheIntegrationTest {
             else
                 assertThat(v.getSatisfactionAverage()).isEqualTo(femaleSatisfactionSum / femaleArticleCount);
         }
-
-        /*// cleanup
-        articleService.updateArticle(
-                user.getAuthenticationName(),
-                target.getArticleId(),
-                ArticleUpdateRequest.builder()
-                        .content(target.getContent())
-                        .spendDate(target.getSpendDate().toString())
-                        .emotion(target.getEmotion().name())
-                        .satisfaction(1.0f)
-                        .reason(target.getReason())
-                        .amount(1000)
-                        .registerType(target.getRegisterType().name())
-                        .build()
-        );*/
     }
 }

@@ -6,6 +6,7 @@ import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderDataDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
+import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.CountsAndSums;
 import com.example.spinlog.user.entity.Gender;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -66,7 +67,9 @@ public class StatisticsCacheUtils {
     }
 
     // todo CountsAndSums 파라미터로 받아서 처리
-    public static List<GenderEmotionAmountAverageDto> convertToGenderEmotionAmountAverageDto(Map<String, Object> sumsMap, Map<String, Object> countsMap) {
+    public static List<GenderEmotionAmountAverageDto> convertToGenderEmotionAmountAverageDto(CountsAndSums countsAndSums) {
+        Map<String, Object> sumsMap = countsAndSums.sumsMap();
+        Map<String, Object> countsMap = countsAndSums.countsMap();
         verifyCacheSumsAndCountsMap(sumsMap, countsMap);
 
         Map<String, Long> genderEmotionAmountAverage = new HashMap<>();
@@ -111,7 +114,9 @@ public class StatisticsCacheUtils {
                 }).toList();
     }
 
-    public static List<GenderSatisfactionAverageDto> convertToGenderSatisfactionAverageDto(Map<String, Object> sumsMap, Map<String, Object> countsMap) {
+    public static List<GenderSatisfactionAverageDto> convertToGenderSatisfactionAverageDto(CountsAndSums countsAndSums) {
+        Map<String, Object> sumsMap = countsAndSums.sumsMap();
+        Map<String, Object> countsMap = countsAndSums.countsMap();
         verifyCacheSumsAndCountsMap(sumsMap, countsMap);
 
         Map<String, Float> genderSatisfactionAverage = new HashMap<>();

@@ -6,6 +6,7 @@ import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
 import com.example.spinlog.statistics.repository.dto.MemoDto;
+import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.CountsAndSums;
 import com.example.spinlog.user.entity.Gender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,8 @@ public class GenderStatisticsCacheFetchService {
         Map<String, Object> countsMap = hashCacheService.getHashEntries(
                 getGenderEmotionStatisticsAmountCountKeyName(registerType));
 
-        return convertToGenderEmotionAmountAverageDto(sumsMap, countsMap);
+        return convertToGenderEmotionAmountAverageDto(
+                new CountsAndSums(sumsMap, countsMap));
     }
 
     public List<GenderDailyAmountSumDto> getAmountSumsEachGenderAndDay(RegisterType registerType) {
@@ -51,6 +53,7 @@ public class GenderStatisticsCacheFetchService {
         Map<String, Object> countsMap = hashCacheService.getHashEntries(
                 getGenderStatisticsSatisfactionCountKeyName(registerType));
 
-        return convertToGenderSatisfactionAverageDto(sumsMap, countsMap);
+        return convertToGenderSatisfactionAverageDto(
+                new CountsAndSums(sumsMap, countsMap));
     }
 }
