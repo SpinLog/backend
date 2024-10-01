@@ -1,31 +1,33 @@
-package com.example.spinlog.statistics.service.caching;
+package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.global.cache.CacheService;
+import com.example.spinlog.global.cache.HashCacheService;
+import com.example.spinlog.statistics.exception.InvalidCacheException;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
-import com.example.spinlog.util.MockCacheService;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
+import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.CountsAndSums;
+import com.example.spinlog.utils.StatisticsCacheUtils;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Map;
 
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
+import static com.example.spinlog.utils.CacheKeyNameUtils.getGenderEmotionStatisticsAmountSumKeyName;
+import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class GenderStatisticsCachingServiceTest {
-    CacheService cacheService = mock(CacheService.class);
-    GenderStatisticsCachingService genderStatisticsCachingService =
-            new GenderStatisticsCachingService(cacheService);
+class GenderStatisticsCacheFetchServiceTest {
+    HashCacheService hashCacheService = mock(HashCacheService.class);
+    GenderStatisticsCacheFetchService genderStatisticsCacheFetchService =
+            new GenderStatisticsCacheFetchService(hashCacheService);
 
     @Nested
     class getAmountAveragesEachGenderAndEmotionLast30Days {
@@ -33,14 +35,14 @@ class GenderStatisticsCachingServiceTest {
         void CacheService로부터_합과_개수를_조회한_후_평균을_반환한다() throws Exception {
             // given
             RegisterType registerType = RegisterType.SPEND;
-            when(cacheService.getHashEntries(
+            when(hashCacheService.getHashEntries(
                     eq(getGenderEmotionStatisticsAmountSumKeyName(registerType))))
                     .thenReturn(Map.of(
                             "MALE::PROUD", 1000L,
                             "MALE::SAD", 2000L,
                             "FEMALE::PROUD", 3000L,
                             "FEMALE::SAD", 4000L));
-            when(cacheService.getHashEntries(
+            when(hashCacheService.getHashEntries(
                     eq(getGenderEmotionStatisticsAmountCountKeyName(registerType))))
                     .thenReturn(Map.of(
                             "MALE::PROUD", 5L,
@@ -49,22 +51,23 @@ class GenderStatisticsCachingServiceTest {
                             "FEMALE::SAD", 5L));
 
             // when
-            List<GenderEmotionAmountAverageDto> results = genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(registerType);
+            CountsAndSums results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
 
             // then
-            for(GenderEmotionAmountAverageDto result : results) {
-                switch(result.getGender() + "::" + result.getEmotion()) {
+            List<GenderEmotionAmountAverageDto> dtos = convertToGenderEmotionAmountAverageDto(results);
+            for(GenderEmotionAmountAverageDto dto : dtos) {
+                switch(dto.getGender() + "::" + dto.getEmotion()) {
                     case "MALE::HAPPY":
-                        assertThat(result.getAmountAverage()).isEqualTo(200L);
+                        assertThat(dto.getAmountAverage()).isEqualTo(200L);
                         break;
                     case "MALE::SAD":
-                        assertThat(result.getAmountAverage()).isEqualTo(400L);
+                        assertThat(dto.getAmountAverage()).isEqualTo(400L);
                         break;
                     case "FEMALE::HAPPY":
-                        assertThat(result.getAmountAverage()).isEqualTo(600L);
+                        assertThat(dto.getAmountAverage()).isEqualTo(600L);
                         break;
                     case "FEMALE::SAD":
-                        assertThat(result.getAmountAverage()).isEqualTo(800L);
+                        assertThat(dto.getAmountAverage()).isEqualTo(800L);
                         break;
                 }
             }
@@ -77,7 +80,7 @@ class GenderStatisticsCachingServiceTest {
         void CacheService로부터_데이터를_조회한_후_반환한다() throws Exception {
             // given
             RegisterType registerType = RegisterType.SPEND;
-            when(cacheService.getHashEntries(
+            when(hashCacheService.getHashEntries(
                     eq(getGenderDailyStatisticsAmountSumKeyName(registerType))))
                     .thenReturn(Map.of(
                             "MALE::2024-07-01", 1000L,
@@ -86,22 +89,23 @@ class GenderStatisticsCachingServiceTest {
                             "FEMALE::2024-07-02", 4000L));
             
             // when
-            List<GenderDailyAmountSumDto> results = genderStatisticsCachingService.getAmountSumsEachGenderAndDayLast30Days(registerType);
+            Map<String, Object> results = genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(registerType);
 
             // then
-            for(GenderDailyAmountSumDto result : results) {
-                switch (result.getGender() + "::" + result.getLocalDate()) {
+            List<GenderDailyAmountSumDto> dtos = convertToGenderDailyAmountSumDto(results);
+            for(GenderDailyAmountSumDto dto : dtos) {
+                switch (dto.getGender() + "::" + dto.getLocalDate()) {
                     case "MALE::2024-07-01":
-                        assertThat(result.getAmountSum()).isEqualTo(1000L);
+                        assertThat(dto.getAmountSum()).isEqualTo(1000L);
                         break;
                     case "MALE::2024-07-02":
-                        assertThat(result.getAmountSum()).isEqualTo(2000L);
+                        assertThat(dto.getAmountSum()).isEqualTo(2000L);
                         break;
                     case "FEMALE::2024-07-01":
-                        assertThat(result.getAmountSum()).isEqualTo(3000L);
+                        assertThat(dto.getAmountSum()).isEqualTo(3000L);
                         break;
                     case "FEMALE::2024-07-02":
-                        assertThat(result.getAmountSum()).isEqualTo(4000L);
+                        assertThat(dto.getAmountSum()).isEqualTo(4000L);
                         break;
                 }
             }
@@ -114,38 +118,29 @@ class GenderStatisticsCachingServiceTest {
         void CacheService로부터_합과_개수를_조회한_후_평균을_반환한다() throws Exception {
             // given
             RegisterType registerType = RegisterType.SPEND;
-            when(cacheService.getHashEntries(
+            when(hashCacheService.getHashEntries(
                     eq(getGenderStatisticsSatisfactionSumKeyName(registerType))))
                     .thenReturn(Map.of(
-                            "MALE::PROUD", 12.0,
-                            "MALE::SAD", 34.0,
-                            "FEMALE::PROUD", 56.0,
-                            "FEMALE::SAD", 78.0));
-            when(cacheService.getHashEntries(
+                            "MALE", 34.0,
+                            "FEMALE", 78.0));
+            when(hashCacheService.getHashEntries(
                     eq(getGenderStatisticsSatisfactionCountKeyName(registerType))))
                     .thenReturn(Map.of(
-                            "MALE::PROUD", 5L,
-                            "MALE::SAD", 10L,
-                            "FEMALE::PROUD", 12L,
-                            "FEMALE::SAD", 20L));
+                            "MALE", 10L,
+                            "FEMALE", 20L));
 
             // when
-            List<GenderEmotionAmountAverageDto> results = genderStatisticsCachingService.getAmountAveragesEachGenderAndEmotionLast30Days(registerType);
+            CountsAndSums results = genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType);
 
             // then
-            for(GenderEmotionAmountAverageDto result : results) {
-                switch(result.getGender() + "::" + result.getEmotion()) {
-                    case "MALE::HAPPY":
-                        assertThat(result.getAmountAverage()).isEqualTo(12.0/5);
+            List<GenderSatisfactionAverageDto> dtos = convertToGenderSatisfactionAverageDto(results);
+            for(GenderSatisfactionAverageDto dto : dtos) {
+                switch(dto.getGender()) {
+                    case MALE:
+                        assertThat(dto.getSatisfactionAverage()).isEqualTo(34.0f/10);
                         break;
-                    case "MALE::SAD":
-                        assertThat(result.getAmountAverage()).isEqualTo(34.0/10);
-                        break;
-                    case "FEMALE::HAPPY":
-                        assertThat(result.getAmountAverage()).isEqualTo(56.0/12);
-                        break;
-                    case "FEMALE::SAD":
-                        assertThat(result.getAmountAverage()).isEqualTo(78.0/20);
+                    case FEMALE:
+                        assertThat(dto.getSatisfactionAverage()).isEqualTo(78.0f/20);
                         break;
                 }
             }

@@ -29,6 +29,8 @@
         group by u.gender
     </select>
 
+    <!--  -->
+
     <select id="getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate" resultType="GenderEmotionAmountAverageDto">
         select u.gender, a.emotion, sum(a.amount) as amountAverage
         from articles a join users u on(a.user_id = u.user_id)
@@ -54,6 +56,43 @@
         select u.gender, count(a.satisfaction) as satisfactionAverage
         from articles a join users u on(a.user_id = u.user_id)
         where a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        group by u.gender
+    </select>
+
+    <!--  -->
+
+    <select id="getAmountSumsEachEmotionByUserIdBetweenStartDateAndEndDate" resultType="GenderEmotionAmountAverageDto">
+        select u.gender, a.emotion, sum(a.amount) as amountAverage
+        from articles a join users u on(a.user_id = u.user_id)
+        where u.user_id = #{userId} and a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        group by a.emotion
+    </select>
+
+    <select id="getAmountCountsEachEmotionByUserIdBetweenStartDateAndEndDate" resultType="GenderEmotionAmountAverageDto">
+        select u.gender, a.emotion, count(a.amount) as amountAverage
+        from articles a join users u on(a.user_id = u.user_id)
+        where u.user_id = #{userId} and a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        group by a.emotion
+    </select>
+
+    <select id="getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate" resultType="GenderDailyAmountSumDto">
+        select u.gender, date(a.spend_date) as localDate, sum(a.amount) as amountSum
+        from articles a join users u on(a.user_id = u.user_id)
+        where u.user_id = #{userId} and a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        group by localDate
+    </select>
+
+    <select id="getSatisfactionSumsByUserIdBetweenStartDateAndEndDate" resultType="GenderDataDto">
+        select u.gender, sum(a.satisfaction) as satisfactionAverage
+        from articles a join users u on(a.user_id = u.user_id)
+        where u.user_id = #{userId} and a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        group by u.gender
+    </select>
+
+    <select id="getSatisfactionCountsByUserIdBetweenStartDateAndEndDate" resultType="GenderDataDto">
+        select u.gender, count(a.satisfaction) as satisfactionAverage
+        from articles a join users u on(a.user_id = u.user_id)
+        where u.user_id = #{userId} and a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
         group by u.gender
     </select>
 </mapper>

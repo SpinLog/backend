@@ -42,6 +42,8 @@ public interface GenderStatisticsRepository {
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
 
+    // ---
+
     // todo 별도 클래스로 분리
     List<GenderEmotionAmountAverageDto> getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
             @Param("registerType") RegisterType registerType,
@@ -59,6 +61,38 @@ public interface GenderStatisticsRepository {
             @Param("endDate") LocalDate endDate);
 
     List<GenderDataDto<Long>> getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    // ---
+
+    List<GenderEmotionAmountAverageDto> getAmountSumsEachEmotionByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    List<GenderEmotionAmountAverageDto> getAmountCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    List<GenderDailyAmountSumDto> getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    List<GenderDataDto<Double>> getSatisfactionSumsByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    List<GenderDataDto<Long>> getSatisfactionCountsByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);

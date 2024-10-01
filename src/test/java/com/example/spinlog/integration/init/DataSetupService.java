@@ -1,17 +1,17 @@
-package com.example.spinlog.util;
+package com.example.spinlog.integration.init;
 
 import com.example.spinlog.article.repository.ArticleRepository;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.Mbti;
 import com.example.spinlog.user.entity.User;
 import com.example.spinlog.user.repository.UserRepository;
+import com.example.spinlog.util.ArticleFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+@Service
 @RequiredArgsConstructor
 public class DataSetupService {
     private final ArticleRepository articleRepository;
@@ -19,8 +19,6 @@ public class DataSetupService {
 
     User male, female;
 
-    @EventListener(ApplicationReadyEvent.class)
-    @Order(1)
     public void setUp() {
         saveTwoUsers();
         saveFourArticles();
@@ -29,13 +27,13 @@ public class DataSetupService {
     private void saveTwoUsers() {
         male = User.builder()
                 .email("email1@email")
-                .authenticationName("name1")
+                .authenticationName("naver_1")
                 .mbti(Mbti.ISTJ)
                 .gender(Gender.MALE)
                 .build();
         female = User.builder()
                 .email("email2@email")
-                .authenticationName("name2")
+                .authenticationName("naver_2")
                 .mbti(Mbti.ISTP)
                 .gender(Gender.FEMALE)
                 .build();

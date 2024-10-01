@@ -9,22 +9,19 @@ import com.example.spinlog.article.service.request.ArticleCreateRequest;
 import com.example.spinlog.article.service.request.ArticleUpdateRequest;
 import com.example.spinlog.article.service.response.WriteArticleResponseDto;
 import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
+import com.example.spinlog.integration.init.GenderStatisticsCacheStartupService;
 import com.example.spinlog.statistics.service.GenderStatisticsService;
 import com.example.spinlog.statistics.service.dto.GenderDailyAmountSumResponse;
 import com.example.spinlog.statistics.service.dto.GenderEmotionAmountAverageResponse;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.User;
 import com.example.spinlog.user.repository.UserRepository;
-import com.example.spinlog.user.service.UserService;
-import com.example.spinlog.util.ArticleFactory;
 import com.example.spinlog.util.CacheConfiguration;
-import com.example.spinlog.util.DataSetupService;
+import com.example.spinlog.integration.init.DataSetupService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -36,7 +33,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import({CacheConfiguration.class, GenderStatisticsCacheIntegrationTest.TestConfig.class})
+@Import({CacheConfiguration.class})
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class GenderStatisticsCacheIntegrationTest {
     @Autowired
@@ -47,6 +44,10 @@ public class GenderStatisticsCacheIntegrationTest {
     UserRepository userRepository;
     @Autowired
     GenderStatisticsService genderStatisticsService;
+    @Autowired
+    GenderStatisticsCacheStartupService genderStatisticsCacheStartupService;
+    @Autowired
+    DataSetupService dataSetupService;
 
     LocalDate spendDate = LocalDate.now().minusDays(1);
     Emotion emotion = Emotion.SAD;
@@ -57,6 +58,18 @@ public class GenderStatisticsCacheIntegrationTest {
     int femaleAmountSum = 3000 + 4000;
     float maleSatisfactionSum = 1.0f + 2.0f;
     float femaleSatisfactionSum = 3.0f + 4.0f;
+
+    @BeforeEach
+    public void setUp() {
+        dataSetupService.setUp();
+        genderStatisticsCacheStartupService.initGenderStatisticsCache();
+    }
+
+    @AfterEach
+    public void cleanup() {
+        articleRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @Test
     @Order(1)
@@ -142,10 +155,8 @@ public class GenderStatisticsCacheIntegrationTest {
                     continue;
                 }
                 if(v.getGender().equals(Gender.MALE))
-                    // todo remove Math.round
                     assertThat(ea.getAmountAverage()).isEqualTo(
-                            Math.round(
-                                    (double) (maleAmountSum + request.getAmount()) / (maleArticleCount + 1)));
+                            (maleAmountSum + request.getAmount()) / (maleArticleCount + 1));
                 else
                     assertThat(ea.getAmountAverage()).isEqualTo(femaleAmountSum / femaleArticleCount);
             }
@@ -171,12 +182,6 @@ public class GenderStatisticsCacheIntegrationTest {
             else
                 assertThat(v.getSatisfactionAverage()).isEqualTo(femaleSatisfactionSum / femaleArticleCount);
         }
-
-        // todo 서비스가 아닌 롤백을 이용할 수 있는지 확인
-        // cleanup
-        articleService.deleteArticle(
-                male.getAuthenticationName(),
-                responseDto.getArticleId());
     }
     
     @Test
@@ -207,10 +212,8 @@ public class GenderStatisticsCacheIntegrationTest {
                     continue;
                 }
                 if(v.getGender().equals(Gender.MALE))
-                    // todo remove Math.round
                     assertThat(ea.getAmountAverage()).isEqualTo(
-                            Math.round(
-                                    (double) (maleAmountSum - target.getAmount()) / (maleArticleCount - 1)));
+                            (maleAmountSum - target.getAmount()) / (maleArticleCount - 1));
                 else
                     assertThat(ea.getAmountAverage()).isEqualTo(femaleAmountSum / femaleArticleCount);
             }
@@ -236,19 +239,6 @@ public class GenderStatisticsCacheIntegrationTest {
             else
                 assertThat(v.getSatisfactionAverage()).isEqualTo(femaleSatisfactionSum / femaleArticleCount);
         }
-
-        // cleanup
-        articleService.createArticle(
-                user.getAuthenticationName(),
-                ArticleCreateRequest.builder()
-                        .content(target.getContent())
-                        .amount(target.getAmount())
-                        .satisfaction(target.getSatisfaction())
-                        .registerType(target.getRegisterType().name())
-                        .spendDate(target.getSpendDate().toString())
-                        .emotion(target.getEmotion().name())
-                        .build()
-        );
     }
 
     @Test
@@ -290,7 +280,7 @@ public class GenderStatisticsCacheIntegrationTest {
                 }
                 if(v.getGender().equals(Gender.MALE))
                     assertThat(ea.getAmountAverage()).isEqualTo(
-                            Math.round((double) (maleAmountSum - 1000 + 10000) / maleArticleCount));
+                            (maleAmountSum - 1000 + 10000) / maleArticleCount);
                 else
                     assertThat(ea.getAmountAverage()).isEqualTo(femaleAmountSum / femaleArticleCount);
             }
@@ -315,31 +305,6 @@ public class GenderStatisticsCacheIntegrationTest {
                         Assertions.within(0.01f));
             else
                 assertThat(v.getSatisfactionAverage()).isEqualTo(femaleSatisfactionSum / femaleArticleCount);
-        }
-
-        // cleanup
-        articleService.updateArticle(
-                user.getAuthenticationName(),
-                target.getArticleId(),
-                ArticleUpdateRequest.builder()
-                        .content(target.getContent())
-                        .spendDate(target.getSpendDate().toString())
-                        .emotion(target.getEmotion().name())
-                        .satisfaction(1.0f)
-                        .reason(target.getReason())
-                        .amount(1000)
-                        .registerType(target.getRegisterType().name())
-                        .build()
-        );
-    }
-
-    @TestConfiguration
-    static class TestConfig {
-        @Autowired ArticleRepository articleRepository;
-        @Autowired UserRepository userRepository;
-        @Bean
-        public DataSetupService dataSetupService() {
-            return new DataSetupService(articleRepository, userRepository);
         }
     }
 }

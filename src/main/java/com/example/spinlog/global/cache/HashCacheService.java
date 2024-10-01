@@ -1,10 +1,8 @@
 package com.example.spinlog.global.cache;
 
-import org.springframework.data.redis.core.HashOperations;
-
 import java.util.Map;
 
-public interface CacheService {
+public interface HashCacheService {
     void putDataInHash(String key, String hashKey, Object data);
 
     void incrementDataInHash(String key, String hashKey, long delta);
@@ -20,4 +18,9 @@ public interface CacheService {
     Map<String, Object> getHashEntries(String key);
 
     void putAllDataInHash(String key, Map<String, Object> data);
+
+    void deleteHashKey(String key, String hashKey);
+
+    void decrementAllDataInHash(String key, Map<String, Object> data);
+    void incrementAllDataInHash(String key, Map<String, Object> data);
 }

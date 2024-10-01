@@ -10,7 +10,7 @@ import com.example.spinlog.statistics.service.dto.MBTISatisfactionAverageRespons
 import com.example.spinlog.statistics.service.dto.MBTIWordFrequencyResponse;
 import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
 import com.example.spinlog.statistics.loginService.AuthenticatedUserService;
-import com.example.spinlog.statistics.service.workanalysis.WordExtractionService;
+import com.example.spinlog.statistics.service.wordanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Mbti;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.example.spinlog.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
 import static java.util.stream.Collectors.groupingBy;
 
 @Slf4j
@@ -33,7 +34,6 @@ public class MBTIStatisticsService {
     private final MBTIStatisticsRepository mbtiStatisticsRepository;
     private final WordExtractionService wordExtractionService;
     private final AuthenticatedUserService authenticatedUserService;
-    private final int PERIOD_CRITERIA = 30;
 
     public MBTIStatisticsService(MBTIStatisticsRepository mbtiStatisticsRepository, WordExtractionService wordExtractionService, AuthenticatedUserService authenticatedUserService) {
         this.mbtiStatisticsRepository = mbtiStatisticsRepository;

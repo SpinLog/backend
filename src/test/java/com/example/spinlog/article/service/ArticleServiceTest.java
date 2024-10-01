@@ -12,7 +12,6 @@ import com.example.spinlog.article.service.request.ArticleCreateRequest;
 import com.example.spinlog.global.error.exception.article.ArticleNotFoundException;
 import com.example.spinlog.global.error.exception.user.UnauthorizedArticleRequestException;
 import com.example.spinlog.global.error.exception.user.UserNotFoundException;
-import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheWriterService;
 import com.example.spinlog.user.entity.User;
 import com.example.spinlog.user.repository.UserRepository;
 import com.example.spinlog.user.service.UserService;
@@ -22,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -55,7 +55,7 @@ public class ArticleServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    GenderStatisticsCacheWriterService genderStatisticsCacheWriterService;
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private ArticleService articleService;

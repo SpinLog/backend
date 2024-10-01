@@ -1,6 +1,5 @@
-package com.example.spinlog.statistics.service.caching;
+package com.example.spinlog.global.cache;
 
-import com.example.spinlog.global.cache.CacheService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
@@ -12,7 +11,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RedisHashCacheService implements CacheService { // todo common package로 분리
+public class RedisHashCacheService implements HashCacheService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
@@ -33,6 +32,10 @@ public class RedisHashCacheService implements CacheService { // todo common pack
     @Override
     public void incrementDataInHash(String key, String hashKey, double delta) {
         redisTemplate.opsForHash().increment(key, hashKey, delta);
+    }
+
+    public void deleteHashKey(String key, String hashKey) {
+        redisTemplate.opsForHash().delete(key, hashKey);
     }
 
     @Override
@@ -57,4 +60,25 @@ public class RedisHashCacheService implements CacheService { // todo common pack
         redisTemplate.opsForHash().putAll(key, data);
     }
 
+    @Override
+    public void decrementAllDataInHash(String key, Map<String, Object> data) {
+        data.forEach((hashKey, value) -> {
+            if (value instanceof Long) {
+                decrementDataInHash(key, hashKey, (Long) value);
+            } else if (value instanceof Double) {
+                decrementDataInHash(key, hashKey, (Double) value);
+            }
+        });
+    }
+
+    @Override
+    public void incrementAllDataInHash(String key, Map<String, Object> data) {
+        data.forEach((hashKey, value) -> {
+            if (value instanceof Long) {
+                incrementDataInHash(key, hashKey, (Long) value);
+            } else if (value instanceof Double) {
+                incrementDataInHash(key, hashKey, (Double) value);
+            }
+        });
+    }
 }

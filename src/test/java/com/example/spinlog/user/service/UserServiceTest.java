@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -38,6 +39,8 @@ class UserServiceTest {
     @InjectMocks private UserService userService;
 
     @Mock private UserRepository userRepository;
+
+    @Mock ApplicationEventPublisher eventPublisher;
 
     @DisplayName("회원 정보 조회")
     @Test

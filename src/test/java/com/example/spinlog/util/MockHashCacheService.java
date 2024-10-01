@@ -1,11 +1,11 @@
 package com.example.spinlog.util;
 
-import com.example.spinlog.global.cache.CacheService;
+import com.example.spinlog.global.cache.HashCacheService;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MockCacheService implements CacheService {
+public class MockHashCacheService implements HashCacheService {
     Map<String, Map<String, Object>> cache = new HashMap<>();
     @Override
     public void putDataInHash(String key, String hashKey, Object data) {
@@ -74,5 +74,36 @@ public class MockCacheService implements CacheService {
     @Override
     public void putAllDataInHash(String key, Map<String, Object> data) {
         cache.put(key, data);
+    }
+
+    @Override
+    public void deleteHashKey(String key, String hashKey) {
+        cache.get(key).remove(hashKey);
+    }
+
+    public void clear(){
+        cache.clear();
+    }
+
+    @Override
+    public void decrementAllDataInHash(String key, Map<String, Object> data) {
+        data.forEach((hashKey, value) -> {
+            if (value instanceof Long) {
+                decrementDataInHash(key, hashKey, (Long) value);
+            } else if (value instanceof Double) {
+                decrementDataInHash(key, hashKey, (Double) value);
+            }
+        });
+    }
+
+    @Override
+    public void incrementAllDataInHash(String key, Map<String, Object> data) {
+        data.forEach((hashKey, value) -> {
+            if (value instanceof Long) {
+                incrementDataInHash(key, hashKey, (Long) value);
+            } else if (value instanceof Double) {
+                incrementDataInHash(key, hashKey, (Double) value);
+            }
+        });
     }
 }
