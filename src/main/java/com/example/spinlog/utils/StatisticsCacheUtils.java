@@ -66,7 +66,6 @@ public class StatisticsCacheUtils {
                         GenderDataDto::getValue));
     }
 
-    // todo CountsAndSums 파라미터로 받아서 처리
     public static List<GenderEmotionAmountAverageDto> convertToGenderEmotionAmountAverageDto(CountsAndSums countsAndSums) {
         Map<String, Object> sumsMap = countsAndSums.sumsMap();
         Map<String, Object> countsMap = countsAndSums.countsMap();

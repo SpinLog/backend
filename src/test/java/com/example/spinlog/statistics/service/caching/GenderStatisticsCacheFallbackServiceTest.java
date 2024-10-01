@@ -45,7 +45,7 @@ class GenderStatisticsCacheFallbackServiceTest {
         void CacheFetchService의_반환_값을_그대로_반환한다() throws Exception {
             // given
             when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
-                    .thenReturn(List.of());
+                    .thenReturn(new CountsAndSums(Map.of(), Map.of()));
             
             // when
             List<GenderEmotionAmountAverageDto> dtos =
@@ -114,7 +114,7 @@ class GenderStatisticsCacheFallbackServiceTest {
         void CacheFetchService의_반환_값을_그대로_반환한다() throws Exception {
             // given
             when(genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(any()))
-                    .thenReturn(List.of());
+                    .thenReturn(Map.of());
 
             // when
             List<GenderDailyAmountSumDto> dtos = targetService.getAmountSumsEachGenderAndDay(null);
@@ -182,7 +182,7 @@ class GenderStatisticsCacheFallbackServiceTest {
         void CacheFetchService의_반환_값을_그대로_반환한다() throws Exception {
             // given
             when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
-                    .thenReturn(List.of());
+                    .thenReturn(new CountsAndSums(Map.of(), Map.of()));
 
             // when
             List<GenderSatisfactionAverageDto> dtos = targetService.getSatisfactionAveragesEachGender(null);

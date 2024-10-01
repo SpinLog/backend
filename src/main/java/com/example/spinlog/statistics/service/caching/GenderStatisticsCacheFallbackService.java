@@ -29,8 +29,8 @@ public class GenderStatisticsCacheFallbackService {
 
     public List<GenderEmotionAmountAverageDto> getAmountAveragesEachGenderAndEmotion(RegisterType registerType){
         try {
-            return genderStatisticsCacheFetchService
-                    .getAmountAveragesEachGenderAndEmotion(registerType);
+            return convertToGenderEmotionAmountAverageDto(genderStatisticsCacheFetchService
+                    .getAmountAveragesEachGenderAndEmotion(registerType));
         } catch(InvalidCacheException e) {
             log.warn("GenderEmotionAmountAverage Cache fallback occurred. Query Database and Cache will be updated.", e);
 
@@ -48,7 +48,8 @@ public class GenderStatisticsCacheFallbackService {
 
     public List<GenderDailyAmountSumDto> getAmountSumsEachGenderAndDay(RegisterType registerType) {
         try {
-            return genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(registerType);
+            return convertToGenderDailyAmountSumDto(
+                    genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(registerType));
         } catch(InvalidCacheException e) {
             log.warn("GenderDailyAmountSum Cache fallback occurred. Query Database and Cache will be updated.", e);
 
@@ -65,7 +66,8 @@ public class GenderStatisticsCacheFallbackService {
 
     public List<GenderSatisfactionAverageDto> getSatisfactionAveragesEachGender(RegisterType registerType) {
         try {
-            return genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType);
+            return convertToGenderSatisfactionAverageDto(
+                    genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType));
         } catch(InvalidCacheException e) {
             log.warn("GenderSatisfactionAverage Cache fallback occurred. Query Database and Cache will be updated.", e);
 

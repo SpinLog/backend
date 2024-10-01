@@ -24,36 +24,34 @@ import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 public class GenderStatisticsCacheFetchService {
     private final HashCacheService hashCacheService;
 
-    public List<GenderEmotionAmountAverageDto> getAmountAveragesEachGenderAndEmotion(RegisterType registerType) {
+    public CountsAndSums getAmountAveragesEachGenderAndEmotion(RegisterType registerType) {
         Map<String, Object> sumsMap = hashCacheService.getHashEntries(
                 getGenderEmotionStatisticsAmountSumKeyName(registerType));
 
         Map<String, Object> countsMap = hashCacheService.getHashEntries(
                 getGenderEmotionStatisticsAmountCountKeyName(registerType));
 
-        return convertToGenderEmotionAmountAverageDto(
-                new CountsAndSums(sumsMap, countsMap));
+        return new CountsAndSums(sumsMap, countsMap);
     }
 
-    public List<GenderDailyAmountSumDto> getAmountSumsEachGenderAndDay(RegisterType registerType) {
+    public Map<String, Object> getAmountSumsEachGenderAndDay(RegisterType registerType) {
         Map<String, Object> sumsMap = hashCacheService.getHashEntries(
                 getGenderDailyStatisticsAmountSumKeyName(registerType));
 
-        return convertToGenderDailyAmountSumDto(sumsMap);
+        return sumsMap;
     }
 
     public List<MemoDto> getAllMemosByGender(RegisterType registerType, Gender gender) {
         return null;
     }
 
-    public List<GenderSatisfactionAverageDto> getSatisfactionAveragesEachGender(RegisterType registerType) {
+    public CountsAndSums getSatisfactionAveragesEachGender(RegisterType registerType) {
         Map<String, Object> sumsMap = hashCacheService.getHashEntries(
                 getGenderStatisticsSatisfactionSumKeyName(registerType));
 
         Map<String, Object> countsMap = hashCacheService.getHashEntries(
                 getGenderStatisticsSatisfactionCountKeyName(registerType));
 
-        return convertToGenderSatisfactionAverageDto(
-                new CountsAndSums(sumsMap, countsMap));
+        return new CountsAndSums(sumsMap, countsMap);
     }
 }
