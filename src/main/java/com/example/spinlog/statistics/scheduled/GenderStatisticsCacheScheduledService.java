@@ -45,11 +45,6 @@ public class GenderStatisticsCacheScheduledService {
         // todo unlock
     }
 
-    @Scheduled(cron = "0 0 5 * * *")
-    public void verifyGenderStatisticsCache() {
-        // todo verify current cache data
-    }
-
     private void incrementNewCacheData(AllStatisticsMap newStatisticsData) {
         newStatisticsData.genderEmotionAmountSpendCountsAndSums().sumsMap().forEach((k, v) -> {
             hashCacheService.incrementDataInHash(getGenderEmotionStatisticsAmountSumKeyName(SPEND), k, (long)v);
