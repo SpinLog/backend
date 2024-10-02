@@ -1,6 +1,7 @@
 package com.example.spinlog.statistics.scheduled;
 
 import com.example.spinlog.global.cache.HashCacheService;
+import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 
 import static com.example.spinlog.article.entity.RegisterType.SAVE;
 import static com.example.spinlog.article.entity.RegisterType.SPEND;
+import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
 import static com.example.spinlog.utils.StatisticsCacheUtils.*;
@@ -21,6 +23,7 @@ import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 public class GenderStatisticsCacheRefreshScheduledService {
     private final HashCacheService hashCacheService;
     private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
+    private final StatisticsPeriodManager statisticsPeriodManager;
 
     // todo prometheus & grafana로 성공 여부 확인
     // todo 0~4시 사이 캐시 데이터 정합성 문제 확인
@@ -29,12 +32,13 @@ public class GenderStatisticsCacheRefreshScheduledService {
     //  -> PERIOD CRITERIA를 별도의 클래스로 관리하면 테스트 코드 작성이 용이해짐 (Clock 사용)
     @Scheduled(cron = "0 0 4 * * *")
     public void refreshGenderStatisticsCache() {
-        LocalDate todayEndDate = LocalDate.now();
+        Period period = statisticsPeriodManager.getStatisticsPeriod();
+        LocalDate todayEndDate = period.endDate();
         LocalDate todayStartDate = todayEndDate.minusDays(1);
         AllStatisticsMap newStatisticsData = genderStatisticsRepositoryFetchService
                 .getGenderStatisticsAllData(todayStartDate, todayEndDate);
 
-        LocalDate oldEndDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
+        LocalDate oldEndDate = period.startDate();
         LocalDate oldStartDate = oldEndDate.minusDays(1);
         AllStatisticsMap expiringStatisticsData = genderStatisticsRepositoryFetchService
                 .getGenderStatisticsAllData(oldStartDate, oldEndDate);
@@ -43,6 +47,8 @@ public class GenderStatisticsCacheRefreshScheduledService {
         decrementOldCacheData(expiringStatisticsData);
         incrementNewCacheData(newStatisticsData);
         // todo unlock
+
+        statisticsPeriodManager.updateStatisticsPeriod();
     }
 
     private void incrementNewCacheData(AllStatisticsMap newStatisticsData) {

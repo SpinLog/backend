@@ -6,6 +6,7 @@ import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.article.event.ArticleCreatedEvent;
 import com.example.spinlog.article.event.ArticleDeletedEvent;
 import com.example.spinlog.global.cache.HashCacheService;
+import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.User;
 import com.example.spinlog.util.ArticleFactory;
@@ -13,6 +14,7 @@ import com.example.spinlog.util.MockHashCacheService;
 import org.junit.jupiter.api.*;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
@@ -24,8 +26,11 @@ import static org.mockito.Mockito.*;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class GenderStatisticsCacheSynchronizerTest {
     HashCacheService hashCacheService = spy(MockHashCacheService.class);
+    StatisticsPeriodManager statisticsPeriodManager = new StatisticsPeriodManager(Clock.systemDefaultZone());
     GenderStatisticsCacheSynchronizer targetService =
-            new GenderStatisticsCacheSynchronizer(hashCacheService);
+            new GenderStatisticsCacheSynchronizer(
+                    hashCacheService,
+                    statisticsPeriodManager);
 
     RegisterType registerType = RegisterType.SPEND;
     User user = User.builder()
@@ -34,7 +39,7 @@ class GenderStatisticsCacheSynchronizerTest {
             .email("email@email")
             .build();
     Article article = ArticleFactory.builder()
-            .spendDate(LocalDateTime.now())
+            .spendDate(LocalDateTime.now().minusDays(1))
             .emotion(Emotion.PROUD)
             .amount(5)
             .satisfaction(5.0f)

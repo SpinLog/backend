@@ -1,7 +1,7 @@
 package com.example.spinlog.statistics.service.caching;
 
+import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
-import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.User;
 import com.example.spinlog.user.event.UserUpdatedEvent;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +11,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.LocalDate;
 
+import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 
@@ -20,18 +21,18 @@ import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 public class StatisticsCacheSynchronizerAfterUserWrite {
     private final GenderStatisticsCacheWriteService genderStatisticsCacheWriteService;
     private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
+    private final StatisticsPeriodManager statisticsPeriodManager;
 
 
     @TransactionalEventListener
     public void updateStatisticsCacheFromUpdatedUser(UserUpdatedEvent event) {
         User originalUser = event.getOriginalUser();
         User updatedUser = event.getUpdatedUser();
-        Gender originalGender = originalUser.getGender();
-        Gender updatedGender = updatedUser.getGender();
 
         if(isGenderChanged(originalUser, updatedUser)) {
-            LocalDate endDate = LocalDate.now();
-            LocalDate startDate = endDate.minusDays(PERIOD_CRITERIA);
+            Period period = statisticsPeriodManager.getStatisticsPeriod();
+            LocalDate endDate = period.endDate();
+            LocalDate startDate = period.startDate();
             AllStatisticsResult repositoryResult = genderStatisticsRepositoryFetchService
                     .getGenderStatisticsAllDataByUserId(updatedUser.getId(), startDate, endDate);
 

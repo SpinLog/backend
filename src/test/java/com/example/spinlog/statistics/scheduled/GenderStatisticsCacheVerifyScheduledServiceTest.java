@@ -1,6 +1,7 @@
 package com.example.spinlog.statistics.scheduled;
 
 import com.example.spinlog.article.entity.RegisterType;
+import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
@@ -11,8 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.Clock;
 import java.util.Map;
 
+import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -24,10 +27,13 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService = mock(GenderStatisticsRepositoryFetchService.class);
     GenderStatisticsCacheWriteService genderStatisticsCacheWriteService = mock(GenderStatisticsCacheWriteService.class);
 
+    StatisticsPeriodManager statisticsPeriodManager = new StatisticsPeriodManager(Clock.systemDefaultZone());
+
     GenderStatisticsCacheVerifyScheduledService targetService = new GenderStatisticsCacheVerifyScheduledService(
             genderStatisticsCacheFetchService,
             genderStatisticsRepositoryFetchService,
-            genderStatisticsCacheWriteService);
+            genderStatisticsCacheWriteService,
+            statisticsPeriodManager);
 
     @Nested
     class updateGenderEmotionAmountAverageCacheIfCacheMiss {
@@ -43,8 +49,10 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
                             Map.of("key1", 1, "key2", 2),
                             Map.of("key1", 1, "key2", 2)));
 
+            Period period = statisticsPeriodManager.getStatisticsPeriod();
+
             // when
-            targetService.updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType.SPEND);
+            targetService.updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
             verify(genderStatisticsCacheWriteService, never()).putAmountCountsAndSumsByGenderAndEmotion(any(), any());
@@ -62,8 +70,10 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
                             Map.of("key1", 1, "key2", 2),
                             Map.of("key1", 1, "key2", 100)));
 
+            Period period = statisticsPeriodManager.getStatisticsPeriod();
+
             // when
-            targetService.updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType.SPEND);
+            targetService.updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
             verify(genderStatisticsCacheWriteService).putAmountCountsAndSumsByGenderAndEmotion(any(), any());
@@ -82,8 +92,10 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
                     .thenReturn(
                             Map.of("key1", 1, "key2", 2));
 
+            Period period = statisticsPeriodManager.getStatisticsPeriod();
+
             // when
-            targetService.updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType.SPEND);
+            targetService.updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
             verify(genderStatisticsCacheWriteService, never()).putAmountSumsByGenderAndDate(any(), any());
@@ -99,8 +111,10 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
                     .thenReturn(
                             Map.of("key1", 1, "key2", 100));
 
+            Period period = statisticsPeriodManager.getStatisticsPeriod();
+
             // when
-            targetService.updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType.SPEND);
+            targetService.updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
             verify(genderStatisticsCacheWriteService).putAmountSumsByGenderAndDate(any(), any());
@@ -121,8 +135,10 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
                             Map.of("key1", 1.0, "key2", 2.0),
                             Map.of("key1", 1, "key2", 2)));
 
+            Period period = statisticsPeriodManager.getStatisticsPeriod();
+
             // when
-            targetService.updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType.SPEND);
+            targetService.updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
             verify(genderStatisticsCacheWriteService, never()).putSatisfactionCountsAndSumsByGender(any(), any());
@@ -140,8 +156,10 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
                             Map.of("key1", 1.0, "key2", 2.0),
                             Map.of("key1", 1, "key2", 100)));
 
+            Period period = statisticsPeriodManager.getStatisticsPeriod();
+
             // when
-            targetService.updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType.SPEND);
+            targetService.updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
             verify(genderStatisticsCacheWriteService).putSatisfactionCountsAndSumsByGender(any(), any());

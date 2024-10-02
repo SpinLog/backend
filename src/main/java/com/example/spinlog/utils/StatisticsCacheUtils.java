@@ -22,6 +22,7 @@ import static com.example.spinlog.user.entity.Gender.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StatisticsCacheUtils {
+    // todo mbti 캐싱 작업 후 삭제
     public static final int PERIOD_CRITERIA = 30;
 
     public static Map<String, Object> toGenderEmotionMap(List<GenderEmotionAmountAverageDto> dtos){
