@@ -45,6 +45,7 @@ public class StatisticsCacheUtils {
                         GenderDataDto::getValue));
     }
 
+    // todo Map to Map reverse, not list
     public static Map<String, Object> toReverseGenderEmotionMap(List<GenderEmotionAmountAverageDto> dtos){
         return dtos.stream()
                 .collect(Collectors.toMap(

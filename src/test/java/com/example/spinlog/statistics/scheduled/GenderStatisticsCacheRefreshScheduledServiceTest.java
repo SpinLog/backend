@@ -145,8 +145,6 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
                 .isNull();
     }
 
-    // todo GenderDailyAmountSum 31일 전 key 삭제 & 1일 전 key 추가 테스트
-
     private void verifyRequestAllStatisticsDataFromRepository(LocalDate startDate, LocalDate endDate) {
         // any() -> SPEND, SAVE
         verify(genderStatisticsRepository, times(2)).getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
