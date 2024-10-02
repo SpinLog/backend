@@ -5,6 +5,7 @@ import com.example.spinlog.statistics.exception.InvalidCacheException;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
+import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.utils.StatisticsCacheUtils;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 
@@ -26,6 +28,7 @@ public class GenderStatisticsCacheFallbackService {
     private final GenderStatisticsCacheFetchService genderStatisticsCacheFetchService;
     private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
     private final GenderStatisticsCacheWriteService genderStatisticsCacheWriteService;
+    private final StatisticsPeriodManager statisticsPeriodManager;
 
     public List<GenderEmotionAmountAverageDto> getAmountAveragesEachGenderAndEmotion(RegisterType registerType){
         try {
@@ -34,8 +37,9 @@ public class GenderStatisticsCacheFallbackService {
         } catch(InvalidCacheException e) {
             log.warn("GenderEmotionAmountAverage Cache fallback occurred. Query Database and Cache will be updated.", e);
 
-            LocalDate endDate = LocalDate.now();
-            LocalDate startDate = endDate.minusDays(PERIOD_CRITERIA);
+            Period period = statisticsPeriodManager.getStatisticsPeriod();
+            LocalDate endDate = period.endDate();
+            LocalDate startDate = period.startDate();
             CountsAndSums genderEmotionAmountCountsAndSums = genderStatisticsRepositoryFetchService
                     .getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
 
@@ -53,8 +57,9 @@ public class GenderStatisticsCacheFallbackService {
         } catch(InvalidCacheException e) {
             log.warn("GenderDailyAmountSum Cache fallback occurred. Query Database and Cache will be updated.", e);
 
-            LocalDate endDate = LocalDate.now();
-            LocalDate startDate = endDate.minusDays(PERIOD_CRITERIA);
+            Period period = statisticsPeriodManager.getStatisticsPeriod();
+            LocalDate endDate = period.endDate();
+            LocalDate startDate = period.startDate();
             Map<String, Object> genderDailyAmountSums = genderStatisticsRepositoryFetchService
                     .getGenderDateAmountSums(registerType, startDate, endDate);
 
@@ -71,8 +76,9 @@ public class GenderStatisticsCacheFallbackService {
         } catch(InvalidCacheException e) {
             log.warn("GenderSatisfactionAverage Cache fallback occurred. Query Database and Cache will be updated.", e);
 
-            LocalDate endDate = LocalDate.now();
-            LocalDate startDate = endDate.minusDays(PERIOD_CRITERIA);
+            Period period = statisticsPeriodManager.getStatisticsPeriod();
+            LocalDate endDate = period.endDate();
+            LocalDate startDate = period.startDate();
             CountsAndSums genderSatisfactionCountsAndSums = genderStatisticsRepositoryFetchService
                     .getGenderSatisfactionCountsAndSums(registerType, startDate, endDate);
 

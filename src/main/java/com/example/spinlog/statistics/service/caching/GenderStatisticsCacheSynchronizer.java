@@ -6,6 +6,7 @@ import com.example.spinlog.article.event.ArticleCreatedEvent;
 import com.example.spinlog.article.event.ArticleDeletedEvent;
 import com.example.spinlog.article.event.ArticleUpdatedEvent;
 import com.example.spinlog.global.cache.HashCacheService;
+import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -15,14 +16,15 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.LocalDateTime;
 
+import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class GenderStatisticsCacheSynchronizer {
     private final HashCacheService hashCacheService;
+    private final StatisticsPeriodManager statisticsPeriodManager;
 
     @TransactionalEventListener
     public void updateStatisticsCacheFromNewData(ArticleCreatedEvent event) {
@@ -59,9 +61,9 @@ public class GenderStatisticsCacheSynchronizer {
     }
 
     private boolean isNotInStatisticsPeriodCriteria(LocalDateTime spendDate) {
-        // todo 새벽 시간 캐시 데이터 정합성 해결 위해 별도의 클래스로 분리
-        LocalDateTime endDate = LocalDateTime.now();
-        LocalDateTime startDate = endDate.minusDays(PERIOD_CRITERIA);
+        Period period = statisticsPeriodManager.getStatisticsPeriod();
+        LocalDateTime endDate = period.endDate().atStartOfDay();
+        LocalDateTime startDate = period.startDate().atStartOfDay();
         return !(spendDate.isAfter(startDate) && spendDate.isBefore(endDate));
     }
 

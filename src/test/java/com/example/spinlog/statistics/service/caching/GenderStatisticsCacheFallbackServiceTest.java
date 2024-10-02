@@ -6,6 +6,7 @@ import com.example.spinlog.statistics.exception.InvalidCacheException;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
+import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.user.entity.Gender;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.Map;
 
@@ -34,11 +36,14 @@ class GenderStatisticsCacheFallbackServiceTest {
     GenderStatisticsCacheWriteService genderStatisticsCacheWriteService =
              mock(GenderStatisticsCacheWriteService.class);
 
+    StatisticsPeriodManager statisticsPeriodManager = new StatisticsPeriodManager(Clock.systemDefaultZone());
+
     GenderStatisticsCacheFallbackService targetService =
             new GenderStatisticsCacheFallbackService(
                     genderStatisticsCacheFetchService,
                     genderStatisticsRepositoryFetchService,
-                    genderStatisticsCacheWriteService);
+                    genderStatisticsCacheWriteService,
+                    statisticsPeriodManager);
     @Nested
     class getAmountAveragesEachGenderAndEmotion {
         @Test

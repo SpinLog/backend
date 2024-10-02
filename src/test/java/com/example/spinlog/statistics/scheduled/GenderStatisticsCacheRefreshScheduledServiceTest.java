@@ -4,6 +4,7 @@ import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.util.CacheConfiguration;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -31,9 +33,13 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService =
             new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
     MockHashCacheService cacheService = new MockHashCacheService();
+    StatisticsPeriodManager statisticsPeriodManager = new StatisticsPeriodManager(Clock.systemDefaultZone());
 
     GenderStatisticsCacheRefreshScheduledService targetService =
-            new GenderStatisticsCacheRefreshScheduledService(cacheService, genderStatisticsRepositoryFetchService);
+            new GenderStatisticsCacheRefreshScheduledService(
+                    cacheService,
+                    genderStatisticsRepositoryFetchService,
+                    statisticsPeriodManager);
 
     @AfterEach
     void tearDown() {
@@ -144,8 +150,6 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
         assertThat(cacheService.getDataFromHash(getGenderDailyStatisticsAmountSumKeyName(SPEND), targetKey))
                 .isNull();
     }
-
-    // todo GenderDailyAmountSum 31일 전 key 삭제 & 1일 전 key 추가 테스트
 
     private void verifyRequestAllStatisticsDataFromRepository(LocalDate startDate, LocalDate endDate) {
         // any() -> SPEND, SAVE

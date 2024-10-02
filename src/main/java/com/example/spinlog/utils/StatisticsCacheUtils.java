@@ -22,6 +22,7 @@ import static com.example.spinlog.user.entity.Gender.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StatisticsCacheUtils {
+    // todo mbti 캐싱 작업 후 삭제
     public static final int PERIOD_CRITERIA = 30;
 
     public static Map<String, Object> toGenderEmotionMap(List<GenderEmotionAmountAverageDto> dtos){
@@ -45,6 +46,7 @@ public class StatisticsCacheUtils {
                         GenderDataDto::getValue));
     }
 
+    // todo Map to Map reverse, not list
     public static Map<String, Object> toReverseGenderEmotionMap(List<GenderEmotionAmountAverageDto> dtos){
         return dtos.stream()
                 .collect(Collectors.toMap(

@@ -1,6 +1,7 @@
 package com.example.spinlog.statistics.scheduled;
 
 import com.example.spinlog.article.entity.RegisterType;
+import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Map;
 
+import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 
@@ -22,22 +24,24 @@ public class GenderStatisticsCacheVerifyScheduledService {
     private final GenderStatisticsCacheFetchService genderStatisticsCacheFetchService;
     private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
     private final GenderStatisticsCacheWriteService genderStatisticsCacheWriteService;
+    private final StatisticsPeriodManager statisticsPeriodManager;
 
     @Scheduled(cron = "0 0 5 * * *")
     public void updateGenderStatisticsCacheIfCacheMiss() {
-        updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType.SPEND);
-        updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType.SAVE);
+        Period period = statisticsPeriodManager.getStatisticsPeriod();
+        updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType.SPEND, period);
+        updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType.SAVE, period);
 
-        updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType.SPEND);
-        updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType.SAVE);
+        updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType.SPEND, period);
+        updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType.SAVE, period);
 
-        updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType.SPEND);
-        updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType.SAVE);
+        updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType.SPEND, period);
+        updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType.SAVE, period);
     }
 
-    public void updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType registerType) {
-        LocalDate endDate = LocalDate.now();
-        LocalDate startDate = endDate.minusDays(PERIOD_CRITERIA);
+    public void updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType registerType, Period period) {
+        LocalDate endDate = period.endDate();
+        LocalDate startDate = period.startDate();
         CountsAndSums cacheData = genderStatisticsCacheFetchService
                 .getAmountAveragesEachGenderAndEmotion(registerType);
         CountsAndSums repositoryData = genderStatisticsRepositoryFetchService
@@ -53,9 +57,9 @@ public class GenderStatisticsCacheVerifyScheduledService {
                     + ") GenderEmotionAmountAverage Cache Data and Repository Data are same.");
     }
 
-    public void updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType registerType) {
-        LocalDate endDate = LocalDate.now();
-        LocalDate startDate = endDate.minusDays(PERIOD_CRITERIA);
+    public void updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType registerType, Period period) {
+        LocalDate endDate = period.endDate();
+        LocalDate startDate = period.startDate();
         Map<String, Object> cacheData = genderStatisticsCacheFetchService
                 .getAmountSumsEachGenderAndDay(registerType);
         Map<String, Object> repositoryData = genderStatisticsRepositoryFetchService
@@ -72,9 +76,9 @@ public class GenderStatisticsCacheVerifyScheduledService {
     }
 
 
-    public void updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType registerType) {
-        LocalDate endDate = LocalDate.now();
-        LocalDate startDate = endDate.minusDays(PERIOD_CRITERIA);
+    public void updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType registerType, Period period) {
+        LocalDate endDate = period.endDate();
+        LocalDate startDate = period.startDate();
         CountsAndSums cacheData = genderStatisticsCacheFetchService
                 .getSatisfactionAveragesEachGender(registerType);
         CountsAndSums repositoryData = genderStatisticsRepositoryFetchService

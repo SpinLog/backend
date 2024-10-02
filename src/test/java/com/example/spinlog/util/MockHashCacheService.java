@@ -1,6 +1,7 @@
 package com.example.spinlog.util;
 
 import com.example.spinlog.global.cache.HashCacheService;
+import com.example.spinlog.statistics.exception.InvalidCacheException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,8 +17,13 @@ public class MockHashCacheService implements HashCacheService {
     @Override
     public void incrementDataInHash(String key, String hashKey, long delta) {
         Object dataFromHash = getDataFromHash(key, hashKey);
+        if(dataFromHash == null) {
+            putDataInHash(key, hashKey, delta);
+            return;
+        }
+
         if(!(dataFromHash instanceof Long)) {
-            throw new IllegalArgumentException("Data is not Double type");
+            throw new InvalidCacheException("Data is not Long type");
         }
 
         Long value = (Long) dataFromHash;
@@ -27,8 +33,9 @@ public class MockHashCacheService implements HashCacheService {
     @Override
     public void decrementDataInHash(String key, String hashKey, long delta) {
         Object dataFromHash = getDataFromHash(key, hashKey);
+
         if(!(dataFromHash instanceof Long)) {
-            throw new IllegalArgumentException("Data is not Double type");
+            throw new InvalidCacheException("Data is not Long type");
         }
 
         Long value = (Long) dataFromHash;
@@ -38,8 +45,13 @@ public class MockHashCacheService implements HashCacheService {
     @Override
     public void incrementDataInHash(String key, String hashKey, double delta) {
         Object dataFromHash = getDataFromHash(key, hashKey);
+        if(dataFromHash == null) {
+            putDataInHash(key, hashKey, delta);
+            return;
+        }
+
         if(!(dataFromHash instanceof Double)) {
-            throw new IllegalArgumentException("Data is not Double type");
+            throw new InvalidCacheException("Data is not Double type");
         }
 
         Double value = (Double) dataFromHash;
@@ -50,7 +62,7 @@ public class MockHashCacheService implements HashCacheService {
     public void decrementDataInHash(String key, String hashKey, double delta) {
         Object dataFromHash = getDataFromHash(key, hashKey);
         if(!(dataFromHash instanceof Double)) {
-            throw new IllegalArgumentException("Data is not Double type");
+            throw new InvalidCacheException("Data is not Double type");
         }
 
         Double value = (Double) dataFromHash;
