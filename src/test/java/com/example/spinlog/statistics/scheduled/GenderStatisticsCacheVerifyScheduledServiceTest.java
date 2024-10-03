@@ -38,6 +38,28 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
     @Nested
     class updateGenderEmotionAmountAverageCacheIfCacheMiss {
         @Test
+        void 캐시로부터_데이터를_받을_때_에러가_발생한다면_레포지토리의_데이터를_요청한_다음_캐시를_업데이트한다() throws Exception {
+            // given
+            when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
+                    .thenThrow(new RuntimeException());
+
+            CountsAndSums repositoryData = new CountsAndSums(
+                    Map.of("key1", 1, "key2", 2),
+                    Map.of("key1", 1, "key2", 100));
+            when(genderStatisticsRepositoryFetchService.getGenderEmotionAmountCountsAndSums(any(), any(), any()))
+                    .thenReturn(repositoryData);
+
+            Period period = statisticsPeriodManager.getStatisticsPeriod();
+
+            // when
+            targetService.updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType.SPEND, period);
+
+            // then
+            verify(genderStatisticsRepositoryFetchService).getGenderEmotionAmountCountsAndSums(any(), any(), any());
+            verify(genderStatisticsCacheWriteService).putAmountCountsAndSumsByGenderAndEmotion(eq(repositoryData), any());
+        }
+
+        @Test
         void 캐시와_레포지토리로부터_받은_데이터가_같다면_CacheWriteService를_호출하지_않는다() throws Exception {
             // given
             when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
@@ -65,10 +87,11 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
                     .thenReturn(new CountsAndSums(
                             Map.of("key1", 1, "key2", 2),
                             Map.of("key1", 1, "key2", 2)));
+            CountsAndSums repositoryData = new CountsAndSums(
+                    Map.of("key1", 1, "key2", 2),
+                    Map.of("key1", 1, "key2", 100));
             when(genderStatisticsRepositoryFetchService.getGenderEmotionAmountCountsAndSums(any(), any(), any()))
-                    .thenReturn(new CountsAndSums(
-                            Map.of("key1", 1, "key2", 2),
-                            Map.of("key1", 1, "key2", 100)));
+                    .thenReturn(repositoryData);
 
             Period period = statisticsPeriodManager.getStatisticsPeriod();
 
@@ -76,12 +99,32 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             targetService.updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
-            verify(genderStatisticsCacheWriteService).putAmountCountsAndSumsByGenderAndEmotion(any(), any());
+            verify(genderStatisticsCacheWriteService).putAmountCountsAndSumsByGenderAndEmotion(eq(repositoryData), any());
         }
     }
 
     @Nested
     class updateGenderDailyAmountSumCacheIfCacheMiss {
+        @Test
+        void 캐시로부터_데이터를_받을_때_에러가_발생한다면_레포지토리의_데이터를_요청한_다음_캐시를_업데이트한다() throws Exception {
+            // given
+            when(genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(any()))
+                    .thenThrow(new RuntimeException());
+
+            Map<String, Object> repositoryData = Map.of("key1", 1, "key2", 100);
+            when(genderStatisticsRepositoryFetchService.getGenderDateAmountSums(any(), any(), any()))
+                    .thenReturn(repositoryData);
+
+            Period period = statisticsPeriodManager.getStatisticsPeriod();
+
+            // when
+            targetService.updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType.SPEND, period);
+
+            // then
+            verify(genderStatisticsRepositoryFetchService).getGenderDateAmountSums(any(), any(), any());
+            verify(genderStatisticsCacheWriteService).putAmountSumsByGenderAndDate(eq(repositoryData), any());
+        }
+
         @Test
         void 캐시와_레포지토리로부터_받은_데이터가_같다면_CacheWriteService를_호출하지_않는다() throws Exception {
             // given
@@ -107,9 +150,10 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             when(genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(any()))
                     .thenReturn(
                             Map.of("key1", 1, "key2", 2));
+            Map<String, Object> repositoryData = Map.of("key1", 1, "key2", 100);
             when(genderStatisticsRepositoryFetchService.getGenderDateAmountSums(any(), any(), any()))
                     .thenReturn(
-                            Map.of("key1", 1, "key2", 100));
+                            repositoryData);
 
             Period period = statisticsPeriodManager.getStatisticsPeriod();
 
@@ -117,12 +161,32 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             targetService.updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
-            verify(genderStatisticsCacheWriteService).putAmountSumsByGenderAndDate(any(), any());
+            verify(genderStatisticsCacheWriteService).putAmountSumsByGenderAndDate(eq(repositoryData), any());
         }
     }
 
     @Nested
     class updateGenderSatisfactionAverageCacheIfCacheMiss {
+        @Test
+        void 캐시로부터_데이터를_받을_때_에러가_발생한다면_레포지토리의_데이터를_요청한_다음_캐시를_업데이트한다() throws Exception {
+            // given
+            when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
+                    .thenThrow(new RuntimeException());
+            CountsAndSums repositoryData = new CountsAndSums(
+                    Map.of("key1", 1.0, "key2", 2.0),
+                    Map.of("key1", 1, "key2", 100));
+            when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))
+                    .thenReturn(repositoryData);
+
+            Period period = statisticsPeriodManager.getStatisticsPeriod();
+
+            // when
+            targetService.updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType.SPEND, period);
+
+            // then
+            verify(genderStatisticsRepositoryFetchService).getGenderSatisfactionCountsAndSums(any(), any(), any());
+            verify(genderStatisticsCacheWriteService).putSatisfactionCountsAndSumsByGender(eq(repositoryData), any());
+        }
         @Test
         void 캐시와_레포지토리로부터_받은_데이터가_같다면_CacheWriteService를_호출하지_않는다() throws Exception {
             // given
@@ -151,10 +215,11 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
                     .thenReturn(new CountsAndSums(
                             Map.of("key1", 1.0, "key2", 2.0),
                             Map.of("key1", 1, "key2", 2)));
+            CountsAndSums repositoryData = new CountsAndSums(
+                    Map.of("key1", 1.0, "key2", 2.0),
+                    Map.of("key1", 1, "key2", 100));
             when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))
-                    .thenReturn(new CountsAndSums(
-                            Map.of("key1", 1.0, "key2", 2.0),
-                            Map.of("key1", 1, "key2", 100)));
+                    .thenReturn(repositoryData);
 
             Period period = statisticsPeriodManager.getStatisticsPeriod();
 
@@ -162,7 +227,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             targetService.updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
-            verify(genderStatisticsCacheWriteService).putSatisfactionCountsAndSumsByGender(any(), any());
+            verify(genderStatisticsCacheWriteService).putSatisfactionCountsAndSumsByGender(eq(repositoryData), any());
         }
     }
 }

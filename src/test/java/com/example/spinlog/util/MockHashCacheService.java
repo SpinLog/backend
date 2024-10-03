@@ -2,10 +2,16 @@ package com.example.spinlog.util;
 
 import com.example.spinlog.global.cache.HashCacheService;
 import com.example.spinlog.statistics.exception.InvalidCacheException;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
+@Primary
+@Profile("test")
 public class MockHashCacheService implements HashCacheService {
     Map<String, Map<String, Object>> cache = new HashMap<>();
     @Override

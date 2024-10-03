@@ -9,7 +9,7 @@ import com.example.spinlog.article.service.request.ArticleCreateRequest;
 import com.example.spinlog.article.service.request.ArticleUpdateRequest;
 import com.example.spinlog.article.service.response.WriteArticleResponseDto;
 import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
-import com.example.spinlog.integration.init.GenderStatisticsCacheStartupService;
+import com.example.spinlog.integration.init.GenderStatisticsCacheSetupService;
 import com.example.spinlog.statistics.service.GenderStatisticsService;
 import com.example.spinlog.statistics.service.dto.GenderDailyAmountSumResponse;
 import com.example.spinlog.statistics.service.dto.GenderEmotionAmountAverageResponse;
@@ -17,7 +17,7 @@ import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.user.entity.User;
 import com.example.spinlog.user.repository.UserRepository;
 import com.example.spinlog.util.CacheConfiguration;
-import com.example.spinlog.integration.init.DataSetupService;
+import com.example.spinlog.integration.init.RepositoryDataSetupService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +45,9 @@ public class GenderStatisticsCacheIntegrationTest {
     @Autowired
     GenderStatisticsService genderStatisticsService;
     @Autowired
-    GenderStatisticsCacheStartupService genderStatisticsCacheStartupService;
+    GenderStatisticsCacheSetupService genderStatisticsCacheSetupService;
     @Autowired
-    DataSetupService dataSetupService;
+    RepositoryDataSetupService repositoryDataSetupService;
 
     LocalDate spendDate = LocalDate.now().minusDays(1);
     Emotion emotion = Emotion.SAD;
@@ -61,8 +61,8 @@ public class GenderStatisticsCacheIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        dataSetupService.setUp();
-        genderStatisticsCacheStartupService.initGenderStatisticsCache();
+        repositoryDataSetupService.setUp();
+        genderStatisticsCacheSetupService.initGenderStatisticsCache();
     }
 
     @AfterEach

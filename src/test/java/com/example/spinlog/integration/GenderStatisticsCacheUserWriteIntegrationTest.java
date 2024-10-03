@@ -5,9 +5,9 @@ import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.article.repository.ArticleRepository;
 import com.example.spinlog.global.security.customFilter.OAuth2ResponseImpl;
 import com.example.spinlog.global.security.oauth2.user.CustomOAuth2User;
-import com.example.spinlog.integration.init.DataSetupService;
+import com.example.spinlog.integration.init.RepositoryDataSetupService;
 import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
-import com.example.spinlog.integration.init.GenderStatisticsCacheStartupService;
+import com.example.spinlog.integration.init.GenderStatisticsCacheSetupService;
 import com.example.spinlog.statistics.service.GenderStatisticsService;
 import com.example.spinlog.statistics.service.dto.GenderDailyAmountSumResponse;
 import com.example.spinlog.statistics.service.dto.GenderEmotionAmountAverageResponse;
@@ -47,9 +47,9 @@ public class GenderStatisticsCacheUserWriteIntegrationTest {
     GenderStatisticsService genderStatisticsService;
 
     @Autowired
-    GenderStatisticsCacheStartupService genderStatisticsCacheStartupService;
+    GenderStatisticsCacheSetupService genderStatisticsCacheSetupService;
     @Autowired
-    DataSetupService dataSetupService;
+    RepositoryDataSetupService repositoryDataSetupService;
 
     LocalDate spendDate = LocalDate.now().minusDays(1);
     Emotion emotion = Emotion.SAD;
@@ -63,8 +63,8 @@ public class GenderStatisticsCacheUserWriteIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        dataSetupService.setUp();
-        genderStatisticsCacheStartupService.initGenderStatisticsCache();
+        repositoryDataSetupService.setUp();
+        genderStatisticsCacheSetupService.initGenderStatisticsCache();
     }
 
     @AfterEach

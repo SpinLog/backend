@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Component
 @Slf4j
@@ -21,19 +21,40 @@ public class StatisticsPeriodManager {
         LocalDate endDate = LocalDate.now(clock);
         this.startDate = endDate.minusDays(PERIOD_CRITERIA);
         this.endDate = endDate;
-
-        // todo 0시 ~ 4시 안맞음 - 일단은 이 시간을 제외한 시간대에 실행되도록 설정
     }
 
     public Period getStatisticsPeriod() {
         return new Period(startDate, endDate);
     }
 
-    // todo GenderStatsticsCacheScheduledService에서만 사용하도록 변경
+    /***
+     * todo (have to be called only in GenderStatsticsCacheScheduledService)
+     * every 4 a.m. update statistics period
+     */
     public void updateStatisticsPeriod() {
         LocalDate endDate = LocalDate.now(clock);
         this.startDate = endDate.minusDays(PERIOD_CRITERIA);
         this.endDate = endDate;
+    }
+
+    /***
+     * todo (have to be called only in GenderStatsticsCacheStartupService)
+     * Immediately after being started spring boot application, update statistics period
+     */
+    public void setStatisticsPeriodImmediatelyAfterSpringBootIsStarted() {
+        LocalTime now = LocalTime.now(clock);
+        LocalTime FOUR_AM = LocalTime.of(4, 0);
+        if(now.isBefore(FOUR_AM)) {
+            log.info("current time: {}, update statistics period as of yesterday", now);
+            LocalDate yesterday = LocalDate.now().minusDays(1);
+            this.startDate = yesterday.minusDays(PERIOD_CRITERIA);
+            this.endDate = yesterday;
+        } else {
+            log.info("current time: {}, update statistics period as of today", now);
+            LocalDate today = LocalDate.now();
+            this.startDate = today.minusDays(PERIOD_CRITERIA);
+            this.endDate = today;
+        }
     }
 
     public record Period(LocalDate startDate, LocalDate endDate) { }

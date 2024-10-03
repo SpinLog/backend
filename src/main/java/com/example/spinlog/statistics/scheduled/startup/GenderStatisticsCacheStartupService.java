@@ -1,33 +1,44 @@
-package com.example.spinlog.integration.init;
+package com.example.spinlog.statistics.scheduled.startup;
 
 import com.example.spinlog.global.cache.HashCacheService;
+import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
+import com.example.spinlog.utils.StatisticsZeroPaddingUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
-import static com.example.spinlog.article.entity.RegisterType.*;
-import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
+import static com.example.spinlog.article.entity.RegisterType.SAVE;
+import static com.example.spinlog.article.entity.RegisterType.SPEND;
+import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
+import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.AllStatisticsMap;
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 
 @Component
-@Transactional(readOnly = true) // todo 범위 좁히기
 @RequiredArgsConstructor
 @Slf4j
-public class GenderStatisticsCacheStartupService {
+class GenderStatisticsCacheStartupService {
     private final HashCacheService hashCacheService;
     private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
+    private final StatisticsPeriodManager statisticsPeriodManager;
 
+    @EventListener(ApplicationReadyEvent.class)
     public void initGenderStatisticsCache() {
-        log.info("Start initializing Caching to Redis");
-        LocalDate endDate = LocalDate.now();
-        LocalDate startDate = endDate.minusDays(PERIOD_CRITERIA);
+        log.info("Start initializing Caching"); // todo put data with zero padding
+
+        statisticsPeriodManager.setStatisticsPeriodImmediatelyAfterSpringBootIsStarted();
+
+        // have to lock
+        Period period = statisticsPeriodManager.getStatisticsPeriod();
+        LocalDate endDate = period.endDate();
+        LocalDate startDate = period.startDate();
 
         AllStatisticsMap allData = genderStatisticsRepositoryFetchService.getGenderStatisticsAllData(startDate, endDate);
+        allData = StatisticsZeroPaddingUtils.zeroPaddingAllStatisticsMap(allData, period);
 
         hashCacheService.putAllDataInHash(
                 getGenderEmotionStatisticsAmountSumKeyName(SPEND),
@@ -62,6 +73,6 @@ public class GenderStatisticsCacheStartupService {
                 getGenderStatisticsSatisfactionCountKeyName(SAVE),
                 allData.genderSatisfactionSaveCountsAndSums().countsMap());
 
-        log.info("Finish initializing Caching to Redis");
+        log.info("Finish initializing Caching");
     }
 }

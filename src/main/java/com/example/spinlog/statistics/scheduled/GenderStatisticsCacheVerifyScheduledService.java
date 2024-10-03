@@ -42,11 +42,21 @@ public class GenderStatisticsCacheVerifyScheduledService {
     public void updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType registerType, Period period) {
         LocalDate endDate = period.endDate();
         LocalDate startDate = period.startDate();
-        CountsAndSums cacheData = genderStatisticsCacheFetchService
-                .getAmountAveragesEachGenderAndEmotion(registerType);
+        CountsAndSums cacheData;
+        try{
+            cacheData = genderStatisticsCacheFetchService
+                    .getAmountAveragesEachGenderAndEmotion(registerType);
+        } catch (Exception e) {
+            log.warn("RegisterType(" + registerType
+                    + ") Error occurred while fetching cache data. Cache will be updated.", e);
+            CountsAndSums repositoryData = genderStatisticsRepositoryFetchService
+                    .getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
+            genderStatisticsCacheWriteService.putAmountCountsAndSumsByGenderAndEmotion(repositoryData, registerType);
+            return;
+        }
+
         CountsAndSums repositoryData = genderStatisticsRepositoryFetchService
                 .getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
-
         if (isNotSame(cacheData, repositoryData)) {
             log.warn("RegisterType(" + registerType
                     + ") GenderEmotionAmountAverage Cache Data and Repository Data are not same. Cache will be updated.");
@@ -60,11 +70,21 @@ public class GenderStatisticsCacheVerifyScheduledService {
     public void updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType registerType, Period period) {
         LocalDate endDate = period.endDate();
         LocalDate startDate = period.startDate();
-        Map<String, Object> cacheData = genderStatisticsCacheFetchService
-                .getAmountSumsEachGenderAndDay(registerType);
+        Map<String, Object> cacheData;
+        try {
+            cacheData = genderStatisticsCacheFetchService
+                    .getAmountSumsEachGenderAndDay(registerType);
+        } catch (Exception e) {
+            log.warn("RegisterType(" + registerType
+                    + ") Error occurred while fetching cache data. Cache will be updated.", e);
+            Map<String, Object> repositoryData = genderStatisticsRepositoryFetchService
+                    .getGenderDateAmountSums(registerType, startDate, endDate);
+            genderStatisticsCacheWriteService.putAmountSumsByGenderAndDate(repositoryData, registerType);
+            return;
+        }
+
         Map<String, Object> repositoryData = genderStatisticsRepositoryFetchService
                 .getGenderDateAmountSums(registerType, startDate, endDate);
-
         if (isNotSame(cacheData, repositoryData)) {
             log.warn("RegisterType(" + registerType
                     + ") GenderDailyAmountSum Cache Data and Repository Data are not same. Cache will be updated.");
@@ -79,11 +99,21 @@ public class GenderStatisticsCacheVerifyScheduledService {
     public void updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType registerType, Period period) {
         LocalDate endDate = period.endDate();
         LocalDate startDate = period.startDate();
-        CountsAndSums cacheData = genderStatisticsCacheFetchService
-                .getSatisfactionAveragesEachGender(registerType);
+        CountsAndSums cacheData;
+        try {
+            cacheData = genderStatisticsCacheFetchService
+                    .getSatisfactionAveragesEachGender(registerType);
+        } catch (Exception e) {
+            log.warn("RegisterType(" + registerType
+                    + ") Error occurred while fetching cache data. Cache will be updated.", e);
+            CountsAndSums repositoryData = genderStatisticsRepositoryFetchService
+                    .getGenderSatisfactionCountsAndSums(registerType, startDate, endDate);
+            genderStatisticsCacheWriteService.putSatisfactionCountsAndSumsByGender(repositoryData, registerType);
+            return;
+        }
+
         CountsAndSums repositoryData = genderStatisticsRepositoryFetchService
                 .getGenderSatisfactionCountsAndSums(registerType, startDate, endDate);
-
         if (isNotSame(cacheData, repositoryData)) {
             log.warn("RegisterType(" + registerType
                     + ") GenderSatisfactionAverage Cache Data and Repository Data are not same. Cache will be updated.");
