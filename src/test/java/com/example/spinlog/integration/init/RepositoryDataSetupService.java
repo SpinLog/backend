@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class DataSetupService {
+public class RepositoryDataSetupService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
 

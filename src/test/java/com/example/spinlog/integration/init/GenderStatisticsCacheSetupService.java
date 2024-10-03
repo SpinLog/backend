@@ -1,6 +1,7 @@
 package com.example.spinlog.integration.init;
 
 import com.example.spinlog.global.cache.HashCacheService;
+import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,14 +19,17 @@ import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 @Transactional(readOnly = true) // todo 범위 좁히기
 @RequiredArgsConstructor
 @Slf4j
-public class GenderStatisticsCacheStartupService {
+public class GenderStatisticsCacheSetupService {
     private final HashCacheService hashCacheService;
     private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
+    private final StatisticsPeriodManager statisticsPeriodManager;
 
     public void initGenderStatisticsCache() {
-        log.info("Start initializing Caching to Redis");
-        LocalDate endDate = LocalDate.now();
-        LocalDate startDate = endDate.minusDays(PERIOD_CRITERIA);
+        log.info("Start initializing Caching");
+
+        StatisticsPeriodManager.Period period = statisticsPeriodManager.getStatisticsPeriod();
+        LocalDate endDate = period.endDate();
+        LocalDate startDate = period.startDate();
 
         AllStatisticsMap allData = genderStatisticsRepositoryFetchService.getGenderStatisticsAllData(startDate, endDate);
 
@@ -62,6 +66,6 @@ public class GenderStatisticsCacheStartupService {
                 getGenderStatisticsSatisfactionCountKeyName(SAVE),
                 allData.genderSatisfactionSaveCountsAndSums().countsMap());
 
-        log.info("Finish initializing Caching to Redis");
+        log.info("Finish initializing Caching");
     }
 }
