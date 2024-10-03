@@ -3,6 +3,7 @@ package com.example.spinlog.statistics.scheduled.startup;
 import com.example.spinlog.global.cache.HashCacheService;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
+import com.example.spinlog.utils.StatisticsZeroPaddingUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -37,6 +38,7 @@ class GenderStatisticsCacheStartupService {
         LocalDate startDate = period.startDate();
 
         AllStatisticsMap allData = genderStatisticsRepositoryFetchService.getGenderStatisticsAllData(startDate, endDate);
+        allData = StatisticsZeroPaddingUtils.zeroPaddingAllStatisticsMap(allData, period);
 
         hashCacheService.putAllDataInHash(
                 getGenderEmotionStatisticsAmountSumKeyName(SPEND),
