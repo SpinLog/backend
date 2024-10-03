@@ -96,7 +96,7 @@ class GenderStatisticsRepositoryTest {
                                     .user(filteredUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay().plusSeconds(1L))
+                                    .spendDate(endDate.atStartOfDay())
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -115,7 +115,7 @@ class GenderStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -220,7 +220,7 @@ class GenderStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(2000)
                                     .build()
                                     .createArticle()),
@@ -229,7 +229,7 @@ class GenderStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(3000)
                                     .build()
                                     .createArticle()));
@@ -278,7 +278,7 @@ class GenderStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(2200)
                                     .build()
                                     .createArticle()),
@@ -287,7 +287,7 @@ class GenderStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(3300)
                                     .build()
                                     .createArticle()));
@@ -333,7 +333,7 @@ class GenderStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(filteredUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay().plusSeconds(1L))
+                                    .spendDate(endDate.atStartOfDay())
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -350,7 +350,7 @@ class GenderStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -440,7 +440,7 @@ class GenderStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(1000)
                                     .build()
                                     .createArticle()),
@@ -449,7 +449,7 @@ class GenderStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(2000)
                                     .build()
                                     .createArticle()),
@@ -458,7 +458,7 @@ class GenderStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(3000)
                                     .build()
                                     .createArticle()));
@@ -673,7 +673,7 @@ class GenderStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(filteredUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay().plusSeconds(1L))
+                                    .spendDate(endDate.atStartOfDay())
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -690,7 +690,7 @@ class GenderStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -775,7 +775,7 @@ class GenderStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .satisfaction(3.0f)
                                     .build()
                                     .createArticle()),
@@ -783,7 +783,7 @@ class GenderStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .satisfaction(4.0f)
                                     .build()
                                     .createArticle()));
@@ -819,7 +819,7 @@ class GenderStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .satisfaction(3.04f)
                                     .build()
                                     .createArticle()),
@@ -827,7 +827,7 @@ class GenderStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .satisfaction(4.08f)
                                     .build()
                                     .createArticle()));
