@@ -105,16 +105,18 @@ public class GenderStatisticsCacheRefreshScheduledService {
             hashCacheService.decrementDataInHash(getGenderEmotionStatisticsAmountCountKeyName(SAVE), k, (long)v);
         });
 
+        log.info("try to delete GenderAmountSum::SPEND:  {}", expiringStatisticsData.genderDailyAmountSpendSums());
+        log.info("try to delete GenderAmountSum::SAVE    {}", expiringStatisticsData.genderDailyAmountSaveSums());
         expiringStatisticsData.genderDailyAmountSpendSums().forEach((k, v) -> {
-            long data = (long) hashCacheService.getDataFromHash(getGenderDailyStatisticsAmountSumKeyName(SPEND), k);
-            if(data != (long)v)
-                log.warn("Data is not same. key: {}, repository: {}, cache: {}", k, data, v);
+            Object dataFromCache = hashCacheService.getDataFromHash(getGenderDailyStatisticsAmountSumKeyName(SPEND), k);
+            if(!v.equals(dataFromCache))
+                log.warn("Data is not same. key: {}, repository: {}, cache: {}", k, dataFromCache, v);
             hashCacheService.deleteHashKey(getGenderDailyStatisticsAmountSumKeyName(SPEND), k);
         });
         expiringStatisticsData.genderDailyAmountSaveSums().forEach((k, v) -> {
-            long data = (long) hashCacheService.getDataFromHash(getGenderDailyStatisticsAmountSumKeyName(SAVE), k);
-            if(data != (long)v)
-                log.warn("Data is not same. key: {}, repository: {}, cache: {}", k, data, v);
+            Object dataFromCache = hashCacheService.getDataFromHash(getGenderDailyStatisticsAmountSumKeyName(SAVE), k);
+            if(!v.equals(dataFromCache))
+                log.warn("Data is not same. key: {}, repository: {}, cache: {}", k, dataFromCache, v);
             hashCacheService.deleteHashKey(getGenderDailyStatisticsAmountSumKeyName(SAVE), k);
         });
 

@@ -27,7 +27,7 @@ class GenderStatisticsCacheStartupService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void initGenderStatisticsCache() {
-        log.info("Start initializing Caching");
+        log.info("Start initializing Caching"); // todo put data with zero padding
 
         Period period = statisticsPeriodManager.getStatisticsPeriod();
         LocalDate endDate = period.endDate();
