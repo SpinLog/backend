@@ -29,6 +29,9 @@ class GenderStatisticsCacheStartupService {
     public void initGenderStatisticsCache() {
         log.info("Start initializing Caching"); // todo put data with zero padding
 
+        statisticsPeriodManager.setStatisticsPeriodImmediatelyAfterSpringBootIsStarted();
+
+        // have to lock
         Period period = statisticsPeriodManager.getStatisticsPeriod();
         LocalDate endDate = period.endDate();
         LocalDate startDate = period.startDate();
