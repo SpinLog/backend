@@ -29,6 +29,7 @@ public class GenderStatisticsCacheVerifyScheduledService {
     @Scheduled(cron = "0 0 5 * * *")
     public void updateGenderStatisticsCacheIfCacheMiss() {
         Period period = statisticsPeriodManager.getStatisticsPeriod();
+        log.info("Start verifying Caching, period: {}", period);
         updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType.SPEND, period);
         updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType.SAVE, period);
 
@@ -59,7 +60,8 @@ public class GenderStatisticsCacheVerifyScheduledService {
                 .getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
         if (isNotSame(cacheData, repositoryData)) {
             log.warn("RegisterType(" + registerType
-                    + ") GenderEmotionAmountAverage Cache Data and Repository Data are not same. Cache will be updated.");
+                    + ") GenderEmotionAmountAverage Cache Data and Repository Data are not same. Cache will be updated.\ncacheDate = {}\nrepositoryData = {}",
+                    cacheData, repositoryData);
             genderStatisticsCacheWriteService.putAmountCountsAndSumsByGenderAndEmotion(repositoryData, registerType);
         }
         else
@@ -87,7 +89,8 @@ public class GenderStatisticsCacheVerifyScheduledService {
                 .getGenderDateAmountSums(registerType, startDate, endDate);
         if (isNotSame(cacheData, repositoryData)) {
             log.warn("RegisterType(" + registerType
-                    + ") GenderDailyAmountSum Cache Data and Repository Data are not same. Cache will be updated.");
+                    + ") GenderDailyAmountSum Cache Data and Repository Data are not same. Cache will be updated.\ncacheDate = {}\nrepositoryData = {}",
+                    cacheData, repositoryData);
             genderStatisticsCacheWriteService.putAmountSumsByGenderAndDate(repositoryData, registerType);
         }
         else
@@ -116,7 +119,8 @@ public class GenderStatisticsCacheVerifyScheduledService {
                 .getGenderSatisfactionCountsAndSums(registerType, startDate, endDate);
         if (isNotSame(cacheData, repositoryData)) {
             log.warn("RegisterType(" + registerType
-                    + ") GenderSatisfactionAverage Cache Data and Repository Data are not same. Cache will be updated.");
+                    + ") GenderSatisfactionAverage Cache Data and Repository Data are not same. Cache will be updated.\ncacheDate = {}\nrepositoryData = {}",
+                    cacheData, repositoryData);
             genderStatisticsCacheWriteService.putSatisfactionCountsAndSumsByGender(repositoryData, registerType);
         }
         else

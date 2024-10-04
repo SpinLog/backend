@@ -18,7 +18,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.CacheKeyNameUtils.getGenderStatisticsSatisfactionCountKeyName;
+import static com.example.spinlog.utils.CacheKeyNameUtils.GENDER_SATISFACTION_COUNT_KEY_NAME;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -49,21 +49,21 @@ class GenderStatisticsCacheSynchronizerTest {
     @BeforeEach
     void setUp() {
         hashCacheService.putDataInHash(
-                getGenderEmotionStatisticsAmountSumKeyName(registerType),
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType),
                 user.getGender() + "::" + article.getEmotion(), 0L);
         hashCacheService.putDataInHash(
-                getGenderEmotionStatisticsAmountCountKeyName(registerType),
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType),
                 user.getGender() + "::" + article.getEmotion(), 0L);
 
         hashCacheService.putDataInHash(
-                getGenderDailyStatisticsAmountSumKeyName(registerType),
+                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType),
                 user.getGender() + "::" + article.getSpendDate().toLocalDate(), 0L);
 
         hashCacheService.putDataInHash(
-                getGenderStatisticsSatisfactionSumKeyName(registerType),
+                GENDER_SATISFACTION_SUM_KEY_NAME(registerType),
                 user.getGender().name(), 0.0);
         hashCacheService.putDataInHash(
-                getGenderStatisticsSatisfactionCountKeyName(registerType),
+                GENDER_SATISFACTION_COUNT_KEY_NAME(registerType),
                 user.getGender().name(), 0L);
     }
 
@@ -73,11 +73,11 @@ class GenderStatisticsCacheSynchronizerTest {
         void User의_gender과_Article의_emotion에_해당하는_amount_캐시를_amount만큼_증가시킨다() throws Exception {
             // given
             hashCacheService.putDataInHash(
-                    getGenderEmotionStatisticsAmountSumKeyName(registerType),
+                    GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType),
                     user.getGender() + "::" + article.getEmotion(),
                     1000L);
             hashCacheService.putDataInHash(
-                    getGenderEmotionStatisticsAmountCountKeyName(registerType),
+                    GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType),
                     user.getGender() + "::" + article.getEmotion(),
                     1L);
 
@@ -86,10 +86,10 @@ class GenderStatisticsCacheSynchronizerTest {
 
             // then
             Object sum = hashCacheService.getDataFromHash(
-                    getGenderEmotionStatisticsAmountSumKeyName(registerType),
+                    GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType),
                     user.getGender() + "::" + article.getEmotion());
             Object count = hashCacheService.getDataFromHash(
-                    getGenderEmotionStatisticsAmountCountKeyName(registerType),
+                    GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType),
                     user.getGender() + "::" + article.getEmotion());
             assertThat(sum).isEqualTo(1000L + article.getAmount());
             assertThat(count).isEqualTo(2L);
@@ -99,7 +99,7 @@ class GenderStatisticsCacheSynchronizerTest {
         void User의_gender와_Article의_spendDate에_해당하는_amount_캐시를_amount만큼_증가시킨다() throws Exception {
             // given
             hashCacheService.putDataInHash(
-                    getGenderDailyStatisticsAmountSumKeyName(registerType),
+                    GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType),
                     user.getGender() + "::" + article.getSpendDate().toLocalDate(),
                     1000L);
 
@@ -108,7 +108,7 @@ class GenderStatisticsCacheSynchronizerTest {
 
             // then
             Object sum = hashCacheService.getDataFromHash(
-                    getGenderDailyStatisticsAmountSumKeyName(registerType),
+                    GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType),
                     user.getGender() + "::" + article.getSpendDate().toLocalDate());
             assertThat(sum).isEqualTo(1000L + article.getAmount());
         }
@@ -117,11 +117,11 @@ class GenderStatisticsCacheSynchronizerTest {
         void User의_gender에_해당하는_satisfaction_캐시를_satisfaction만큼_증가시킨다() throws Exception {
             // given
             hashCacheService.putDataInHash(
-                    getGenderStatisticsSatisfactionSumKeyName(registerType),
+                    GENDER_SATISFACTION_SUM_KEY_NAME(registerType),
                     user.getGender().name(),
                     5.0);
             hashCacheService.putDataInHash(
-                    getGenderStatisticsSatisfactionCountKeyName(registerType),
+                    GENDER_SATISFACTION_COUNT_KEY_NAME(registerType),
                     user.getGender().name(),
                     1L);
 
@@ -130,10 +130,10 @@ class GenderStatisticsCacheSynchronizerTest {
 
             // then
             Object sum = hashCacheService.getDataFromHash(
-                    getGenderStatisticsSatisfactionSumKeyName(registerType),
+                    GENDER_SATISFACTION_SUM_KEY_NAME(registerType),
                     user.getGender().name());
             Object count = hashCacheService.getDataFromHash(
-                    getGenderStatisticsSatisfactionCountKeyName(registerType),
+                    GENDER_SATISFACTION_COUNT_KEY_NAME(registerType),
                     user.getGender().name());
             assertThat(sum).isEqualTo(5.0 + article.getSatisfaction());
             assertThat(count).isEqualTo(2L);
@@ -151,11 +151,11 @@ class GenderStatisticsCacheSynchronizerTest {
         void User의_gender과_Article의_emotion에_해당하는_amount_캐시를_amount만큼_감소시킨다() throws Exception {
             // given
             hashCacheService.putDataInHash(
-                    getGenderEmotionStatisticsAmountSumKeyName(registerType),
+                    GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType),
                     user.getGender() + "::" + article.getEmotion(),
                     1000L);
             hashCacheService.putDataInHash(
-                    getGenderEmotionStatisticsAmountCountKeyName(registerType),
+                    GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType),
                     user.getGender() + "::" + article.getEmotion(),
                     1L);
 
@@ -164,10 +164,10 @@ class GenderStatisticsCacheSynchronizerTest {
 
             // then
             Object sum = hashCacheService.getDataFromHash(
-                    getGenderEmotionStatisticsAmountSumKeyName(registerType),
+                    GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType),
                     user.getGender() + "::" + article.getEmotion());
             Object count = hashCacheService.getDataFromHash(
-                    getGenderEmotionStatisticsAmountCountKeyName(registerType),
+                    GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType),
                     user.getGender() + "::" + article.getEmotion());
             assertThat(sum).isEqualTo(1000L - article.getAmount());
             assertThat(count).isEqualTo(0L);
@@ -177,7 +177,7 @@ class GenderStatisticsCacheSynchronizerTest {
         void User의_gender와_Article의_spendDate에_해당하는_amount_캐시를_amount만큼_감소시킨다() throws Exception {
             // given
             hashCacheService.putDataInHash(
-                    getGenderDailyStatisticsAmountSumKeyName(registerType),
+                    GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType),
                     user.getGender() + "::" + article.getSpendDate().toLocalDate(),
                     1000L);
 
@@ -186,7 +186,7 @@ class GenderStatisticsCacheSynchronizerTest {
 
             // then
             Object sum = hashCacheService.getDataFromHash(
-                    getGenderDailyStatisticsAmountSumKeyName(registerType),
+                    GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType),
                     user.getGender() + "::" + article.getSpendDate().toLocalDate());
             assertThat(sum).isEqualTo(1000L - article.getAmount());
         }
@@ -195,11 +195,11 @@ class GenderStatisticsCacheSynchronizerTest {
         void User의_gender에_해당하는_satisfaction_캐시를_satisfaction만큼_감소시킨다() throws Exception {
             // given
             hashCacheService.putDataInHash(
-                    getGenderStatisticsSatisfactionSumKeyName(registerType),
+                    GENDER_SATISFACTION_SUM_KEY_NAME(registerType),
                     user.getGender().name(),
                     5.0);
             hashCacheService.putDataInHash(
-                    getGenderStatisticsSatisfactionCountKeyName(registerType),
+                    GENDER_SATISFACTION_COUNT_KEY_NAME(registerType),
                     user.getGender().name(),
                     1L);
 
@@ -208,10 +208,10 @@ class GenderStatisticsCacheSynchronizerTest {
 
             // then
             Object sum = hashCacheService.getDataFromHash(
-                    getGenderStatisticsSatisfactionSumKeyName(registerType),
+                    GENDER_SATISFACTION_SUM_KEY_NAME(registerType),
                     user.getGender().name());
             Object count = hashCacheService.getDataFromHash(
-                    getGenderStatisticsSatisfactionCountKeyName(registerType),
+                    GENDER_SATISFACTION_COUNT_KEY_NAME(registerType),
                     user.getGender().name());
             assertThat(sum).isEqualTo(5.0 - article.getSatisfaction());
             assertThat(count).isEqualTo(0L);

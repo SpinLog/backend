@@ -70,13 +70,13 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
         List<String> keys = getGenderEmotionHashKeyNames();
         keys.forEach(key -> {
             cacheService.putDataInHash(
-                    getGenderEmotionStatisticsAmountSumKeyName(SPEND),
+                    GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                     key, 0L);
         });
 
         String targetKey = "MALE::SAD";
         cacheService.incrementDataInHash(
-                getGenderEmotionStatisticsAmountSumKeyName(SPEND),
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                 targetKey, 1000L);
 
         LocalDate oldEndDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
@@ -90,7 +90,7 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
         targetService.refreshGenderStatisticsCache();
 
         // then
-        long data = (long) cacheService.getDataFromHash(getGenderEmotionStatisticsAmountSumKeyName(SPEND), targetKey);
+        long data = (long) cacheService.getDataFromHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), targetKey);
         assertThat(data).isEqualTo(1000L - 500L);
     }
 
@@ -100,13 +100,13 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
         List<String> keys = getGenderEmotionHashKeyNames();
         keys.forEach(key -> {
             cacheService.putDataInHash(
-                    getGenderEmotionStatisticsAmountSumKeyName(SPEND),
+                    GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                     key, 0L);
         });
 
         String targetKey = "MALE::SAD";
         cacheService.incrementDataInHash(
-                getGenderEmotionStatisticsAmountSumKeyName(SPEND),
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                 targetKey, 1000L);
 
         LocalDate todayEndDate = LocalDate.now();
@@ -120,7 +120,7 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
         targetService.refreshGenderStatisticsCache();
 
         // then
-        long data = (long) cacheService.getDataFromHash(getGenderEmotionStatisticsAmountSumKeyName(SPEND), targetKey);
+        long data = (long) cacheService.getDataFromHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), targetKey);
         assertThat(data).isEqualTo(1000L + 500L);
     }
 
@@ -130,7 +130,7 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
         List<String> keys = getGenderDailyHashKeyNames();
         keys.forEach(key -> {
             cacheService.putDataInHash(
-                    getGenderDailyStatisticsAmountSumKeyName(SPEND),
+                    GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND),
                     key, 0L);
         });
 
@@ -147,7 +147,7 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
         targetService.refreshGenderStatisticsCache();
 
         // then
-        assertThat(cacheService.getDataFromHash(getGenderDailyStatisticsAmountSumKeyName(SPEND), targetKey))
+        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), targetKey))
                 .isNull();
     }
 

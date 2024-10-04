@@ -28,7 +28,7 @@ class GenderStatisticsCacheStartupService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void initGenderStatisticsCache() {
-        log.info("Start initializing Caching"); // todo put data with zero padding
+        log.info("Start initializing Caching");
 
         statisticsPeriodManager.setStatisticsPeriodImmediatelyAfterSpringBootIsStarted();
 
@@ -41,38 +41,38 @@ class GenderStatisticsCacheStartupService {
         allData = StatisticsZeroPaddingUtils.zeroPaddingAllStatisticsMap(allData, period);
 
         hashCacheService.putAllDataInHash(
-                getGenderEmotionStatisticsAmountSumKeyName(SPEND),
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                 allData.genderEmotionAmountSpendCountsAndSums().sumsMap());
         hashCacheService.putAllDataInHash(
-                getGenderEmotionStatisticsAmountCountKeyName(SPEND),
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND),
                 allData.genderEmotionAmountSpendCountsAndSums().countsMap());
         hashCacheService.putAllDataInHash(
-                getGenderEmotionStatisticsAmountSumKeyName(SAVE),
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE),
                 allData.genderEmotionAmountSaveCountsAndSums().sumsMap());
         hashCacheService.putAllDataInHash(
-                getGenderEmotionStatisticsAmountCountKeyName(SAVE),
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE),
                 allData.genderEmotionAmountSaveCountsAndSums().countsMap());
 
         hashCacheService.putAllDataInHash(
-                getGenderDailyStatisticsAmountSumKeyName(SPEND),
+                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND),
                 allData.genderDailyAmountSpendSums());
         hashCacheService.putAllDataInHash(
-                getGenderDailyStatisticsAmountSumKeyName(SAVE),
+                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE),
                 allData.genderDailyAmountSaveSums());
 
         hashCacheService.putAllDataInHash(
-                getGenderStatisticsSatisfactionSumKeyName(SPEND),
+                GENDER_SATISFACTION_SUM_KEY_NAME(SPEND),
                 allData.genderSatisfactionSpendCountsAndSums().sumsMap());
         hashCacheService.putAllDataInHash(
-                getGenderStatisticsSatisfactionCountKeyName(SPEND),
+                GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND),
                 allData.genderSatisfactionSpendCountsAndSums().countsMap());
         hashCacheService.putAllDataInHash(
-                getGenderStatisticsSatisfactionSumKeyName(SAVE),
+                GENDER_SATISFACTION_SUM_KEY_NAME(SAVE),
                 allData.genderSatisfactionSaveCountsAndSums().sumsMap());
         hashCacheService.putAllDataInHash(
-                getGenderStatisticsSatisfactionCountKeyName(SAVE),
+                GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE),
                 allData.genderSatisfactionSaveCountsAndSums().countsMap());
 
-        log.info("Finish initializing Caching");
+        log.info("Finish initializing Caching\ncacheDate = {}", allData);
     }
 }

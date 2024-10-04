@@ -13,14 +13,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.CacheKeyNameUtils.getGenderStatisticsSatisfactionCountKeyName;
+import static com.example.spinlog.utils.CacheKeyNameUtils.GENDER_SATISFACTION_COUNT_KEY_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -69,7 +67,7 @@ class GenderStatisticsCacheStartupServiceTest {
         List<String> keys = List.of("MALE::PROUD", "MALE::SAD", "FEMALE::PROUD", "FEMALE::SAD");
         List<Long> amounts = List.of(1L, 2L, 3L, 4L);
         Map<String, Object> genderEmotionAmountSums = hashCacheService.getHashEntries(
-                getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SPEND));
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(RegisterType.SPEND));
         for(var key: keys){
             assertThat(genderEmotionAmountSums.get(key)).isNotNull();
             assertThat(genderEmotionAmountSums.get(key)).isInstanceOf(Long.class)
@@ -77,7 +75,7 @@ class GenderStatisticsCacheStartupServiceTest {
         }
 
         Map<String, Object> genderEmotionAmountCounts = hashCacheService.getHashEntries(
-                getGenderEmotionStatisticsAmountCountKeyName(RegisterType.SPEND));
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(RegisterType.SPEND));
 
         for (var key: keys) {
             assertThat(genderEmotionAmountCounts.get(key)).isNotNull();
@@ -114,22 +112,22 @@ class GenderStatisticsCacheStartupServiceTest {
         // then
         List<String> keys = List.of("MALE::PROUD", "MALE::SAD", "FEMALE::PROUD", "FEMALE::SAD");
         Map<String, Object> genderEmotionAmountSums = hashCacheService.getHashEntries(
-                getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SPEND));
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(RegisterType.SPEND));
         for(var key: genderEmotionAmountSums.keySet()){
             if(keys.contains(key)) continue;
             assertThat(genderEmotionAmountSums.get(key)).isEqualTo(0L);
         }
 
         Map<String, Object> genderEmotionAmountCounts = hashCacheService.getHashEntries(
-                getGenderEmotionStatisticsAmountCountKeyName(RegisterType.SPEND));
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(RegisterType.SPEND));
         for(var key: genderEmotionAmountCounts.keySet()){
             if(keys.contains(key)) continue;
             assertThat(genderEmotionAmountSums.get(key)).isEqualTo(0L);
         }
 
         for(var key: getAllCacheKeyNames()) {
-            if(key.equals(getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SPEND)) ||
-                    key.equals(getGenderEmotionStatisticsAmountCountKeyName(RegisterType.SPEND))) continue;
+            if(key.equals(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(RegisterType.SPEND)) ||
+                    key.equals(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(RegisterType.SPEND))) continue;
             Map<String, Object> entries = hashCacheService.getHashEntries(key);
             for(var e: entries.entrySet()){
                 if(e.getValue() instanceof Double){
@@ -143,16 +141,16 @@ class GenderStatisticsCacheStartupServiceTest {
 
     private String[] getAllCacheKeyNames(){
         return new String[]{
-                getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SPEND),
-                getGenderEmotionStatisticsAmountCountKeyName(RegisterType.SPEND),
-                getGenderEmotionStatisticsAmountSumKeyName(RegisterType.SAVE),
-                getGenderEmotionStatisticsAmountCountKeyName(RegisterType.SAVE),
-                getGenderDailyStatisticsAmountSumKeyName(RegisterType.SPEND),
-                getGenderDailyStatisticsAmountSumKeyName(RegisterType.SAVE),
-                getGenderStatisticsSatisfactionSumKeyName(RegisterType.SPEND),
-                getGenderStatisticsSatisfactionCountKeyName(RegisterType.SPEND),
-                getGenderStatisticsSatisfactionSumKeyName(RegisterType.SAVE),
-                getGenderStatisticsSatisfactionCountKeyName(RegisterType.SAVE)
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(RegisterType.SPEND),
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(RegisterType.SPEND),
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(RegisterType.SAVE),
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(RegisterType.SAVE),
+                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(RegisterType.SPEND),
+                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(RegisterType.SAVE),
+                GENDER_SATISFACTION_SUM_KEY_NAME(RegisterType.SPEND),
+                GENDER_SATISFACTION_COUNT_KEY_NAME(RegisterType.SPEND),
+                GENDER_SATISFACTION_SUM_KEY_NAME(RegisterType.SAVE),
+                GENDER_SATISFACTION_COUNT_KEY_NAME(RegisterType.SAVE)
         };
     }
 

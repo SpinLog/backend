@@ -2,22 +2,18 @@ package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.HashCacheService;
-import com.example.spinlog.statistics.exception.InvalidCacheException;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.CountsAndSums;
-import com.example.spinlog.utils.StatisticsCacheUtils;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Map;
 
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.CacheKeyNameUtils.getGenderEmotionStatisticsAmountSumKeyName;
+import static com.example.spinlog.utils.CacheKeyNameUtils.GENDER_EMOTION_AMOUNT_SUM_KEY_NAME;
 import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -36,14 +32,14 @@ class GenderStatisticsCacheFetchServiceTest {
             // given
             RegisterType registerType = RegisterType.SPEND;
             when(hashCacheService.getHashEntries(
-                    eq(getGenderEmotionStatisticsAmountSumKeyName(registerType))))
+                    eq(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType))))
                     .thenReturn(Map.of(
                             "MALE::PROUD", 1000L,
                             "MALE::SAD", 2000L,
                             "FEMALE::PROUD", 3000L,
                             "FEMALE::SAD", 4000L));
             when(hashCacheService.getHashEntries(
-                    eq(getGenderEmotionStatisticsAmountCountKeyName(registerType))))
+                    eq(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType))))
                     .thenReturn(Map.of(
                             "MALE::PROUD", 5L,
                             "MALE::SAD", 5L,
@@ -81,7 +77,7 @@ class GenderStatisticsCacheFetchServiceTest {
             // given
             RegisterType registerType = RegisterType.SPEND;
             when(hashCacheService.getHashEntries(
-                    eq(getGenderDailyStatisticsAmountSumKeyName(registerType))))
+                    eq(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType))))
                     .thenReturn(Map.of(
                             "MALE::2024-07-01", 1000L,
                             "MALE::2024-07-02", 2000L,
@@ -119,12 +115,12 @@ class GenderStatisticsCacheFetchServiceTest {
             // given
             RegisterType registerType = RegisterType.SPEND;
             when(hashCacheService.getHashEntries(
-                    eq(getGenderStatisticsSatisfactionSumKeyName(registerType))))
+                    eq(GENDER_SATISFACTION_SUM_KEY_NAME(registerType))))
                     .thenReturn(Map.of(
                             "MALE", 34.0,
                             "FEMALE", 78.0));
             when(hashCacheService.getHashEntries(
-                    eq(getGenderStatisticsSatisfactionCountKeyName(registerType))))
+                    eq(GENDER_SATISFACTION_COUNT_KEY_NAME(registerType))))
                     .thenReturn(Map.of(
                             "MALE", 10L,
                             "FEMALE", 20L));

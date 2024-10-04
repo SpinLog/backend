@@ -136,7 +136,15 @@ public class GenderStatisticsRepositoryFetchService {
     }
 
     // todo 별도의 클래스로 분리
-    public record CountsAndSums(Map<String, Object> sumsMap, Map<String, Object> countsMap) { }
+    public record CountsAndSums(Map<String, Object> sumsMap, Map<String, Object> countsMap) {
+        @Override
+        public String toString() {
+            return "CountsAndSums{" +
+                    "\n\tsumsMap=" + sumsMap +
+                    "\n\tcountsMap=" + countsMap +
+                    '}';
+        }
+    }
     @Builder
     public record AllStatisticsMap(
             // todo 필드 이름 수정
@@ -145,7 +153,19 @@ public class GenderStatisticsRepositoryFetchService {
             Map<String, Object> genderDailyAmountSpendSums,
             Map<String, Object> genderDailyAmountSaveSums,
             CountsAndSums genderSatisfactionSpendCountsAndSums,
-            CountsAndSums genderSatisfactionSaveCountsAndSums) { }
+            CountsAndSums genderSatisfactionSaveCountsAndSums) {
+        @Override
+        public String toString() {
+            return "AllStatisticsMap{" +
+                    "\ngenderEmotionAmountSpendCountsAndSums=" + genderEmotionAmountSpendCountsAndSums +
+                    "\n\ngenderEmotionAmountSaveCountsAndSums=" + genderEmotionAmountSaveCountsAndSums +
+                    "\n\ngenderDailyAmountSpendSums=" + genderDailyAmountSpendSums +
+                    "\n\ngenderDailyAmountSaveSums=" + genderDailyAmountSaveSums +
+                    "\n\ngenderSatisfactionSpendCountsAndSums=" + genderSatisfactionSpendCountsAndSums +
+                    "\n\ngenderSatisfactionSaveCountsAndSums=" + genderSatisfactionSaveCountsAndSums +
+                    "\n}";
+        }
+    }
 
     @Builder
     public record AllStatisticsResult(

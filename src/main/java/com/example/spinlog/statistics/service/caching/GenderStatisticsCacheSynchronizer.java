@@ -41,21 +41,21 @@ public class GenderStatisticsCacheSynchronizer {
 
         RegisterType registerType = article.getRegisterType();
         hashCacheService.incrementDataInHash(
-                getGenderEmotionStatisticsAmountSumKeyName(registerType),
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType),
                 user.getGender() + "::" + article.getEmotion(), article.getAmount());
         hashCacheService.incrementDataInHash(
-                getGenderEmotionStatisticsAmountCountKeyName(registerType),
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType),
                 user.getGender() + "::" + article.getEmotion(), 1L);
 
         hashCacheService.incrementDataInHash(
-                getGenderDailyStatisticsAmountSumKeyName(registerType),
+                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType),
                 user.getGender() + "::" + article.getSpendDate().toLocalDate(), article.getAmount());
 
         hashCacheService.incrementDataInHash(
-                getGenderStatisticsSatisfactionSumKeyName(registerType),
+                GENDER_SATISFACTION_SUM_KEY_NAME(registerType),
                 user.getGender().name(), article.getSatisfaction());
         hashCacheService.incrementDataInHash(
-                getGenderStatisticsSatisfactionCountKeyName(registerType),
+                GENDER_SATISFACTION_COUNT_KEY_NAME(registerType),
                 user.getGender().name(), 1L);
 
     }
@@ -106,21 +106,21 @@ public class GenderStatisticsCacheSynchronizer {
 
         RegisterType registerType = article.getRegisterType();
         hashCacheService.decrementDataInHash(
-                getGenderEmotionStatisticsAmountSumKeyName(registerType),
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType),
                 user.getGender() + "::" + article.getEmotion(), article.getAmount());
         hashCacheService.decrementDataInHash(
-                getGenderEmotionStatisticsAmountCountKeyName(registerType),
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType),
                 user.getGender() + "::" + article.getEmotion(), 1L);
 
         hashCacheService.decrementDataInHash(
-                getGenderDailyStatisticsAmountSumKeyName(registerType),
+                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType),
                 user.getGender() + "::" + article.getSpendDate().toLocalDate(), article.getAmount());
 
         hashCacheService.decrementDataInHash(
-                getGenderStatisticsSatisfactionSumKeyName(registerType),
+                GENDER_SATISFACTION_SUM_KEY_NAME(registerType),
                 user.getGender().name(), article.getSatisfaction());
         hashCacheService.decrementDataInHash(
-                getGenderStatisticsSatisfactionCountKeyName(registerType),
+                GENDER_SATISFACTION_COUNT_KEY_NAME(registerType),
                 user.getGender().name(), 1L);
 
     }

@@ -2,9 +2,6 @@ package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.HashCacheService;
-import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
-import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
-import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
 import com.example.spinlog.statistics.repository.dto.MemoDto;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.CountsAndSums;
 import com.example.spinlog.user.entity.Gender;
@@ -16,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.StatisticsCacheUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,17 +22,17 @@ public class GenderStatisticsCacheFetchService {
 
     public CountsAndSums getAmountAveragesEachGenderAndEmotion(RegisterType registerType) {
         Map<String, Object> sumsMap = hashCacheService.getHashEntries(
-                getGenderEmotionStatisticsAmountSumKeyName(registerType));
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType));
 
         Map<String, Object> countsMap = hashCacheService.getHashEntries(
-                getGenderEmotionStatisticsAmountCountKeyName(registerType));
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType));
 
         return new CountsAndSums(sumsMap, countsMap);
     }
 
     public Map<String, Object> getAmountSumsEachGenderAndDay(RegisterType registerType) {
         Map<String, Object> sumsMap = hashCacheService.getHashEntries(
-                getGenderDailyStatisticsAmountSumKeyName(registerType));
+                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType));
 
         return sumsMap;
     }
@@ -47,10 +43,10 @@ public class GenderStatisticsCacheFetchService {
 
     public CountsAndSums getSatisfactionAveragesEachGender(RegisterType registerType) {
         Map<String, Object> sumsMap = hashCacheService.getHashEntries(
-                getGenderStatisticsSatisfactionSumKeyName(registerType));
+                GENDER_SATISFACTION_SUM_KEY_NAME(registerType));
 
         Map<String, Object> countsMap = hashCacheService.getHashEntries(
-                getGenderStatisticsSatisfactionCountKeyName(registerType));
+                GENDER_SATISFACTION_COUNT_KEY_NAME(registerType));
 
         return new CountsAndSums(sumsMap, countsMap);
     }
