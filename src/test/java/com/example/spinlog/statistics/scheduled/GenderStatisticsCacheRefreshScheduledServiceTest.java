@@ -49,11 +49,11 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
     @Test
     void 레포지토리에게_오늘_하루와_31일_전의_모든_통계_데이터를_요청한다() throws Exception {
         // given
-        LocalDate todayEndDate = LocalDate.now();
-        LocalDate todayStartDate = todayEndDate.minusDays(1);
+        LocalDate todayStartDate = LocalDate.now();
+        LocalDate todayEndDate = todayStartDate.plusDays(1);
 
-        LocalDate oldEndDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
-        LocalDate oldStartDate = oldEndDate.minusDays(1);
+        LocalDate oldStartDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
+        LocalDate oldEndDate = oldStartDate.plusDays(1);
 
         // when
         targetService.refreshGenderStatisticsCache();
@@ -79,8 +79,8 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                 targetKey, 1000L);
 
-        LocalDate oldEndDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
-        LocalDate oldStartDate = oldEndDate.minusDays(1);
+        LocalDate oldStartDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
+        LocalDate oldEndDate = oldStartDate.plusDays(1);
         when(genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
                 eq(SPEND), eq(oldStartDate), eq(oldEndDate)))
                 .thenReturn(List.of(
@@ -109,8 +109,8 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                 targetKey, 1000L);
 
-        LocalDate todayEndDate = LocalDate.now();
-        LocalDate todayStartDate = todayEndDate.minusDays(1);
+        LocalDate todayStartDate = LocalDate.now();
+        LocalDate todayEndDate = todayStartDate.plusDays(1);
         when(genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
                 eq(SPEND), eq(todayStartDate), eq(todayEndDate)))
                 .thenReturn(List.of(
@@ -134,8 +134,8 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
                     key, 0L);
         });
 
-        LocalDate oldEndDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
-        LocalDate oldStartDate = oldEndDate.minusDays(1);
+        LocalDate oldStartDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
+        LocalDate oldEndDate = oldStartDate.plusDays(1);
         when(genderStatisticsRepository.getAmountSumsEachGenderAndDayBetweenStartDateAndEndDate(
                 eq(SPEND), eq(oldStartDate), eq(oldEndDate)))
                 .thenReturn(List.of(

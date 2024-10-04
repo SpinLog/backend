@@ -43,9 +43,6 @@ public class StatisticsZeroPaddingUtils {
         Map<String, Object> sumsMap = new HashMap<>();
 
         keys.forEach(key -> {
-            if (!sums.containsKey(key)) {
-                sums.put(key, 0L);
-            }
             sumsMap.put(
                     key,
                     sums.getOrDefault(key, 0L));

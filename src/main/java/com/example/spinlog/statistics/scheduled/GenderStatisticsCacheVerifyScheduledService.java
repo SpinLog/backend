@@ -5,6 +5,7 @@ import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
+import com.example.spinlog.utils.StatisticsZeroPaddingUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,6 +17,7 @@ import java.util.Map;
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static com.example.spinlog.utils.StatisticsCacheUtils.*;
+import static com.example.spinlog.utils.StatisticsZeroPaddingUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -58,9 +60,11 @@ public class GenderStatisticsCacheVerifyScheduledService {
 
         CountsAndSums repositoryData = genderStatisticsRepositoryFetchService
                 .getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
+        repositoryData = zeroPaddingToGenderEmotionAmountCountsAndSums(repositoryData);
+
         if (isNotSame(cacheData, repositoryData)) {
             log.warn("RegisterType(" + registerType
-                    + ") GenderEmotionAmountAverage Cache Data and Repository Data are not same. Cache will be updated.\ncacheDate = {}\nrepositoryData = {}",
+                    + ") GenderEmotionAmountAverage Cache Data and Repository Data are not same. Cache will be updated.\ncacheDate = {}\nrepositoryData = {}\n",
                     cacheData, repositoryData);
             genderStatisticsCacheWriteService.putAmountCountsAndSumsByGenderAndEmotion(repositoryData, registerType);
         }
@@ -87,9 +91,11 @@ public class GenderStatisticsCacheVerifyScheduledService {
 
         Map<String, Object> repositoryData = genderStatisticsRepositoryFetchService
                 .getGenderDateAmountSums(registerType, startDate, endDate);
+        repositoryData = zeroPaddingToGenderDailyAmountSums(repositoryData, period);
+
         if (isNotSame(cacheData, repositoryData)) {
             log.warn("RegisterType(" + registerType
-                    + ") GenderDailyAmountSum Cache Data and Repository Data are not same. Cache will be updated.\ncacheDate = {}\nrepositoryData = {}",
+                    + ") GenderDailyAmountSum Cache Data and Repository Data are not same. Cache will be updated.\ncacheDate = {}\nrepositoryData = {}\n",
                     cacheData, repositoryData);
             genderStatisticsCacheWriteService.putAmountSumsByGenderAndDate(repositoryData, registerType);
         }
@@ -117,9 +123,11 @@ public class GenderStatisticsCacheVerifyScheduledService {
 
         CountsAndSums repositoryData = genderStatisticsRepositoryFetchService
                 .getGenderSatisfactionCountsAndSums(registerType, startDate, endDate);
+        repositoryData = zeroPaddingToGenderSatisfactionAmountCountsAndSums(repositoryData);
+
         if (isNotSame(cacheData, repositoryData)) {
             log.warn("RegisterType(" + registerType
-                    + ") GenderSatisfactionAverage Cache Data and Repository Data are not same. Cache will be updated.\ncacheDate = {}\nrepositoryData = {}",
+                    + ") GenderSatisfactionAverage Cache Data and Repository Data are not same. Cache will be updated.\ncacheDate = {}\nrepositoryData = {}\n",
                     cacheData, repositoryData);
             genderStatisticsCacheWriteService.putSatisfactionCountsAndSumsByGender(repositoryData, registerType);
         }

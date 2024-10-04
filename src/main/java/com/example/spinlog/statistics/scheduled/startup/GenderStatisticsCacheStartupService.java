@@ -73,6 +73,6 @@ class GenderStatisticsCacheStartupService {
                 GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE),
                 allData.genderSatisfactionSaveCountsAndSums().countsMap());
 
-        log.info("Finish initializing Caching\ncacheDate = {}", allData);
+        log.info("Finish initializing Caching\ncacheDate = {}\n", allData);
     }
 }

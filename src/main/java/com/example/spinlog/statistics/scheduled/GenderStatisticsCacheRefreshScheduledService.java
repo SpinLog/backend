@@ -34,30 +34,33 @@ public class GenderStatisticsCacheRefreshScheduledService {
         log.info("Start refreshing Caching.");
 
         Period period = statisticsPeriodManager.getStatisticsPeriod();
-        LocalDate todayEndDate = period.endDate();
-        LocalDate todayStartDate = todayEndDate.minusDays(1);
+        LocalDate todayStartDate = period.endDate();
+        LocalDate todayEndDate = todayStartDate.plusDays(1);
         log.info("newData's startDate: {}, endDate: {}", todayStartDate, todayEndDate);
 
         AllStatisticsMap newStatisticsData = genderStatisticsRepositoryFetchService
                 .getGenderStatisticsAllData(todayStartDate, todayEndDate);
-        log.info("\nnewStatisticsData: {}", newStatisticsData);
+        log.info("\nnewStatisticsData: {}\n", newStatisticsData);
 
-        LocalDate oldEndDate = period.startDate();
-        LocalDate oldStartDate = oldEndDate.minusDays(1);
+        LocalDate oldStartDate = period.startDate();
+        LocalDate oldEndDate = oldStartDate.plusDays(1);
         log.info("expiringData's startDate: {}, endDate: {}", oldStartDate, oldEndDate);
 
         AllStatisticsMap expiringStatisticsData = genderStatisticsRepositoryFetchService
                 .getGenderStatisticsAllData(oldStartDate, oldEndDate);
-        log.info("\nexpiringStatisticsData: {}", expiringStatisticsData);
+        log.info("\nexpiringStatisticsData: {}\n", expiringStatisticsData);
 
-        // todo lock
-        decrementOldCacheData(expiringStatisticsData);
-        incrementNewCacheData(newStatisticsData);
-        // todo unlock
-
-        log.info("Finish refreshing Caching.");
-
-        statisticsPeriodManager.updateStatisticsPeriod();
+        try {
+            // todo lock
+            decrementOldCacheData(expiringStatisticsData);
+            incrementNewCacheData(newStatisticsData);
+            // todo unlock
+        } catch (Exception e) {
+            log.error("Error occurred while updating cache data.", e);
+        } finally {
+            log.info("Finish refreshing Caching.");
+            statisticsPeriodManager.updateStatisticsPeriod();
+        }
     }
 
     private void incrementNewCacheData(AllStatisticsMap newStatisticsData) {
@@ -100,16 +103,19 @@ public class GenderStatisticsCacheRefreshScheduledService {
     }
 
     private void decrementOldCacheData(AllStatisticsMap expiringStatisticsData) {
+        log.info("try to decrease GenderAmountSum::SPEND");
         expiringStatisticsData.genderEmotionAmountSpendCountsAndSums().sumsMap().forEach((k, v) -> {
             hashCacheService.decrementDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), k, (long)v);
         });
+        log.info("try to decrease GenderAmountSum::SAVE");
         expiringStatisticsData.genderEmotionAmountSpendCountsAndSums().countsMap().forEach((k, v) -> {
             hashCacheService.decrementDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), k, (long)v);
         });
-
+        log.info("try to decrease GenderAmountSum::SPEND");
         expiringStatisticsData.genderEmotionAmountSaveCountsAndSums().sumsMap().forEach((k, v) -> {
             hashCacheService.decrementDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), k, (long)v);
         });
+        log.info("try to decrease GenderAmountSum::SAVE");
         expiringStatisticsData.genderEmotionAmountSaveCountsAndSums().countsMap().forEach((k, v) -> {
             hashCacheService.decrementDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), k, (long)v);
         });
@@ -129,16 +135,19 @@ public class GenderStatisticsCacheRefreshScheduledService {
             hashCacheService.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k);
         });
 
+        log.info("try to decrease GenderSatisfactionSum::SPEND");
         expiringStatisticsData.genderSatisfactionSpendCountsAndSums().sumsMap().forEach((k, v) -> {
             hashCacheService.decrementDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), k, (double)v);
         });
+        log.info("try to decrease GenderSatisfactionCount::SPEND");
         expiringStatisticsData.genderSatisfactionSpendCountsAndSums().countsMap().forEach((k, v) -> {
             hashCacheService.decrementDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), k, (double)v);
         });
-
+        log.info("try to decrease GenderSatisfactionSum::SAVE");
         expiringStatisticsData.genderSatisfactionSaveCountsAndSums().sumsMap().forEach((k, v) -> {
             hashCacheService.decrementDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), k, (double)v);
         });
+        log.info("try to decrease GenderSatisfactionCount::SAVE");
         expiringStatisticsData.genderSatisfactionSaveCountsAndSums().countsMap().forEach((k, v) -> {
             hashCacheService.decrementDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), k, (double)v);
         });
