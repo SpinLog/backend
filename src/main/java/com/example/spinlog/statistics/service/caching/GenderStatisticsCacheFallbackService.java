@@ -8,7 +8,6 @@ import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDt
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
-import com.example.spinlog.utils.StatisticsCacheUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ import java.util.Map;
 
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
-import static com.example.spinlog.utils.StatisticsCacheUtils.*;
+import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.*;
 
 @Service
 @RequiredArgsConstructor

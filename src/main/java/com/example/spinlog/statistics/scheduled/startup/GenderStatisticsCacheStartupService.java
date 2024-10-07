@@ -3,7 +3,7 @@ package com.example.spinlog.statistics.scheduled.startup;
 import com.example.spinlog.global.cache.HashCacheService;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
-import com.example.spinlog.utils.StatisticsZeroPaddingUtils;
+import com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -16,7 +16,7 @@ import static com.example.spinlog.article.entity.RegisterType.SAVE;
 import static com.example.spinlog.article.entity.RegisterType.SPEND;
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.AllStatisticsMap;
-import static com.example.spinlog.utils.CacheKeyNameUtils.*;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 
 @Component
 @RequiredArgsConstructor

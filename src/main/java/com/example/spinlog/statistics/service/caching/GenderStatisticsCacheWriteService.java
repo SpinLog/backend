@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static com.example.spinlog.article.entity.RegisterType.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
-import static com.example.spinlog.utils.CacheKeyNameUtils.*;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 
 @Service
 @RequiredArgsConstructor

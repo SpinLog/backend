@@ -12,9 +12,9 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.CacheKeyNameUtils.GENDER_EMOTION_AMOUNT_SUM_KEY_NAME;
-import static com.example.spinlog.utils.StatisticsCacheUtils.*;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.GENDER_EMOTION_AMOUNT_SUM_KEY_NAME;
+import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

@@ -8,9 +8,12 @@ import com.example.spinlog.article.service.ArticleService;
 import com.example.spinlog.article.service.request.ArticleCreateRequest;
 import com.example.spinlog.article.service.request.ArticleUpdateRequest;
 import com.example.spinlog.article.service.response.WriteArticleResponseDto;
+import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
+import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
 import com.example.spinlog.integration.init.GenderStatisticsCacheSetupService;
 import com.example.spinlog.statistics.service.GenderStatisticsService;
+import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheFallbackService;
 import com.example.spinlog.statistics.service.dto.GenderDailyAmountSumResponse;
 import com.example.spinlog.statistics.service.dto.GenderEmotionAmountAverageResponse;
 import com.example.spinlog.user.entity.Gender;
@@ -43,7 +46,7 @@ public class GenderStatisticsCacheIntegrationTest {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    GenderStatisticsService genderStatisticsService;
+    GenderStatisticsCacheFallbackService genderStatisticsService;
     @Autowired
     GenderStatisticsCacheSetupService genderStatisticsCacheSetupService;
     @Autowired
@@ -75,37 +78,32 @@ public class GenderStatisticsCacheIntegrationTest {
     @Order(1)
     void 현재_DB의_데이터에_해당하는_캐시를_조회한다() throws Exception {
         // when
-        List<GenderEmotionAmountAverageResponse> geaa = genderStatisticsService
-                .getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND);
-        List<GenderDailyAmountSumResponse> gdas = genderStatisticsService
-                .getAmountSumsEachGenderAndDayLast30Days(RegisterType.SPEND);
-        List<GenderSatisfactionAverageDto> gsa = genderStatisticsService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND);
+        List<GenderEmotionAmountAverageDto> geaa = genderStatisticsService
+                .getAmountAveragesEachGenderAndEmotion(RegisterType.SPEND);
+        List<GenderDailyAmountSumDto> gdas = genderStatisticsService
+                .getAmountSumsEachGenderAndDay(RegisterType.SPEND);
+        List<GenderSatisfactionAverageDto> gsa = genderStatisticsService
+                .getSatisfactionAveragesEachGender(RegisterType.SPEND);
 
         // then
         for(var v: geaa) {
-            for(var ea: v.getEmotionAmountAverages()) {
-                if(!ea.getEmotion().equals(emotion)) {
-                    assertThat(ea.getAmountAverage()).isEqualTo(0);
-                    continue;
-                }
+            if(v.getEmotion().equals(emotion)) {
                 if(v.getGender().equals(Gender.MALE))
-                    assertThat(ea.getAmountAverage()).isEqualTo(maleAmountSum / maleArticleCount);
-                else
-                    assertThat(ea.getAmountAverage()).isEqualTo(femaleAmountSum / femaleArticleCount);
+                    assertThat(v.getAmountAverage()).isEqualTo(maleAmountSum / maleArticleCount);
+                else assertThat(v.getAmountAverage()).isEqualTo(femaleAmountSum / femaleArticleCount);
             }
+            else
+                assertThat(v.getAmountAverage()).isEqualTo(0);
         }
         for(var v: gdas){
-            for(var da: v.getDailyAmountSums()) {
-                if(!da.getDate().equals(spendDate)) {
-                    assertThat(da.getAmountSum()).isEqualTo(0);
-                    continue;
-                }
-
+            if(v.getLocalDate().equals(spendDate)) {
                 if(v.getGender().equals(Gender.MALE))
-                    assertThat(da.getAmountSum()).isEqualTo(maleAmountSum);
+                    assertThat(v.getAmountSum()).isEqualTo(maleAmountSum);
                 else
-                    assertThat(da.getAmountSum()).isEqualTo(femaleAmountSum);
+                    assertThat(v.getAmountSum()).isEqualTo(femaleAmountSum);
             }
+            else
+                assertThat(v.getAmountSum()).isEqualTo(0);
         }
         for(var v: gsa){
             if(v.getGender().equals(Gender.MALE))
@@ -143,36 +141,31 @@ public class GenderStatisticsCacheIntegrationTest {
         WriteArticleResponseDto responseDto = articleService.createArticle(male.getAuthenticationName(), request);
 
         // then
-        List<GenderEmotionAmountAverageResponse> geaa = genderStatisticsService
-                .getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND);
-        List<GenderDailyAmountSumResponse> gdas = genderStatisticsService
-                .getAmountSumsEachGenderAndDayLast30Days(RegisterType.SPEND);
-        List<GenderSatisfactionAverageDto> gsa = genderStatisticsService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND);
+        List<GenderEmotionAmountAverageDto> geaa = genderStatisticsService
+                .getAmountAveragesEachGenderAndEmotion(RegisterType.SPEND);
+        List<GenderDailyAmountSumDto> gdas = genderStatisticsService
+                .getAmountSumsEachGenderAndDay(RegisterType.SPEND);
+        List<GenderSatisfactionAverageDto> gsa = genderStatisticsService
+                .getSatisfactionAveragesEachGender(RegisterType.SPEND);
+
         for(var v: geaa) {
-            for(var ea: v.getEmotionAmountAverages()) {
-                if(!ea.getEmotion().equals(emotion)) {
-                    assertThat(ea.getAmountAverage()).isEqualTo(0);
-                    continue;
-                }
+            if(v.getEmotion().equals(emotion)) {
                 if(v.getGender().equals(Gender.MALE))
-                    assertThat(ea.getAmountAverage()).isEqualTo(
-                            (maleAmountSum + request.getAmount()) / (maleArticleCount + 1));
-                else
-                    assertThat(ea.getAmountAverage()).isEqualTo(femaleAmountSum / femaleArticleCount);
+                    assertThat(v.getAmountAverage()).isEqualTo((maleAmountSum + request.getAmount()) / (maleArticleCount + 1));
+                else assertThat(v.getAmountAverage()).isEqualTo(femaleAmountSum / femaleArticleCount);
             }
+            else
+                assertThat(v.getAmountAverage()).isEqualTo(0);
         }
         for(var v: gdas){
-            for(var da: v.getDailyAmountSums()) {
-                if(!da.getDate().equals(spendDate)) {
-                    assertThat(da.getAmountSum()).isEqualTo(0);
-                    continue;
-                }
-
+            if(v.getLocalDate().equals(spendDate)) {
                 if(v.getGender().equals(Gender.MALE))
-                    assertThat(da.getAmountSum()).isEqualTo(maleAmountSum + request.getAmount());
+                    assertThat(v.getAmountSum()).isEqualTo(maleAmountSum + request.getAmount());
                 else
-                    assertThat(da.getAmountSum()).isEqualTo(femaleAmountSum);
+                    assertThat(v.getAmountSum()).isEqualTo(femaleAmountSum);
             }
+            else
+                assertThat(v.getAmountSum()).isEqualTo(0);
         }
         for(var v: gsa){
             if(v.getGender().equals(Gender.MALE))
@@ -200,36 +193,31 @@ public class GenderStatisticsCacheIntegrationTest {
                 target.getArticleId());
 
         // then
-        List<GenderEmotionAmountAverageResponse> geaa = genderStatisticsService
-                .getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND);
-        List<GenderDailyAmountSumResponse> gdas = genderStatisticsService
-                .getAmountSumsEachGenderAndDayLast30Days(RegisterType.SPEND);
-        List<GenderSatisfactionAverageDto> gsa = genderStatisticsService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND);
+        List<GenderEmotionAmountAverageDto> geaa = genderStatisticsService
+                .getAmountAveragesEachGenderAndEmotion(RegisterType.SPEND);
+        List<GenderDailyAmountSumDto> gdas = genderStatisticsService
+                .getAmountSumsEachGenderAndDay(RegisterType.SPEND);
+        List<GenderSatisfactionAverageDto> gsa = genderStatisticsService
+                .getSatisfactionAveragesEachGender(RegisterType.SPEND);
+
         for(var v: geaa) {
-            for(var ea: v.getEmotionAmountAverages()) {
-                if(!ea.getEmotion().equals(emotion)) {
-                    assertThat(ea.getAmountAverage()).isEqualTo(0);
-                    continue;
-                }
+            if(v.getEmotion().equals(emotion)) {
                 if(v.getGender().equals(Gender.MALE))
-                    assertThat(ea.getAmountAverage()).isEqualTo(
-                            (maleAmountSum - target.getAmount()) / (maleArticleCount - 1));
-                else
-                    assertThat(ea.getAmountAverage()).isEqualTo(femaleAmountSum / femaleArticleCount);
+                    assertThat(v.getAmountAverage()).isEqualTo((maleAmountSum - target.getAmount()) / (maleArticleCount - 1));
+                else assertThat(v.getAmountAverage()).isEqualTo(femaleAmountSum / femaleArticleCount);
             }
+            else
+                assertThat(v.getAmountAverage()).isEqualTo(0);
         }
         for(var v: gdas){
-            for(var da: v.getDailyAmountSums()) {
-                if(!da.getDate().equals(spendDate)) {
-                    assertThat(da.getAmountSum()).isEqualTo(0);
-                    continue;
-                }
-
+            if(v.getLocalDate().equals(spendDate)) {
                 if(v.getGender().equals(Gender.MALE))
-                    assertThat(da.getAmountSum()).isEqualTo(maleAmountSum - target.getAmount());
+                    assertThat(v.getAmountSum()).isEqualTo(maleAmountSum - target.getAmount());
                 else
-                    assertThat(da.getAmountSum()).isEqualTo(femaleAmountSum);
+                    assertThat(v.getAmountSum()).isEqualTo(femaleAmountSum);
             }
+            else
+                assertThat(v.getAmountSum()).isEqualTo(0);
         }
         for(var v: gsa){
             if(v.getGender().equals(Gender.MALE))
@@ -267,36 +255,31 @@ public class GenderStatisticsCacheIntegrationTest {
                 updateRequest);
 
         // then
-        List<GenderEmotionAmountAverageResponse> geaa = genderStatisticsService
-                .getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType.SPEND);
-        List<GenderDailyAmountSumResponse> gdas = genderStatisticsService
-                .getAmountSumsEachGenderAndDayLast30Days(RegisterType.SPEND);
-        List<GenderSatisfactionAverageDto> gsa = genderStatisticsService.getSatisfactionAveragesEachGenderLast30Days(RegisterType.SPEND);
+        List<GenderEmotionAmountAverageDto> geaa = genderStatisticsService
+                .getAmountAveragesEachGenderAndEmotion(RegisterType.SPEND);
+        List<GenderDailyAmountSumDto> gdas = genderStatisticsService
+                .getAmountSumsEachGenderAndDay(RegisterType.SPEND);
+        List<GenderSatisfactionAverageDto> gsa = genderStatisticsService
+                .getSatisfactionAveragesEachGender(RegisterType.SPEND);
+
         for(var v: geaa) {
-            for(var ea: v.getEmotionAmountAverages()) {
-                if(!ea.getEmotion().equals(emotion)) {
-                    assertThat(ea.getAmountAverage()).isEqualTo(0);
-                    continue;
-                }
+            if(v.getEmotion().equals(emotion)) {
                 if(v.getGender().equals(Gender.MALE))
-                    assertThat(ea.getAmountAverage()).isEqualTo(
-                            (maleAmountSum - 1000 + 10000) / maleArticleCount);
-                else
-                    assertThat(ea.getAmountAverage()).isEqualTo(femaleAmountSum / femaleArticleCount);
+                    assertThat(v.getAmountAverage()).isEqualTo((maleAmountSum - 1000 + 10000) / maleArticleCount);
+                else assertThat(v.getAmountAverage()).isEqualTo(femaleAmountSum / femaleArticleCount);
             }
+            else
+                assertThat(v.getAmountAverage()).isEqualTo(0);
         }
         for(var v: gdas){
-            for(var da: v.getDailyAmountSums()) {
-                if(!da.getDate().equals(spendDate)) {
-                    assertThat(da.getAmountSum()).isEqualTo(0);
-                    continue;
-                }
-
+            if(v.getLocalDate().equals(spendDate)) {
                 if(v.getGender().equals(Gender.MALE))
-                    assertThat(da.getAmountSum()).isEqualTo(maleAmountSum - 1000 + 10000);
+                    assertThat(v.getAmountSum()).isEqualTo(maleAmountSum - 1000 + 10000);
                 else
-                    assertThat(da.getAmountSum()).isEqualTo(femaleAmountSum);
+                    assertThat(v.getAmountSum()).isEqualTo(femaleAmountSum);
             }
+            else
+                assertThat(v.getAmountSum()).isEqualTo(0);
         }
         for(var v: gsa){
             if(v.getGender().equals(Gender.MALE))

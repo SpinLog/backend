@@ -17,8 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.time.Clock;
 import java.time.LocalDateTime;
 
-import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.CacheKeyNameUtils.GENDER_SATISFACTION_COUNT_KEY_NAME;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.GENDER_SATISFACTION_COUNT_KEY_NAME;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

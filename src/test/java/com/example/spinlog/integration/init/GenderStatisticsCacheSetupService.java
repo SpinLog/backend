@@ -12,7 +12,7 @@ import java.time.LocalDate;
 
 import static com.example.spinlog.article.entity.RegisterType.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
-import static com.example.spinlog.utils.CacheKeyNameUtils.*;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 
 @Component
 @Transactional(readOnly = true) // todo 범위 좁히기

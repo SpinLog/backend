@@ -1,4 +1,4 @@
-package com.example.spinlog.utils;
+package com.example.spinlog.statistics.utils;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;

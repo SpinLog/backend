@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.example.spinlog.article.entity.RegisterType.*;
-import static com.example.spinlog.utils.StatisticsCacheUtils.*;
+import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.*;
 
 @Service
 @Transactional(readOnly = true)

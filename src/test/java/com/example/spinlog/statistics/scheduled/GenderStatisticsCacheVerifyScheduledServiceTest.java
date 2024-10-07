@@ -5,12 +5,10 @@ import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
-import com.example.spinlog.utils.StatisticsZeroPaddingUtils;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Clock;
@@ -18,8 +16,7 @@ import java.util.Map;
 
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
-import static com.example.spinlog.utils.StatisticsZeroPaddingUtils.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils.*;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")

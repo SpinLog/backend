@@ -1,19 +1,67 @@
-package com.example.spinlog.utils;
+package com.example.spinlog.statistics.utils;
 
 import com.example.spinlog.article.entity.Emotion;
-import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
+import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
+import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.user.entity.Gender;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.Period;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
+import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StatisticsZeroPaddingUtils {
+
+    public static List<GenderEmotionAmountAverageDto> addZeroAverageForMissingGenderEmotionPairs(List<GenderEmotionAmountAverageDto> dtos) {
+        Stream<GenderEmotionAmountAverageDto> zeroStream = Arrays.stream(Emotion.values())
+                .flatMap(e ->
+                        Arrays.stream(Gender.values())
+                                .filter(g -> !g.equals(Gender.NONE))
+                                .map(g -> new GenderEmotionAmountAverageDto(g, e, 0L)))
+                .filter(zeroDto -> dtos.stream()
+                        .noneMatch(dto -> dto.getGender() == zeroDto.getGender()
+                                && dto.getEmotion() == zeroDto.getEmotion()));
+
+        Comparator<GenderEmotionAmountAverageDto> byGenderAndEmotion = Comparator
+                .comparing(GenderEmotionAmountAverageDto::getGender)
+                .thenComparing(GenderEmotionAmountAverageDto::getEmotion);
+
+        return Stream.concat(dtos.stream(), zeroStream)
+                .sorted(byGenderAndEmotion)
+                .toList();
+    }
+
+    public static List<GenderDailyAmountSumDto> addZeroAverageForMissingGenderLocalDatePairs(List<GenderDailyAmountSumDto> dtos) {
+        Stream<LocalDate> localDateRanges = IntStream.rangeClosed(1, PERIOD_CRITERIA)
+                .mapToObj(i -> LocalDate.now().minusDays(i));
+        Stream<GenderDailyAmountSumDto> zeroStream = localDateRanges
+                .flatMap(d ->
+                        Arrays.stream(Gender.values())
+                                .filter(g -> !g.equals(Gender.NONE))
+                                .map(g -> new GenderDailyAmountSumDto(g, d, 0L)))
+                .filter(zeroDto -> dtos.stream()
+                        .noneMatch(dto -> dto.getGender() == zeroDto.getGender()
+                                && dto.getLocalDate().equals(zeroDto.getLocalDate())));
+
+        Comparator<GenderDailyAmountSumDto> byGenderAndLocalDate = Comparator
+                .comparing(GenderDailyAmountSumDto::getGender)
+                .thenComparing(GenderDailyAmountSumDto::getLocalDate);
+
+        return Stream.concat(
+                        dtos.stream()
+                                .filter(d ->
+                                        !d.getLocalDate().equals(LocalDate.now())),
+                        zeroStream)
+                .sorted(byGenderAndLocalDate)
+                .toList();
+    }
 
     public static CountsAndSums zeroPaddingToGenderEmotionAmountCountsAndSums(CountsAndSums countsAndSums) {
         List<String> keys = getGenderEmotionKeys();
@@ -33,7 +81,9 @@ public class StatisticsZeroPaddingUtils {
                             .getOrDefault(key, 0L));
         });
 
-        return new CountsAndSums(sumsMap, countsMap);
+        return new CountsAndSums(
+                Collections.unmodifiableMap(sumsMap),
+                Collections.unmodifiableMap(countsMap));
     }
 
     public static Map<String, Object> zeroPaddingToGenderDailyAmountSums(Map<String, Object> sums, Period period) {
@@ -49,7 +99,7 @@ public class StatisticsZeroPaddingUtils {
 
         });
 
-        return sumsMap;
+        return Collections.unmodifiableMap(sumsMap);
     }
 
     public static CountsAndSums zeroPaddingToGenderSatisfactionAmountCountsAndSums(CountsAndSums countsAndSums) {
@@ -70,7 +120,9 @@ public class StatisticsZeroPaddingUtils {
                             .getOrDefault(key, 0.0));
         });
 
-        return new CountsAndSums(sumsMap, countsMap);
+        return new CountsAndSums(
+                Collections.unmodifiableMap(sumsMap),
+                Collections.unmodifiableMap(countsMap));
     }
 
     public static AllStatisticsMap zeroPaddingAllStatisticsMap(AllStatisticsMap allData, Period period) {

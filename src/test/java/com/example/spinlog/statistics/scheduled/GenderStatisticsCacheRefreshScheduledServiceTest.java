@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.example.spinlog.article.entity.RegisterType.SPEND;
-import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
+import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -33,7 +33,8 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService =
             new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
     MockHashCacheService cacheService = new MockHashCacheService();
-    StatisticsPeriodManager statisticsPeriodManager = new StatisticsPeriodManager(Clock.systemDefaultZone());
+    Clock clock = Clock.systemDefaultZone();
+    StatisticsPeriodManager statisticsPeriodManager = spy(new StatisticsPeriodManager(clock));
 
     GenderStatisticsCacheRefreshScheduledService targetService =
             new GenderStatisticsCacheRefreshScheduledService(
@@ -47,12 +48,12 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
     }
     
     @Test
-    void 레포지토리에게_오늘_하루와_31일_전의_모든_통계_데이터를_요청한다() throws Exception {
+    void 레포지토리에게_오늘_하루와_30일_전의_모든_통계_데이터를_요청한다() throws Exception {
         // given
-        LocalDate todayStartDate = LocalDate.now();
+        LocalDate todayStartDate = LocalDate.now(clock);
         LocalDate todayEndDate = todayStartDate.plusDays(1);
 
-        LocalDate oldStartDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
+        LocalDate oldStartDate = LocalDate.now(clock).minusDays(PERIOD_CRITERIA);
         LocalDate oldEndDate = oldStartDate.plusDays(1);
 
         // when
@@ -79,7 +80,7 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                 targetKey, 1000L);
 
-        LocalDate oldStartDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
+        LocalDate oldStartDate = LocalDate.now(clock).minusDays(PERIOD_CRITERIA);
         LocalDate oldEndDate = oldStartDate.plusDays(1);
         when(genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
                 eq(SPEND), eq(oldStartDate), eq(oldEndDate)))
@@ -109,7 +110,7 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                 targetKey, 1000L);
 
-        LocalDate todayStartDate = LocalDate.now();
+        LocalDate todayStartDate = LocalDate.now(clock);
         LocalDate todayEndDate = todayStartDate.plusDays(1);
         when(genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
                 eq(SPEND), eq(todayStartDate), eq(todayEndDate)))
@@ -134,7 +135,7 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
                     key, 0L);
         });
 
-        LocalDate oldStartDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
+        LocalDate oldStartDate = LocalDate.now(clock).minusDays(PERIOD_CRITERIA);
         LocalDate oldEndDate = oldStartDate.plusDays(1);
         when(genderStatisticsRepository.getAmountSumsEachGenderAndDayBetweenStartDateAndEndDate(
                 eq(SPEND), eq(oldStartDate), eq(oldEndDate)))
@@ -149,6 +150,15 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
         // then
         assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), targetKey))
                 .isNull();
+    }
+
+    @Test
+    void StatisticsPeriodManager의_Period를_업데이트한다() throws Exception {
+        // when
+        targetService.refreshGenderStatisticsCache();
+        
+        // then
+        verify(statisticsPeriodManager).updateStatisticsPeriod();
     }
 
     private void verifyRequestAllStatisticsDataFromRepository(LocalDate startDate, LocalDate endDate) {

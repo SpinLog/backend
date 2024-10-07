@@ -13,7 +13,7 @@ import java.time.LocalDate;
 
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
-import static com.example.spinlog.utils.StatisticsCacheUtils.*;
+import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.*;
 
 @Component
 @RequiredArgsConstructor

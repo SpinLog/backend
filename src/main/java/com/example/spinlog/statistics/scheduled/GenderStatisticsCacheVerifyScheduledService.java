@@ -15,7 +15,7 @@ import java.util.Map;
 
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
-import static com.example.spinlog.utils.StatisticsZeroPaddingUtils.*;
+import static com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils.*;
 
 @Service
 @RequiredArgsConstructor

@@ -237,7 +237,6 @@ class GenderStatisticsRepositoryTest {
                     .map(Article::getAmount)
                     .reduce(Integer::sum)
                     .get() / articles.size();
-            amountAverage = roundingAverage(amountAverage);
 
             em.flush();
 
@@ -255,62 +254,6 @@ class GenderStatisticsRepositoryTest {
             assertThat(dtos)
                     .extracting(GenderEmotionAmountAverageDto::getAmountAverage)
                     .containsOnly(amountAverage);
-        }
-
-        @Test
-        @Order(2)
-        void 금액의_평균을_반활할_때_100의_자리수에서_반올림된다() throws Exception {
-            // given
-            RegisterType registerType = RegisterType.SPEND;
-            Emotion emotion = Emotion.PROUD;
-            List<Article> articles = List.of(
-                    articleRepository.save(
-                            ArticleFactory.builder()
-                                    .user(survivedUser)
-                                    .registerType(registerType)
-                                    .emotion(emotion)
-                                    .spendDate(startDate.atStartOfDay())
-                                    .amount(1100)
-                                    .build()
-                                    .createArticle()),
-                    articleRepository.save(
-                            ArticleFactory.builder()
-                                    .user(survivedUser)
-                                    .registerType(registerType)
-                                    .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
-                                    .amount(2200)
-                                    .build()
-                                    .createArticle()),
-                    articleRepository.save(
-                            ArticleFactory.builder()
-                                    .user(survivedUser)
-                                    .registerType(registerType)
-                                    .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
-                                    .amount(3300)
-                                    .build()
-                                    .createArticle()));
-            Long amountAverage = (long) articles.stream()
-                    .map(Article::getAmount)
-                    .reduce(Integer::sum)
-                    .get() / articles.size();
-            amountAverage = roundingAverage(amountAverage);
-
-            em.flush();
-
-            // when
-            List<GenderEmotionAmountAverageDto> dtos = genderStatisticsRepository.getAmountAveragesEachGenderAndEmotionBetweenStartDateAndEndDate(
-                    registerType,
-                    startDate,
-                    endDate
-            );
-
-            // then
-            assertThat(dtos)
-                    .extracting(GenderEmotionAmountAverageDto::getAmountAverage)
-                    .containsOnly(amountAverage);
-            assertThat(amountAverage % 1000).isZero();
         }
     }
 
@@ -808,53 +751,5 @@ class GenderStatisticsRepositoryTest {
                             .toList()
             ).containsOnly(satisfactionAverage);
         }
-
-        @Test
-        @Order(2)
-        void 만족도의_평균을_소수_둘째_자리에서_반올림해서_반환한다() throws Exception {
-            // given
-            RegisterType registerType = RegisterType.SPEND;
-            List<Article> articles = List.of(
-                    articleRepository.save(
-                            ArticleFactory.builder()
-                                    .user(survivedUser)
-                                    .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
-                                    .satisfaction(3.04f)
-                                    .build()
-                                    .createArticle()),
-                    articleRepository.save(
-                            ArticleFactory.builder()
-                                    .user(survivedUser)
-                                    .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
-                                    .satisfaction(4.08f)
-                                    .build()
-                                    .createArticle()));
-            em.flush();
-
-            // when
-            List<GenderSatisfactionAverageDto> dtos = genderStatisticsRepository.getSatisfactionAveragesEachGenderBetweenStartDateAndEndDate(
-                    registerType,
-                    startDate,
-                    endDate
-            );
-
-            // then
-            assertThat(
-                    dtos.stream()
-                            .map(GenderSatisfactionAverageDto::getSatisfactionAverage)
-                            .toList()
-            ).containsOnly(3.6f);
-        }
-    }
-
-    /**
-     * Long 타입 변수를 받아 100의 자리에서 반올림하는 메서드
-     * */
-    private static Long roundingAverage(Long amountAverage) {
-        amountAverage += 500L;
-        amountAverage = amountAverage - (amountAverage % 1000);
-        return amountAverage;
     }
 }

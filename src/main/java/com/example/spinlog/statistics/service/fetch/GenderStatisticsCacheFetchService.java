@@ -5,7 +5,6 @@ import com.example.spinlog.global.cache.HashCacheService;
 import com.example.spinlog.statistics.repository.dto.MemoDto;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.CountsAndSums;
 import com.example.spinlog.user.entity.Gender;
-import com.example.spinlog.utils.MapCastingUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.spinlog.utils.CacheKeyNameUtils.*;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 import static com.example.spinlog.utils.MapCastingUtils.*;
 
 @Service

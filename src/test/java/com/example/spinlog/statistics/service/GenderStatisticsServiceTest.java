@@ -46,10 +46,10 @@ class GenderStatisticsServiceTest { // todo 통합테스트로 변경
         void 성별_감정별_금액_평균_데이터를_조회한_뒤_성별로_grouping해서_반환한다() throws Exception {
             // given
             List<GenderEmotionAmountAverageDto> returned = List.of(
-                    new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.PROUD, 1L),
-                    new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 2L),
-                    new GenderEmotionAmountAverageDto(Gender.FEMALE, Emotion.PROUD, 3L),
-                    new GenderEmotionAmountAverageDto(Gender.FEMALE, Emotion.SAD, 4L)
+                    new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.PROUD, 1000L),
+                    new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 2000L),
+                    new GenderEmotionAmountAverageDto(Gender.FEMALE, Emotion.PROUD, 3000L),
+                    new GenderEmotionAmountAverageDto(Gender.FEMALE, Emotion.SAD, 4000L)
             );
 
             when(genderStatisticsCacheFallbackService.getAmountAveragesEachGenderAndEmotion(any()))
@@ -103,6 +103,30 @@ class GenderStatisticsServiceTest { // todo 통합테스트로 변경
                             list.stream()
                                     .map(GenderEmotionAmountAverageResponse.EmotionAmountAverage::getEmotion)
                                     .allMatch(Arrays.asList(Emotion.values())::contains));
+        }
+        
+        @Test
+        void 천의_자리에서_반올림하여_반환한다() throws Exception {
+            // given
+            List<GenderEmotionAmountAverageDto> returned = List.of(
+                    new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.PROUD, 1234L),
+                    new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 2468L)
+            );
+
+            when(genderStatisticsCacheFallbackService.getAmountAveragesEachGenderAndEmotion(any()))
+                    .thenReturn(returned);
+
+            // when
+            List<GenderEmotionAmountAverageResponse> responses =
+                    statisticsService.getAmountAveragesEachGenderAndEmotionLast30Days(null);
+
+            // then
+            assertThat(responses)
+                    .extracting(GenderEmotionAmountAverageResponse::getEmotionAmountAverages)
+                    .allMatch(list ->
+                            list.stream()
+                                    .map(GenderEmotionAmountAverageResponse.EmotionAmountAverage::getAmountAverage)
+                                    .allMatch(a -> a % 1000 == 0));
         }
 
         private static List<GenderEmotionAmountAverageResponse> filterNonZeroAndNonEmptyAverages(List<GenderEmotionAmountAverageResponse> responses) {
@@ -317,6 +341,26 @@ class GenderStatisticsServiceTest { // todo 통합테스트로 변경
 
             // then
             assertThat(response).isEqualTo(returned);
+        }
+
+        @Test
+        void 소수_첫째_자리에서_반올림하여_반환한다() throws Exception {
+            // given
+            List<GenderSatisfactionAverageDto> returned = List.of(
+                    GenderSatisfactionAverageDto.builder()
+                            .gender(Gender.MALE)
+                            .satisfactionAverage(1.234f)
+                            .build());
+            when(genderStatisticsCacheFallbackService.getSatisfactionAveragesEachGender(any()))
+                    .thenReturn(returned);
+
+            // when
+            List<GenderSatisfactionAverageDto> response = statisticsService
+                    .getSatisfactionAveragesEachGenderLast30Days(null);
+
+            // then
+            assertThat(response.get(0).getSatisfactionAverage())
+                    .isEqualTo(1.2f);
         }
     }
 }

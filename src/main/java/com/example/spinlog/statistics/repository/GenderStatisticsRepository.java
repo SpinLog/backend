@@ -15,8 +15,6 @@ import java.util.List;
 
 @Mapper
 public interface GenderStatisticsRepository {
-    // todo avg round 작업 WAS에서 처리
-
     // 성별, 감정별 지출 평균 그래프
     List<GenderEmotionAmountAverageDto> getAmountAveragesEachGenderAndEmotionBetweenStartDateAndEndDate(
             @Param("registerType") RegisterType registerType,
