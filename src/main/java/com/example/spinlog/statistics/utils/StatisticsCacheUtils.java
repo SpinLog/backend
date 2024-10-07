@@ -1,4 +1,4 @@
-package com.example.spinlog.utils;
+package com.example.spinlog.statistics.utils;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.statistics.exception.InvalidCacheException;
@@ -82,7 +82,7 @@ public class StatisticsCacheUtils {
             }
             long count = castLong(countsMap.get(k));
             if(count == 0) {
-                throw new InvalidCacheException("sum is not zero, but count is zero");
+                throw new InvalidCacheException("sum is not zero, but count is zero, countAndSums = " + countsAndSums);
             }
             long average =  amount / count;
             genderEmotionAmountAverage.put(k, average);
@@ -129,7 +129,7 @@ public class StatisticsCacheUtils {
             }
             long count = castLong(countsMap.get(k));
             if(count == 0) {
-                throw new InvalidCacheException("sum is not zero, but count is zero");
+                throw new InvalidCacheException("sum is not zero, but count is zero, countAndSums = " + countsAndSums);
             }
             float average = (float)(satisfactionSum / (double) count);
             genderSatisfactionAverage.put(k, average);
@@ -157,7 +157,7 @@ public class StatisticsCacheUtils {
 
         sumsMap.forEach((key, value) -> {
             if (!countsMap.containsKey(key)) {
-                throw new InvalidCacheException("Cache sum entries and count entries are not matched");
+                throw new InvalidCacheException("Cache sum entries and count entries are not matched, sumsMap = " + sumsMap + ", countsMap = " + countsMap);
             }
         });
     }
@@ -171,7 +171,7 @@ public class StatisticsCacheUtils {
     private static void verifyKeyName(String key) {
         String[] strings = key.split("::");
         if(strings.length != 2) {
-            throw new InvalidCacheException("Invalid cache key format");
+            throw new InvalidCacheException("Invalid cache key format, key = " + key);
         }
     }
 
@@ -180,7 +180,7 @@ public class StatisticsCacheUtils {
         try {
             return Long.parseLong(o.toString());
         } catch (NumberFormatException e) {
-            throw new InvalidCacheException("Invalid long format", e);
+            throw new InvalidCacheException("Invalid long format, value = " + o, e);
         }
     }
 
@@ -188,7 +188,7 @@ public class StatisticsCacheUtils {
         try {
             return Double.parseDouble(o.toString());
         } catch (NumberFormatException e) {
-            throw new InvalidCacheException("Invalid double format", e);
+            throw new InvalidCacheException("Invalid double format, value = " + o, e);
         }
     }
 
@@ -196,7 +196,7 @@ public class StatisticsCacheUtils {
         try {
             return LocalDate.parse(key);
         } catch (DateTimeParseException e) {
-            throw new InvalidCacheException("Invalid date format", e);
+            throw new InvalidCacheException("Invalid date format, value = " + key, e);
         }
     }
 
@@ -204,7 +204,7 @@ public class StatisticsCacheUtils {
         try {
             return valueOf(key);
         } catch (IllegalArgumentException e) {
-            throw new InvalidCacheException("Invalid gender format", e);
+            throw new InvalidCacheException("Invalid gender format, value = " + key, e);
         }
     }
 
@@ -212,7 +212,7 @@ public class StatisticsCacheUtils {
         try {
             return Emotion.valueOf(key);
         } catch (IllegalArgumentException e) {
-            throw new InvalidCacheException("Invalid emotion format", e);
+            throw new InvalidCacheException("Invalid emotion format, value = " + key, e);
         }
     }
 }

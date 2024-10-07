@@ -12,12 +12,4 @@ public class InvalidCacheException extends RuntimeException {
     public InvalidCacheException(String message, Throwable cause) {
         super(message, cause);
     }
-
-    public InvalidCacheException(Throwable cause) {
-        super(cause);
-    }
-
-    protected InvalidCacheException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

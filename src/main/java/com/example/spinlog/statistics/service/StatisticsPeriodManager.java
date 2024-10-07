@@ -32,9 +32,11 @@ public class StatisticsPeriodManager {
      * every 4 a.m. update statistics period
      */
     public void updateStatisticsPeriod() {
+        log.info("Update statistics period, before startDate: {}, endDate: {}", startDate, endDate);
         LocalDate endDate = LocalDate.now(clock);
         this.startDate = endDate.minusDays(PERIOD_CRITERIA);
         this.endDate = endDate;
+        log.info("Statistics period is updated as startDate: {}, endDate: {}", startDate, endDate);
     }
 
     /***
@@ -55,6 +57,7 @@ public class StatisticsPeriodManager {
             this.startDate = today.minusDays(PERIOD_CRITERIA);
             this.endDate = today;
         }
+        log.info("Statistics period is updated as startDate: {}, endDate: {}", startDate, endDate);
     }
 
     public record Period(LocalDate startDate, LocalDate endDate) { }

@@ -5,6 +5,7 @@ import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
+import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.util.CacheConfiguration;
@@ -20,8 +21,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.example.spinlog.article.entity.RegisterType.SPEND;
-import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
+import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -30,15 +31,19 @@ import static org.mockito.Mockito.*;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class GenderStatisticsCacheRefreshScheduledServiceTest {
     GenderStatisticsRepository genderStatisticsRepository = mock(GenderStatisticsRepository.class);
+    MockHashCacheService cacheService = new MockHashCacheService();
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService =
             new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
-    MockHashCacheService cacheService = new MockHashCacheService();
-    StatisticsPeriodManager statisticsPeriodManager = new StatisticsPeriodManager(Clock.systemDefaultZone());
+    GenderStatisticsCacheWriteService genderStatisticsCacheWriteService =
+            new GenderStatisticsCacheWriteService(cacheService);
+    Clock clock = Clock.systemDefaultZone();
+    StatisticsPeriodManager statisticsPeriodManager = spy(new StatisticsPeriodManager(clock));
 
     GenderStatisticsCacheRefreshScheduledService targetService =
             new GenderStatisticsCacheRefreshScheduledService(
                     cacheService,
                     genderStatisticsRepositoryFetchService,
+                    genderStatisticsCacheWriteService,
                     statisticsPeriodManager);
 
     @AfterEach
@@ -47,13 +52,13 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
     }
     
     @Test
-    void 레포지토리에게_오늘_하루와_31일_전의_모든_통계_데이터를_요청한다() throws Exception {
+    void 레포지토리에게_오늘_하루와_30일_전의_모든_통계_데이터를_요청한다() throws Exception {
         // given
-        LocalDate todayEndDate = LocalDate.now();
-        LocalDate todayStartDate = todayEndDate.minusDays(1);
+        LocalDate todayStartDate = LocalDate.now(clock);
+        LocalDate todayEndDate = todayStartDate.plusDays(1);
 
-        LocalDate oldEndDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
-        LocalDate oldStartDate = oldEndDate.minusDays(1);
+        LocalDate oldStartDate = LocalDate.now(clock).minusDays(PERIOD_CRITERIA);
+        LocalDate oldEndDate = oldStartDate.plusDays(1);
 
         // when
         targetService.refreshGenderStatisticsCache();
@@ -70,17 +75,17 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
         List<String> keys = getGenderEmotionHashKeyNames();
         keys.forEach(key -> {
             cacheService.putDataInHash(
-                    getGenderEmotionStatisticsAmountSumKeyName(SPEND),
+                    GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                     key, 0L);
         });
 
         String targetKey = "MALE::SAD";
         cacheService.incrementDataInHash(
-                getGenderEmotionStatisticsAmountSumKeyName(SPEND),
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                 targetKey, 1000L);
 
-        LocalDate oldEndDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
-        LocalDate oldStartDate = oldEndDate.minusDays(1);
+        LocalDate oldStartDate = LocalDate.now(clock).minusDays(PERIOD_CRITERIA);
+        LocalDate oldEndDate = oldStartDate.plusDays(1);
         when(genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
                 eq(SPEND), eq(oldStartDate), eq(oldEndDate)))
                 .thenReturn(List.of(
@@ -90,7 +95,7 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
         targetService.refreshGenderStatisticsCache();
 
         // then
-        long data = (long) cacheService.getDataFromHash(getGenderEmotionStatisticsAmountSumKeyName(SPEND), targetKey);
+        long data = (long) cacheService.getDataFromHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), targetKey);
         assertThat(data).isEqualTo(1000L - 500L);
     }
 
@@ -100,17 +105,17 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
         List<String> keys = getGenderEmotionHashKeyNames();
         keys.forEach(key -> {
             cacheService.putDataInHash(
-                    getGenderEmotionStatisticsAmountSumKeyName(SPEND),
+                    GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                     key, 0L);
         });
 
         String targetKey = "MALE::SAD";
         cacheService.incrementDataInHash(
-                getGenderEmotionStatisticsAmountSumKeyName(SPEND),
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                 targetKey, 1000L);
 
-        LocalDate todayEndDate = LocalDate.now();
-        LocalDate todayStartDate = todayEndDate.minusDays(1);
+        LocalDate todayStartDate = LocalDate.now(clock);
+        LocalDate todayEndDate = todayStartDate.plusDays(1);
         when(genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
                 eq(SPEND), eq(todayStartDate), eq(todayEndDate)))
                 .thenReturn(List.of(
@@ -120,7 +125,7 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
         targetService.refreshGenderStatisticsCache();
 
         // then
-        long data = (long) cacheService.getDataFromHash(getGenderEmotionStatisticsAmountSumKeyName(SPEND), targetKey);
+        long data = (long) cacheService.getDataFromHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), targetKey);
         assertThat(data).isEqualTo(1000L + 500L);
     }
 
@@ -130,12 +135,12 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
         List<String> keys = getGenderDailyHashKeyNames();
         keys.forEach(key -> {
             cacheService.putDataInHash(
-                    getGenderDailyStatisticsAmountSumKeyName(SPEND),
+                    GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND),
                     key, 0L);
         });
 
-        LocalDate oldEndDate = LocalDate.now().minusDays(PERIOD_CRITERIA);
-        LocalDate oldStartDate = oldEndDate.minusDays(1);
+        LocalDate oldStartDate = LocalDate.now(clock).minusDays(PERIOD_CRITERIA);
+        LocalDate oldEndDate = oldStartDate.plusDays(1);
         when(genderStatisticsRepository.getAmountSumsEachGenderAndDayBetweenStartDateAndEndDate(
                 eq(SPEND), eq(oldStartDate), eq(oldEndDate)))
                 .thenReturn(List.of(
@@ -147,8 +152,17 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
         targetService.refreshGenderStatisticsCache();
 
         // then
-        assertThat(cacheService.getDataFromHash(getGenderDailyStatisticsAmountSumKeyName(SPEND), targetKey))
+        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), targetKey))
                 .isNull();
+    }
+
+    @Test
+    void StatisticsPeriodManager의_Period를_업데이트한다() throws Exception {
+        // when
+        targetService.refreshGenderStatisticsCache();
+        
+        // then
+        verify(statisticsPeriodManager).updateStatisticsPeriod();
     }
 
     private void verifyRequestAllStatisticsDataFromRepository(LocalDate startDate, LocalDate endDate) {

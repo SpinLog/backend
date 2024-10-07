@@ -12,8 +12,7 @@ import java.time.LocalDate;
 
 import static com.example.spinlog.article.entity.RegisterType.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
-import static com.example.spinlog.utils.CacheKeyNameUtils.*;
-import static com.example.spinlog.utils.StatisticsCacheUtils.*;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 
 @Component
 @Transactional(readOnly = true) // todo 범위 좁히기
@@ -34,36 +33,36 @@ public class GenderStatisticsCacheSetupService {
         AllStatisticsMap allData = genderStatisticsRepositoryFetchService.getGenderStatisticsAllData(startDate, endDate);
 
         hashCacheService.putAllDataInHash(
-                getGenderEmotionStatisticsAmountSumKeyName(SPEND),
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                 allData.genderEmotionAmountSpendCountsAndSums().sumsMap());
         hashCacheService.putAllDataInHash(
-                getGenderEmotionStatisticsAmountCountKeyName(SPEND),
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND),
                 allData.genderEmotionAmountSpendCountsAndSums().countsMap());
         hashCacheService.putAllDataInHash(
-                getGenderEmotionStatisticsAmountSumKeyName(SAVE),
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE),
                 allData.genderEmotionAmountSaveCountsAndSums().sumsMap());
         hashCacheService.putAllDataInHash(
-                getGenderEmotionStatisticsAmountCountKeyName(SAVE),
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE),
                 allData.genderEmotionAmountSaveCountsAndSums().countsMap());
 
         hashCacheService.putAllDataInHash(
-                getGenderDailyStatisticsAmountSumKeyName(SPEND),
+                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND),
                 allData.genderDailyAmountSpendSums());
         hashCacheService.putAllDataInHash(
-                getGenderDailyStatisticsAmountSumKeyName(SAVE),
+                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE),
                 allData.genderDailyAmountSaveSums());
 
         hashCacheService.putAllDataInHash(
-                getGenderStatisticsSatisfactionSumKeyName(SPEND),
+                GENDER_SATISFACTION_SUM_KEY_NAME(SPEND),
                 allData.genderSatisfactionSpendCountsAndSums().sumsMap());
         hashCacheService.putAllDataInHash(
-                getGenderStatisticsSatisfactionCountKeyName(SPEND),
+                GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND),
                 allData.genderSatisfactionSpendCountsAndSums().countsMap());
         hashCacheService.putAllDataInHash(
-                getGenderStatisticsSatisfactionSumKeyName(SAVE),
+                GENDER_SATISFACTION_SUM_KEY_NAME(SAVE),
                 allData.genderSatisfactionSaveCountsAndSums().sumsMap());
         hashCacheService.putAllDataInHash(
-                getGenderStatisticsSatisfactionCountKeyName(SAVE),
+                GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE),
                 allData.genderSatisfactionSaveCountsAndSums().countsMap());
 
         log.info("Finish initializing Caching");

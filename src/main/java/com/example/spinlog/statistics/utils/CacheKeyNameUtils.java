@@ -1,4 +1,4 @@
-package com.example.spinlog.utils;
+package com.example.spinlog.statistics.utils;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
@@ -11,23 +11,23 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CacheKeyNameUtils {
-    public static String getGenderEmotionStatisticsAmountSumKeyName(RegisterType registerType) {
+    public static String GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(RegisterType registerType) {
         return "GenderEmotionStatisticsAmountSum::" + registerType;
     }
 
-    public static String getGenderEmotionStatisticsAmountCountKeyName(RegisterType registerType) {
+    public static String GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(RegisterType registerType) {
         return "GenderEmotionStatisticsAmountCount::" + registerType;
     }
 
-    public static String getGenderDailyStatisticsAmountSumKeyName(RegisterType registerType) {
+    public static String GENDER_DAILY_AMOUNT_SUM_KEY_NAME(RegisterType registerType) {
         return "GenderDailyStatisticsAmountSum::" + registerType;
     }
 
-    public static String getGenderStatisticsSatisfactionSumKeyName(RegisterType registerType) {
+    public static String GENDER_SATISFACTION_SUM_KEY_NAME(RegisterType registerType) {
         return "GenderStatisticsSatisfactionSum::" + registerType;
     }
 
-    public static String getGenderStatisticsSatisfactionCountKeyName(RegisterType registerType) {
+    public static String GENDER_SATISFACTION_COUNT_KEY_NAME(RegisterType registerType) {
         return "GenderStatisticsSatisfactionCount::" + registerType;
     }
 
