@@ -19,8 +19,6 @@ import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 public class GenderStatisticsCacheWriteService {
     private final HashCacheService hashCacheService;
 
-    // todo test
-
     public void putAmountCountsAndSumsByGenderAndEmotion(CountsAndSums amountCountsAndSums, RegisterType registerType) {
         hashCacheService.putAllDataInHash(
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType), amountCountsAndSums.countsMap());

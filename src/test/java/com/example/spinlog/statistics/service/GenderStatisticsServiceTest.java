@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class GenderStatisticsServiceTest { // todo 통합테스트로 변경
+class GenderStatisticsServiceTest {
     @Mock
     WordExtractionService wordExtractionService;
     @Mock

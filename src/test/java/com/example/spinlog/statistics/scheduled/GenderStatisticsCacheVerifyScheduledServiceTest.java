@@ -233,5 +233,27 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             // then
             verify(genderStatisticsCacheWriteService).putSatisfactionCountsAndSumsByGender(eq(repositoryData), any());
         }
+        
+        @Test
+        void 캐시와_레포지토리로부터_받은_sumsMap들이_근사하게_같지_않다면_CacheWriteService를_호출한다() throws Exception {
+            // given
+            when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
+                    .thenReturn(new CountsAndSums(
+                            Map.of("MALE", 1.0, "FEMALE", 2.0),
+                            Map.of("MALE", 1, "FEMALE", 2)));
+            CountsAndSums repositoryData = new CountsAndSums(
+                    Map.of("MALE", 1.0, "FEMALE", 4.0),
+                    Map.of("MALE", 1, "FEMALE", 2));
+            when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))
+                    .thenReturn(repositoryData);
+
+            Period period = statisticsPeriodManager.getStatisticsPeriod();
+
+            // when
+            targetService.updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType.SPEND, period);
+
+            // then
+            verify(genderStatisticsCacheWriteService).putSatisfactionCountsAndSumsByGender(eq(repositoryData), any());
+        }
     }
 }

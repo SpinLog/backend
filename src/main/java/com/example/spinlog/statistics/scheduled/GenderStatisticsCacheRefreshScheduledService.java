@@ -2,6 +2,7 @@ package com.example.spinlog.statistics.scheduled;
 
 import com.example.spinlog.global.cache.HashCacheService;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
+import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 public class GenderStatisticsCacheRefreshScheduledService {
     private final HashCacheService hashCacheService;
     private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
+    private final GenderStatisticsCacheWriteService genderStatisticsCacheWriteService;
     private final StatisticsPeriodManager statisticsPeriodManager;
 
     // todo prometheus & grafana로 성공 여부 확인
@@ -64,94 +66,28 @@ public class GenderStatisticsCacheRefreshScheduledService {
     }
 
     private void incrementNewCacheData(AllStatisticsMap newStatisticsData) {
-        newStatisticsData.genderEmotionAmountSpendCountsAndSums().sumsMap().forEach((k, v) -> {
-            hashCacheService.incrementDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), k, (long)v);
-        });
-        newStatisticsData.genderEmotionAmountSpendCountsAndSums().countsMap().forEach((k, v) -> {
-            hashCacheService.incrementDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), k, (long)v);
-        });
-
-        newStatisticsData.genderEmotionAmountSaveCountsAndSums().sumsMap().forEach((k, v) -> {
-            hashCacheService.incrementDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), k, (long)v);
-        });
-        newStatisticsData.genderEmotionAmountSaveCountsAndSums().countsMap().forEach((k, v) -> {
-            hashCacheService.incrementDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), k, (long)v);
-        });
-
-
-        newStatisticsData.genderDailyAmountSpendSums().forEach((k, v) -> {
-            hashCacheService.incrementDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k, (long)v);
-        });
-        newStatisticsData.genderDailyAmountSaveSums().forEach((k, v) -> {
-            hashCacheService.incrementDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k, (long)v);
-        });
-
-        newStatisticsData.genderSatisfactionSpendCountsAndSums().sumsMap().forEach((k, v) -> {
-            hashCacheService.incrementDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), k, (double)v);
-        });
-        newStatisticsData.genderSatisfactionSpendCountsAndSums().countsMap().forEach((k, v) -> {
-            hashCacheService.incrementDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), k, (double)v);
-        });
-
-        newStatisticsData.genderSatisfactionSaveCountsAndSums().sumsMap().forEach((k, v) -> {
-            hashCacheService.incrementDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), k, (double)v);
-        });
-        newStatisticsData.genderSatisfactionSaveCountsAndSums().countsMap().forEach((k, v) -> {
-            hashCacheService.incrementDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), k, (double)v);
-        });
-
+        log.info("try to increase all data");
+        genderStatisticsCacheWriteService.incrementAllData(newStatisticsData);
     }
 
     private void decrementOldCacheData(AllStatisticsMap expiringStatisticsData) {
-        log.info("try to decrease GenderAmountSum::SPEND");
-        expiringStatisticsData.genderEmotionAmountSpendCountsAndSums().sumsMap().forEach((k, v) -> {
-            hashCacheService.decrementDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), k, (long)v);
-        });
-        log.info("try to decrease GenderAmountSum::SAVE");
-        expiringStatisticsData.genderEmotionAmountSpendCountsAndSums().countsMap().forEach((k, v) -> {
-            hashCacheService.decrementDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), k, (long)v);
-        });
-        log.info("try to decrease GenderAmountSum::SPEND");
-        expiringStatisticsData.genderEmotionAmountSaveCountsAndSums().sumsMap().forEach((k, v) -> {
-            hashCacheService.decrementDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), k, (long)v);
-        });
-        log.info("try to decrease GenderAmountSum::SAVE");
-        expiringStatisticsData.genderEmotionAmountSaveCountsAndSums().countsMap().forEach((k, v) -> {
-            hashCacheService.decrementDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), k, (long)v);
-        });
+        log.info("try to decrease all data");
+        genderStatisticsCacheWriteService.decrementAllData(expiringStatisticsData);
 
-        log.info("try to delete GenderAmountSum::SPEND:  {}", expiringStatisticsData.genderDailyAmountSpendSums());
-        log.info("try to delete GenderAmountSum::SAVE    {}", expiringStatisticsData.genderDailyAmountSaveSums());
+        log.info("try to delete expiring GenderAmountSum::SPEND:  {}", expiringStatisticsData.genderDailyAmountSpendSums());
         expiringStatisticsData.genderDailyAmountSpendSums().forEach((k, v) -> {
             Object dataFromCache = hashCacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k);
-            if(!v.equals(
-                    Long.parseLong(dataFromCache.toString())))
+            if(!v.equals(Long.parseLong(dataFromCache.toString())))
                 log.warn("Data is not same. key: {}, repository: {}, cache: {}", k, dataFromCache, v);
             hashCacheService.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k);
         });
+
+        log.info("try to delete expiring GenderAmountSum::SAVE    {}", expiringStatisticsData.genderDailyAmountSaveSums());
         expiringStatisticsData.genderDailyAmountSaveSums().forEach((k, v) -> {
             Object dataFromCache = hashCacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k);
-            if(!v.equals(
-                    Long.parseLong(dataFromCache.toString())))
+            if(!v.equals(Long.parseLong(dataFromCache.toString())))
                 log.warn("Data is not same. key: {}, repository: {}, cache: {}", k, dataFromCache, v);
             hashCacheService.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k);
-        });
-
-        log.info("try to decrease GenderSatisfactionSum::SPEND");
-        expiringStatisticsData.genderSatisfactionSpendCountsAndSums().sumsMap().forEach((k, v) -> {
-            hashCacheService.decrementDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), k, (double)v);
-        });
-        log.info("try to decrease GenderSatisfactionCount::SPEND");
-        expiringStatisticsData.genderSatisfactionSpendCountsAndSums().countsMap().forEach((k, v) -> {
-            hashCacheService.decrementDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), k, (long)v);
-        });
-        log.info("try to decrease GenderSatisfactionSum::SAVE");
-        expiringStatisticsData.genderSatisfactionSaveCountsAndSums().sumsMap().forEach((k, v) -> {
-            hashCacheService.decrementDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), k, (double)v);
-        });
-        log.info("try to decrease GenderSatisfactionCount::SAVE");
-        expiringStatisticsData.genderSatisfactionSaveCountsAndSums().countsMap().forEach((k, v) -> {
-            hashCacheService.decrementDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), k, (long)v);
         });
     }
 }

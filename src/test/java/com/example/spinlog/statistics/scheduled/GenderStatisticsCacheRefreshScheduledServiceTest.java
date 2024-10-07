@@ -5,6 +5,7 @@ import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
+import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.util.CacheConfiguration;
@@ -30,9 +31,11 @@ import static org.mockito.Mockito.*;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class GenderStatisticsCacheRefreshScheduledServiceTest {
     GenderStatisticsRepository genderStatisticsRepository = mock(GenderStatisticsRepository.class);
+    MockHashCacheService cacheService = new MockHashCacheService();
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService =
             new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
-    MockHashCacheService cacheService = new MockHashCacheService();
+    GenderStatisticsCacheWriteService genderStatisticsCacheWriteService =
+            new GenderStatisticsCacheWriteService(cacheService);
     Clock clock = Clock.systemDefaultZone();
     StatisticsPeriodManager statisticsPeriodManager = spy(new StatisticsPeriodManager(clock));
 
@@ -40,6 +43,7 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
             new GenderStatisticsCacheRefreshScheduledService(
                     cacheService,
                     genderStatisticsRepositoryFetchService,
+                    genderStatisticsCacheWriteService,
                     statisticsPeriodManager);
 
     @AfterEach
