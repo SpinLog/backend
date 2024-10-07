@@ -124,13 +124,15 @@ public class GenderStatisticsCacheRefreshScheduledService {
         log.info("try to delete GenderAmountSum::SAVE    {}", expiringStatisticsData.genderDailyAmountSaveSums());
         expiringStatisticsData.genderDailyAmountSpendSums().forEach((k, v) -> {
             Object dataFromCache = hashCacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k);
-            if(!v.equals(dataFromCache))
+            if(!v.equals(
+                    Long.parseLong(dataFromCache.toString())))
                 log.warn("Data is not same. key: {}, repository: {}, cache: {}", k, dataFromCache, v);
             hashCacheService.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k);
         });
         expiringStatisticsData.genderDailyAmountSaveSums().forEach((k, v) -> {
             Object dataFromCache = hashCacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k);
-            if(!v.equals(dataFromCache))
+            if(!v.equals(
+                    Long.parseLong(dataFromCache.toString())))
                 log.warn("Data is not same. key: {}, repository: {}, cache: {}", k, dataFromCache, v);
             hashCacheService.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k);
         });
@@ -141,7 +143,7 @@ public class GenderStatisticsCacheRefreshScheduledService {
         });
         log.info("try to decrease GenderSatisfactionCount::SPEND");
         expiringStatisticsData.genderSatisfactionSpendCountsAndSums().countsMap().forEach((k, v) -> {
-            hashCacheService.decrementDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), k, (double)v);
+            hashCacheService.decrementDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), k, (long)v);
         });
         log.info("try to decrease GenderSatisfactionSum::SAVE");
         expiringStatisticsData.genderSatisfactionSaveCountsAndSums().sumsMap().forEach((k, v) -> {
@@ -149,7 +151,7 @@ public class GenderStatisticsCacheRefreshScheduledService {
         });
         log.info("try to decrease GenderSatisfactionCount::SAVE");
         expiringStatisticsData.genderSatisfactionSaveCountsAndSums().countsMap().forEach((k, v) -> {
-            hashCacheService.decrementDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), k, (double)v);
+            hashCacheService.decrementDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), k, (long)v);
         });
     }
 }

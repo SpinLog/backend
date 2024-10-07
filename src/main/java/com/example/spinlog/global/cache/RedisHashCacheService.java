@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ public class RedisHashCacheService implements HashCacheService {
 
     @Override
     public void putDataInHash(String key, String hashKey, Object data) {
-        redisTemplate.opsForHash().put(key, hashKey, data);
+        redisTemplate.opsForHash().put(key, hashKey, data.toString());
     }
 
     @Override
@@ -57,7 +58,12 @@ public class RedisHashCacheService implements HashCacheService {
 
     @Override
     public void putAllDataInHash(String key, Map<String, Object> data) {
-        redisTemplate.opsForHash().putAll(key, data);
+        Map<String, String> stringData = data.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().toString()
+                ));
+        redisTemplate.opsForHash().putAll(key, stringData);
     }
 
     @Override
