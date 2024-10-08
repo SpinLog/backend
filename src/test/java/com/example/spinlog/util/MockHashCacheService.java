@@ -96,7 +96,8 @@ public class MockHashCacheService implements HashCacheService {
 
     @Override
     public void deleteHashKey(String key, String hashKey) {
-        cache.get(key).remove(hashKey);
+        if(cache.containsKey(key))
+            cache.get(key).remove(hashKey);
     }
 
     public void clear(){

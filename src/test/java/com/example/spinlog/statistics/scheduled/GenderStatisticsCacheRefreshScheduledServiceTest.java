@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static com.example.spinlog.article.entity.RegisterType.SPEND;
+import static com.example.spinlog.article.entity.RegisterType.*;
 import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
 import static org.assertj.core.api.Assertions.*;
@@ -130,7 +130,7 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
     }
 
     @Test
-    void 레포지토리로부터_받은_31일_전의_GenderDailyAmountSum_데이터로_캐시_필드를_삭제한다() throws Exception {
+    void GenderDailyAmountSum_캐시의_31일_전_필드를_삭제한다() throws Exception {
         // given
         List<String> keys = getGenderDailyHashKeyNames();
         keys.forEach(key -> {
@@ -138,22 +138,62 @@ class GenderStatisticsCacheRefreshScheduledServiceTest {
                     GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND),
                     key, 0L);
         });
+        keys.forEach(key -> {
+            cacheService.putDataInHash(
+                    GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE),
+                    key, 0L);
+        });
 
         LocalDate oldStartDate = LocalDate.now(clock).minusDays(PERIOD_CRITERIA);
-        LocalDate oldEndDate = oldStartDate.plusDays(1);
-        when(genderStatisticsRepository.getAmountSumsEachGenderAndDayBetweenStartDateAndEndDate(
-                eq(SPEND), eq(oldStartDate), eq(oldEndDate)))
-                .thenReturn(List.of(
-                        new GenderDailyAmountSumDto(Gender.MALE, oldStartDate, 0L)));
 
-        String targetKey = "MALE::" + oldStartDate;
+        String maleKey = "MALE::" + oldStartDate;
+        String femaleKey = "FEMALE::" + oldStartDate;
 
         // when
         targetService.refreshGenderStatisticsCache();
 
         // then
-        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), targetKey))
+        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), maleKey))
                 .isNull();
+        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), femaleKey))
+                .isNull();
+        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), maleKey))
+                .isNull();
+        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), femaleKey))
+                .isNull();
+    }
+
+    @Test
+    void GenderDailyAmountSum_캐시의_오늘의_필드가_비었다면_0으로_추가한다() throws Exception {
+        // given
+        LocalDate todayStartDate = LocalDate.now(clock);
+        String maleKey = "MALE::" + todayStartDate;
+        String femaleKey = "FEMALE::" + todayStartDate;
+        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), maleKey))
+                .isNull();
+        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), femaleKey))
+                .isNull();
+        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), maleKey))
+                .isNull();
+        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), femaleKey))
+                .isNull();
+
+        // when
+        targetService.refreshGenderStatisticsCache();
+
+        // then
+        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), maleKey))
+                .isNotNull()
+                .isEqualTo(0L);
+        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), femaleKey))
+                .isNotNull()
+                .isEqualTo(0L);
+        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), maleKey))
+                .isNotNull()
+                .isEqualTo(0L);
+        assertThat(cacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), femaleKey))
+                .isNotNull()
+                .isEqualTo(0L);
     }
 
     @Test
