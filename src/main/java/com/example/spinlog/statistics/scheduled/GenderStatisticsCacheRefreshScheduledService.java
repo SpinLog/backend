@@ -4,18 +4,20 @@ import com.example.spinlog.global.cache.HashCacheService;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
+import com.example.spinlog.user.entity.Gender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import static com.example.spinlog.article.entity.RegisterType.SAVE;
 import static com.example.spinlog.article.entity.RegisterType.SPEND;
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
-import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.GENDER_DAILY_AMOUNT_SUM_KEY_NAME;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +29,8 @@ public class GenderStatisticsCacheRefreshScheduledService {
     private final StatisticsPeriodManager statisticsPeriodManager;
 
     // todo prometheus & grafana로 성공 여부 확인
-    // todo 0~4시 사이 캐시 데이터 정합성 문제 확인
     // todo read 문제는 없음, but article write 시에 Race condition 발생 가능성 있음 -> 캐시 업데이트 할때 lock 걸어야 함
     //  -> PERIOD CRITERIA을 별도의 클래스로 관리하여 lock 걸어야 함
-    //  -> PERIOD CRITERIA를 별도의 클래스로 관리하면 테스트 코드 작성이 용이해짐 (Clock 사용)
     @Scheduled(cron = "0 0 4 * * *")
     public void refreshGenderStatisticsCache() {
         log.info("Start refreshing Caching.");
@@ -56,6 +56,8 @@ public class GenderStatisticsCacheRefreshScheduledService {
             // todo lock
             decrementOldCacheData(expiringStatisticsData);
             incrementNewCacheData(newStatisticsData);
+            deleteExpiringDateCache(oldStartDate);
+            zeroPaddingNewDateCache(todayStartDate);
             // todo unlock
         } catch (Exception e) {
             log.error("Error occurred while updating cache data.", e);
@@ -73,21 +75,29 @@ public class GenderStatisticsCacheRefreshScheduledService {
     private void decrementOldCacheData(AllStatisticsMap expiringStatisticsData) {
         log.info("try to decrease all data");
         genderStatisticsCacheWriteService.decrementAllData(expiringStatisticsData);
+    }
 
-        log.info("try to delete expiring GenderAmountSum::SPEND:  {}", expiringStatisticsData.genderDailyAmountSpendSums());
-        expiringStatisticsData.genderDailyAmountSpendSums().forEach((k, v) -> {
-            Object dataFromCache = hashCacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k);
-            if(!v.equals(Long.parseLong(dataFromCache.toString())))
-                log.warn("Data is not same. key: {}, repository: {}, cache: {}", k, dataFromCache, v);
-            hashCacheService.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k);
-        });
+    private void zeroPaddingNewDateCache(LocalDate todayStartDate) {
+        log.info("try to zero padding new date cache");
+        Arrays.stream(Gender.values()).filter(g -> !g.equals(Gender.NONE))
+                .map(g -> g + "::" + todayStartDate)
+                .forEach(k -> {
+                    if(hashCacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k) == null) {
+                        hashCacheService.putDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k, 0L);
+                    }
+                    if(hashCacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k) == null) {
+                        hashCacheService.putDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k, 0L);
+                    }
+                });
+    }
 
-        log.info("try to delete expiring GenderAmountSum::SAVE    {}", expiringStatisticsData.genderDailyAmountSaveSums());
-        expiringStatisticsData.genderDailyAmountSaveSums().forEach((k, v) -> {
-            Object dataFromCache = hashCacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k);
-            if(!v.equals(Long.parseLong(dataFromCache.toString())))
-                log.warn("Data is not same. key: {}, repository: {}, cache: {}", k, dataFromCache, v);
-            hashCacheService.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k);
-        });
+    private void deleteExpiringDateCache(LocalDate oldStartDate) {
+        log.info("try to delete expiring date cache");
+        Arrays.stream(Gender.values()).filter(g -> !g.equals(Gender.NONE))
+                .map(g -> g + "::" + oldStartDate)
+                .forEach(k -> {
+                    hashCacheService.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k);
+                    hashCacheService.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k);
+                });
     }
 }
