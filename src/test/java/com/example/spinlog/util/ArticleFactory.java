@@ -3,6 +3,7 @@ package com.example.spinlog.util;
 import com.example.spinlog.article.entity.Article;
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
+import com.example.spinlog.article.service.request.ArticleCreateRequest;
 import com.example.spinlog.user.entity.User;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -69,6 +70,22 @@ public class ArticleFactory {
                 .aiComment(aiComment)
                 .amount(amount)
                 .registerType(registerType)
+                .build();
+    }
+
+    public ArticleCreateRequest toCreateRequest() {
+
+        return ArticleCreateRequest.builder()
+                .content(content)
+                .spendDate(spendDate.toString())
+                .event(event)
+                .thought(thought)
+                .emotion(emotion.name())
+                .satisfaction(satisfaction)
+                .reason(reason)
+                .improvements(improvements)
+                .amount(amount)
+                .registerType(registerType.name())
                 .build();
     }
 }

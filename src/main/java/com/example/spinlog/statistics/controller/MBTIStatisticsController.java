@@ -7,20 +7,12 @@ import com.example.spinlog.statistics.service.dto.MBTIDailyAmountSumResponse;
 import com.example.spinlog.statistics.service.dto.MBTIEmotionAmountAverageResponse;
 import com.example.spinlog.statistics.service.dto.MBTISatisfactionAverageResponse;
 import com.example.spinlog.statistics.service.dto.MBTIWordFrequencyResponse;
-import com.example.spinlog.statistics.repository.dto.MBTISatisfactionAverageDto;
 import com.example.spinlog.statistics.service.MBTIStatisticsService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -33,7 +25,6 @@ public class MBTIStatisticsController {
             @RequestParam(defaultValue = "SPEND") String registerType){
         return ResponseUtils.ok(
                 statisticsService.getAmountAveragesEachMBTIAndEmotionLast30Days(
-                        LocalDate.now(),
                         RegisterType.valueOf(registerType)),
                 "MBTI별 감정별 금액 평균");
     }
@@ -43,7 +34,6 @@ public class MBTIStatisticsController {
             @RequestParam(defaultValue = "SPEND") String registerType) {
         return ResponseUtils.ok(
                 statisticsService.getAmountSumsEachMBTIAndDayLast30Days(
-                        LocalDate.now(),
                         RegisterType.valueOf(registerType)),
                 "MBTI별 일별 금액 총합");
     }
@@ -54,7 +44,6 @@ public class MBTIStatisticsController {
         return ResponseUtils.ok(
                 statisticsService
                         .getWordFrequenciesLast30Days(
-                                LocalDate.now(),
                                 RegisterType.valueOf(registerType)),
                 "MBTI별 단어 빈도수");
     }
@@ -64,7 +53,6 @@ public class MBTIStatisticsController {
             @RequestParam(defaultValue = "SPEND") String registerType){
         return ResponseUtils.ok(
                 statisticsService.getSatisfactionAveragesEachMBTILast30Days(
-                        LocalDate.now(),
                         RegisterType.valueOf(registerType)),
                 "MBTI별 만족도 평균");
     }

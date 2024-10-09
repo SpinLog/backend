@@ -1,4 +1,4 @@
-package com.example.spinlog.statistics.service;
+package com.example.spinlog.statistics.service.wordanalysis;
 
 import com.example.spinlog.statistics.service.dto.MorphemeApiRequestDto;
 import com.example.spinlog.statistics.service.dto.MorphemeResponse;

@@ -113,4 +113,15 @@ public class User extends BaseTimeEntity {
                 .findFirst()
                 .orElse(null);
     }
+
+    public User copyEntity() {
+        User user = User.builder()
+                .email(this.email)
+                .mbti(this.mbti)
+                .gender(this.gender)
+                .authenticationName(this.authenticationName)
+                .build();
+        user.id = this.id;
+        return user;
+    }
 }

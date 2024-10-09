@@ -1,6 +1,9 @@
 package com.example.spinlog.article.service;
 
 import com.example.spinlog.article.entity.Article;
+import com.example.spinlog.article.event.ArticleCreatedEvent;
+import com.example.spinlog.article.event.ArticleDeletedEvent;
+import com.example.spinlog.article.event.ArticleUpdatedEvent;
 import com.example.spinlog.article.repository.ArticleRepository;
 import com.example.spinlog.article.service.request.ArticleCreateRequest;
 import com.example.spinlog.article.service.request.ArticleUpdateRequest;
@@ -16,6 +19,7 @@ import com.example.spinlog.user.entity.User;
 import com.example.spinlog.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ArticleService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public WriteArticleResponseDto createArticle(String userName, ArticleCreateRequest requestDto) {
@@ -35,6 +40,9 @@ public class ArticleService {
         Article articleEntity = requestDto.toEntity(user);
         Article savedArticle = articleRepository.save(articleEntity);
         user.addArticle(savedArticle);
+
+        eventPublisher.publishEvent(new ArticleCreatedEvent(savedArticle, user));
+
         log.info("게시글이 성공적으로 저장되었습니다. ID: {}", savedArticle.getArticleId());
         return WriteArticleResponseDto.from(savedArticle);
     }
@@ -60,7 +68,14 @@ public class ArticleService {
         User user = getUser(userName);
         Article updateArticle = findArticleById(id);
         validateUserArticle(user, updateArticle);
+
+        // copy article entity
+        Article originalArticle = updateArticle.copyEntity();
+
         updateArticle.update(requestDto);
+
+        eventPublisher.publishEvent(new ArticleUpdatedEvent(originalArticle, updateArticle, user));
+
         log.info("ID {}의 게시글이 업데이트되었습니다.", id);
     }
 
@@ -71,6 +86,9 @@ public class ArticleService {
         validateUserArticle(user, deleteArticle);
         articleRepository.delete(deleteArticle);
         user.removeArticle(deleteArticle);
+
+        eventPublisher.publishEvent(new ArticleDeletedEvent(deleteArticle, user));
+
         log.info("ID {}의 게시글이 성공적으로 삭제되었습니다.", id);
     }
 

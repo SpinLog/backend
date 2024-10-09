@@ -41,7 +41,7 @@ class MBTIStatisticsControllerTest {
 
             // then
             verify(mbtiStatisticsService, times(1))
-                    .getAmountAveragesEachMBTIAndEmotionLast30Days(any(), any());
+                    .getAmountAveragesEachMBTIAndEmotionLast30Days(any());
         }
 
         @Test
@@ -51,7 +51,7 @@ class MBTIStatisticsControllerTest {
 
             // then
             verify(mbtiStatisticsService)
-                    .getAmountAveragesEachMBTIAndEmotionLast30Days(any(), eq(RegisterType.SPEND));
+                    .getAmountAveragesEachMBTIAndEmotionLast30Days(eq(RegisterType.SPEND));
         }
 
         @Test
@@ -73,7 +73,7 @@ class MBTIStatisticsControllerTest {
 
             // then
             verify(mbtiStatisticsService, times(1))
-                    .getAmountAveragesEachMBTIAndEmotionLast30Days(any(), eq(RegisterType.valueOf(registerType)));
+                    .getAmountAveragesEachMBTIAndEmotionLast30Days(eq(RegisterType.valueOf(registerType)));
         }
     }
 
@@ -87,7 +87,7 @@ class MBTIStatisticsControllerTest {
 
             // then
             verify(mbtiStatisticsService, times(1))
-                    .getAmountSumsEachMBTIAndDayLast30Days(any(), any());
+                    .getAmountSumsEachMBTIAndDayLast30Days(any());
         }
 
         @Test
@@ -97,7 +97,7 @@ class MBTIStatisticsControllerTest {
 
             // then
             verify(mbtiStatisticsService)
-                    .getAmountSumsEachMBTIAndDayLast30Days(any(), eq(RegisterType.SPEND));
+                    .getAmountSumsEachMBTIAndDayLast30Days(eq(RegisterType.SPEND));
         }
 
         @Test
@@ -119,7 +119,7 @@ class MBTIStatisticsControllerTest {
 
             // then
             verify(mbtiStatisticsService, times(1))
-                    .getAmountSumsEachMBTIAndDayLast30Days(any(), eq(RegisterType.valueOf(registerType)));
+                    .getAmountSumsEachMBTIAndDayLast30Days(eq(RegisterType.valueOf(registerType)));
         }
     }
 
@@ -133,7 +133,7 @@ class MBTIStatisticsControllerTest {
 
             // then
             verify(mbtiStatisticsService, times(1))
-                    .getWordFrequenciesLast30Days(any(), any());
+                    .getWordFrequenciesLast30Days(any());
         }
 
         @Test
@@ -143,7 +143,7 @@ class MBTIStatisticsControllerTest {
 
             // then
             verify(mbtiStatisticsService)
-                    .getWordFrequenciesLast30Days(any(), eq(RegisterType.SPEND));
+                    .getWordFrequenciesLast30Days(eq(RegisterType.SPEND));
         }
 
         @Test
@@ -165,7 +165,7 @@ class MBTIStatisticsControllerTest {
 
             // then
             verify(mbtiStatisticsService, times(1))
-                    .getWordFrequenciesLast30Days(any(), eq(RegisterType.valueOf(registerType)));
+                    .getWordFrequenciesLast30Days(eq(RegisterType.valueOf(registerType)));
         }
     }
 
@@ -179,7 +179,7 @@ class MBTIStatisticsControllerTest {
 
             // then
             verify(mbtiStatisticsService, times(1))
-                    .getSatisfactionAveragesEachMBTILast30Days(any(), any());
+                    .getSatisfactionAveragesEachMBTILast30Days(any());
         }
 
         @Test
@@ -189,7 +189,7 @@ class MBTIStatisticsControllerTest {
 
             // then
             verify(mbtiStatisticsService)
-                    .getSatisfactionAveragesEachMBTILast30Days(any(), eq(RegisterType.SPEND));
+                    .getSatisfactionAveragesEachMBTILast30Days(eq(RegisterType.SPEND));
         }
 
         @Test
@@ -210,7 +210,7 @@ class MBTIStatisticsControllerTest {
 
             // then
             verify(mbtiStatisticsService, times(1))
-                    .getSatisfactionAveragesEachMBTILast30Days(any(), eq(RegisterType.valueOf(registerType)));
+                    .getSatisfactionAveragesEachMBTILast30Days(eq(RegisterType.valueOf(registerType)));
         }
     }
 }

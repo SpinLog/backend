@@ -10,7 +10,7 @@ import com.example.spinlog.statistics.service.dto.MBTISatisfactionAverageRespons
 import com.example.spinlog.statistics.service.dto.MBTIWordFrequencyResponse;
 import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
 import com.example.spinlog.statistics.loginService.AuthenticatedUserService;
-import com.example.spinlog.user.entity.Gender;
+import com.example.spinlog.statistics.service.wordanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Mbti;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.PERIOD_CRITERIA;
 import static java.util.stream.Collectors.groupingBy;
 
 @Slf4j
@@ -33,7 +34,6 @@ public class MBTIStatisticsService {
     private final MBTIStatisticsRepository mbtiStatisticsRepository;
     private final WordExtractionService wordExtractionService;
     private final AuthenticatedUserService authenticatedUserService;
-    private final int PERIOD_CRITERIA = 30;
 
     public MBTIStatisticsService(MBTIStatisticsRepository mbtiStatisticsRepository, WordExtractionService wordExtractionService, AuthenticatedUserService authenticatedUserService) {
         this.mbtiStatisticsRepository = mbtiStatisticsRepository;
@@ -41,9 +41,8 @@ public class MBTIStatisticsService {
         this.authenticatedUserService = authenticatedUserService;
     }
 
-    public MBTIEmotionAmountAverageResponse getAmountAveragesEachMBTIAndEmotionLast30Days(
-            LocalDate today,
-            RegisterType registerType){
+    public MBTIEmotionAmountAverageResponse getAmountAveragesEachMBTIAndEmotionLast30Days(RegisterType registerType){
+        LocalDate today = LocalDate.now();
         LocalDate startDate = today.minusDays(PERIOD_CRITERIA);
         List<MBTIEmotionAmountAverageDto> dtos = mbtiStatisticsRepository.getAmountAveragesEachMBTIAndEmotionBetweenStartDateAndEndDate(registerType, startDate, today);
         List<MBTIEmotionAmountAverageDto> dtosWithZeroPadding = addZeroAverageForMissingGenderEmotionPairs(dtos);
@@ -80,9 +79,8 @@ public class MBTIStatisticsService {
                 .toList();
     }
 
-    public MBTIDailyAmountSumResponse getAmountSumsEachMBTIAndDayLast30Days(
-            LocalDate today,
-            RegisterType registerType) {
+    public MBTIDailyAmountSumResponse getAmountSumsEachMBTIAndDayLast30Days(RegisterType registerType) {
+        LocalDate today = LocalDate.now();
         LocalDate startDate = today.minusDays(PERIOD_CRITERIA);
         List<MBTIDailyAmountSumDto> dtos = mbtiStatisticsRepository.getAmountSumsEachMBTIAndDayBetweenStartDateAndEndDate(registerType, startDate, today);
         List<MBTIDailyAmountSumDto> dtosWithZeroPadding = addZeroAverageForMissingGenderLocalDatePairs(dtos);
@@ -125,9 +123,8 @@ public class MBTIStatisticsService {
                 .toList();
     }
 
-    public MBTIWordFrequencyResponse getWordFrequenciesLast30Days(
-            LocalDate today,
-            RegisterType registerType){
+    public MBTIWordFrequencyResponse getWordFrequenciesLast30Days(RegisterType registerType){
+        LocalDate today = LocalDate.now();
         LocalDate startDate = today.minusDays(PERIOD_CRITERIA);
         // 최근 30일동안 모든 유저가 적은 메모의 빈도수 측정
         List<MemoDto> memos = mbtiStatisticsRepository.getAllMemosByMBTIBetweenStartDateAndEndDate(
@@ -197,9 +194,8 @@ public class MBTIStatisticsService {
         return mbti == null || mbti == Mbti.NONE;
     }
 
-    public MBTISatisfactionAverageResponse getSatisfactionAveragesEachMBTILast30Days(
-            LocalDate today,
-            RegisterType registerType){
+    public MBTISatisfactionAverageResponse getSatisfactionAveragesEachMBTILast30Days(RegisterType registerType){
+        LocalDate today = LocalDate.now();
         LocalDate startDate = today.minusDays(PERIOD_CRITERIA);
         return MBTISatisfactionAverageResponse.builder()
                 .mbti(authenticatedUserService.getUserMBTI())
