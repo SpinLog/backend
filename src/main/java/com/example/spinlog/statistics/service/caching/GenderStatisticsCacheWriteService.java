@@ -6,6 +6,7 @@ import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFe
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class GenderStatisticsCacheWriteService {
     private final HashCacheService hashCacheService;
 
@@ -84,5 +86,22 @@ public class GenderStatisticsCacheWriteService {
                 GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveCountsAndSums().countsMap());
         hashCacheService.incrementAllDataInHash(
                 GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveCountsAndSums().sumsMap());
+    }
+
+    public void replaceAmountCountsAndSumsByGenderAndEmotion(CountsAndSums amountCountsAndSums, RegisterType registerType) {
+        hashCacheService.deleteData(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType));
+        hashCacheService.deleteData(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType));
+        putAmountCountsAndSumsByGenderAndEmotion(amountCountsAndSums, registerType);
+    }
+
+    public void replaceAmountSumsByGenderAndDate(Map<String, Object> amountSums, RegisterType registerType) {
+        hashCacheService.deleteData(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType));
+        putAmountSumsByGenderAndDate(amountSums, registerType);
+    }
+
+    public void replaceSatisfactionCountsAndSumsByGender(CountsAndSums satisfactionCountsAndSums, RegisterType registerType) {
+        hashCacheService.deleteData(GENDER_SATISFACTION_COUNT_KEY_NAME(registerType));
+        hashCacheService.deleteData(GENDER_SATISFACTION_SUM_KEY_NAME(registerType));
+        putSatisfactionCountsAndSumsByGender(satisfactionCountsAndSums, registerType);
     }
 }

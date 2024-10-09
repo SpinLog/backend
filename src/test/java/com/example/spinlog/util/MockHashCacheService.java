@@ -125,4 +125,9 @@ public class MockHashCacheService implements HashCacheService {
             }
         });
     }
+
+    @Override
+    public void deleteData(String key) {
+        cache.remove(key);
+    }
 }

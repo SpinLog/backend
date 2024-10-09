@@ -43,8 +43,8 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
                     .thenThrow(new RuntimeException());
 
             CountsAndSums repositoryData = new CountsAndSums(
-                    Map.of("key1", 1, "key2", 2),
-                    Map.of("key1", 1, "key2", 100));
+                    Map.of("MALE::SAD", 1, "MALE::PROUD", 2),
+                    Map.of("MALE::SAD", 1, "MALE::PROUD", 2));
             when(genderStatisticsRepositoryFetchService.getGenderEmotionAmountCountsAndSums(any(), any(), any()))
                     .thenReturn(repositoryData);
 
@@ -55,7 +55,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
 
             // then
             verify(genderStatisticsRepositoryFetchService).getGenderEmotionAmountCountsAndSums(any(), any(), any());
-            verify(genderStatisticsCacheWriteService).putAmountCountsAndSumsByGenderAndEmotion(eq(repositoryData), any());
+            verify(genderStatisticsCacheWriteService).replaceAmountCountsAndSumsByGenderAndEmotion(any(), any());
         }
 
         @Test
@@ -78,7 +78,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             targetService.updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
-            verify(genderStatisticsCacheWriteService, never()).putAmountCountsAndSumsByGenderAndEmotion(any(), any());
+            verify(genderStatisticsCacheWriteService, never()).replaceAmountCountsAndSumsByGenderAndEmotion(any(), any());
         }
 
         @Test
@@ -102,7 +102,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             targetService.updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
-            verify(genderStatisticsCacheWriteService).putAmountCountsAndSumsByGenderAndEmotion(any(), any());
+            verify(genderStatisticsCacheWriteService).replaceAmountCountsAndSumsByGenderAndEmotion(any(), any());
         }
     }
 
@@ -114,7 +114,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             when(genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(any()))
                     .thenThrow(new RuntimeException());
 
-            Map<String, Object> repositoryData = Map.of("key1", 1, "key2", 100);
+            Map<String, Object> repositoryData = Map.of("MALE::2024-10-05", 1, "MALE::2024-10-04", 2);
             when(genderStatisticsRepositoryFetchService.getGenderDateAmountSums(any(), any(), any()))
                     .thenReturn(repositoryData);
 
@@ -125,7 +125,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
 
             // then
             verify(genderStatisticsRepositoryFetchService).getGenderDateAmountSums(any(), any(), any());
-            verify(genderStatisticsCacheWriteService).putAmountSumsByGenderAndDate(eq(repositoryData), any());
+            verify(genderStatisticsCacheWriteService).replaceAmountSumsByGenderAndDate(any(), any());
         }
 
         @Test
@@ -145,7 +145,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             targetService.updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
-            verify(genderStatisticsCacheWriteService, never()).putAmountSumsByGenderAndDate(any(), any());
+            verify(genderStatisticsCacheWriteService, never()).replaceAmountSumsByGenderAndDate(any(), any());
         }
 
         @Test
@@ -165,7 +165,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             targetService.updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
-            verify(genderStatisticsCacheWriteService).putAmountSumsByGenderAndDate(any(), any());
+            verify(genderStatisticsCacheWriteService).replaceAmountSumsByGenderAndDate(any(), any());
         }
     }
 
@@ -177,8 +177,8 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
                     .thenThrow(new RuntimeException());
             CountsAndSums repositoryData = new CountsAndSums(
-                    Map.of("key1", 1.0, "key2", 2.0),
-                    Map.of("key1", 1, "key2", 100));
+                    Map.of("MALE", 1.0, "FEMALE", 2.0),
+                    Map.of("MALE", 1, "FEMALE", 2));
             when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))
                     .thenReturn(repositoryData);
 
@@ -189,7 +189,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
 
             // then
             verify(genderStatisticsRepositoryFetchService).getGenderSatisfactionCountsAndSums(any(), any(), any());
-            verify(genderStatisticsCacheWriteService).putSatisfactionCountsAndSumsByGender(eq(repositoryData), any());
+            verify(genderStatisticsCacheWriteService).replaceSatisfactionCountsAndSumsByGender(any(), any());
         }
         @Test
         void 캐시와_레포지토리로부터_받은_데이터가_같다면_CacheWriteService를_호출하지_않는다() throws Exception {
@@ -209,7 +209,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             targetService.updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
-            verify(genderStatisticsCacheWriteService, never()).putSatisfactionCountsAndSumsByGender(any(), any());
+            verify(genderStatisticsCacheWriteService, never()).replaceSatisfactionCountsAndSumsByGender(any(), any());
         }
 
         @Test
@@ -231,7 +231,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             targetService.updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
-            verify(genderStatisticsCacheWriteService).putSatisfactionCountsAndSumsByGender(eq(repositoryData), any());
+            verify(genderStatisticsCacheWriteService).replaceSatisfactionCountsAndSumsByGender(any(), any());
         }
         
         @Test
@@ -253,7 +253,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             targetService.updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType.SPEND, period);
 
             // then
-            verify(genderStatisticsCacheWriteService).putSatisfactionCountsAndSumsByGender(eq(repositoryData), any());
+            verify(genderStatisticsCacheWriteService).replaceSatisfactionCountsAndSumsByGender(any(), any());
         }
     }
 }

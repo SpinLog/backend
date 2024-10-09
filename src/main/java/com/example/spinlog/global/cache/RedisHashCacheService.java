@@ -87,4 +87,9 @@ public class RedisHashCacheService implements HashCacheService {
             }
         });
     }
+
+    @Override
+    public void deleteData(String key) {
+        redisTemplate.delete(key);
+    }
 }

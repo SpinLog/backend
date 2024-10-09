@@ -52,7 +52,8 @@ public class GenderStatisticsCacheVerifyScheduledService {
                     + ") Error occurred while fetching cache data. Cache will be updated.", e);
             CountsAndSums repositoryData = genderStatisticsRepositoryFetchService
                     .getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
-            genderStatisticsCacheWriteService.putAmountCountsAndSumsByGenderAndEmotion(repositoryData, registerType);
+            repositoryData = zeroPaddingToGenderEmotionAmountCountsAndSums(repositoryData);
+            genderStatisticsCacheWriteService.replaceAmountCountsAndSumsByGenderAndEmotion(repositoryData, registerType);
             return;
         }
 
@@ -64,7 +65,7 @@ public class GenderStatisticsCacheVerifyScheduledService {
             log.warn("RegisterType(" + registerType
                     + ") GenderEmotionAmountAverage Cache Data and Repository Data are not same. Cache will be updated.\ncacheDate = {}\nrepositoryData = {}\n",
                     cacheData, repositoryData);
-            genderStatisticsCacheWriteService.putAmountCountsAndSumsByGenderAndEmotion(repositoryData, registerType);
+            genderStatisticsCacheWriteService.replaceAmountCountsAndSumsByGenderAndEmotion(repositoryData, registerType);
         }
         else
             log.info("RegisterType(" + registerType
@@ -83,7 +84,8 @@ public class GenderStatisticsCacheVerifyScheduledService {
                     + ") Error occurred while fetching cache data. Cache will be updated.", e);
             Map<String, Object> repositoryData = genderStatisticsRepositoryFetchService
                     .getGenderDateAmountSums(registerType, startDate, endDate);
-            genderStatisticsCacheWriteService.putAmountSumsByGenderAndDate(repositoryData, registerType);
+            repositoryData = zeroPaddingToGenderDailyAmountSums(repositoryData, period);
+            genderStatisticsCacheWriteService.replaceAmountSumsByGenderAndDate(repositoryData, registerType);
             return;
         }
 
@@ -95,7 +97,7 @@ public class GenderStatisticsCacheVerifyScheduledService {
             log.warn("RegisterType(" + registerType
                     + ") GenderDailyAmountSum Cache Data and Repository Data are not same. Cache will be updated.\ncacheDate = {}\nrepositoryData = {}\n",
                     cacheData, repositoryData);
-            genderStatisticsCacheWriteService.putAmountSumsByGenderAndDate(repositoryData, registerType);
+            genderStatisticsCacheWriteService.replaceAmountSumsByGenderAndDate(repositoryData, registerType);
         }
         else
             log.info("RegisterType(" + registerType
@@ -115,7 +117,8 @@ public class GenderStatisticsCacheVerifyScheduledService {
                     + ") Error occurred while fetching cache data. Cache will be updated.", e);
             CountsAndSums repositoryData = genderStatisticsRepositoryFetchService
                     .getGenderSatisfactionCountsAndSums(registerType, startDate, endDate);
-            genderStatisticsCacheWriteService.putSatisfactionCountsAndSumsByGender(repositoryData, registerType);
+            repositoryData = zeroPaddingToGenderSatisfactionAmountCountsAndSums(repositoryData);
+            genderStatisticsCacheWriteService.replaceSatisfactionCountsAndSumsByGender(repositoryData, registerType);
             return;
         }
 
@@ -127,7 +130,7 @@ public class GenderStatisticsCacheVerifyScheduledService {
             log.warn("RegisterType(" + registerType
                     + ") GenderSatisfactionAverage Cache Data and Repository Data are not same. Cache will be updated.\ncacheDate = {}\nrepositoryData = {}\n",
                     cacheData, repositoryData);
-            genderStatisticsCacheWriteService.putSatisfactionCountsAndSumsByGender(repositoryData, registerType);
+            genderStatisticsCacheWriteService.replaceSatisfactionCountsAndSumsByGender(repositoryData, registerType);
         }
         else
             log.info("RegisterType(" + registerType
