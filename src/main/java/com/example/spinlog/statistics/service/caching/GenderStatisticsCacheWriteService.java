@@ -6,6 +6,7 @@ import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFe
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class GenderStatisticsCacheWriteService {
     private final HashCacheService hashCacheService;
 
