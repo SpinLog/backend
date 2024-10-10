@@ -15,7 +15,7 @@
 ## 팀원 👨‍👨‍👧‍👧👩‍👦‍👦
 |메인 페이지, 대시보드, 게시글, OpenAI 통신|통계, 배포, 모니터링|OAuth2 로그인, 회원 정보 관리|
 | :----: | :----: | :----: |
-|<img src="https://github.com/SpinLog/.github/assets/63975200/2626a794-6c18-4bad-82ca-39df7ac626eb.png" width="200" height="150"/>|<img src="https://github.com/SpinLog/.github/assets/63975200/5af3c432-e3e0-4fe0-af84-c5d24f2f655d.png" width="200" height="150"/>|<img src="https://github.com/SpinLog/.github/assets/63975200/f3a5d8d0-5c9e-4bc1-ae54-2f7cf75fc484.png" width="200" height="150"/>|
+|<img src="https://github.com/user-attachments/assets/654b84f2-35eb-400e-9e7c-0fc60b15d655" width="200" height="150"/>|<img src="https://github.com/user-attachments/assets/79ae3f10-7ef0-427f-a719-eaa23b49b354" width="200" height="150"/>|<img src="https://github.com/user-attachments/assets/c138d420-97b5-497b-b4c9-f43eec492c7a" width="200" height="150"/>|
 |[정영동](https://github.com/Yeongdong)|[한상현](https://github.com/Hansanghyun-github)|[황중섭](https://github.com/seop-h)|
 <br>
 
