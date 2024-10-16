@@ -2,7 +2,7 @@ package com.example.spinlog.statistics.scheduled;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
-import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheWriteService;
+import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import org.junit.jupiter.api.DisplayNameGeneration;

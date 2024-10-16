@@ -1,4 +1,4 @@
-package com.example.spinlog.statistics.service.caching;
+package com.example.spinlog.statistics.service.cache;
 
 import com.example.spinlog.article.entity.Article;
 import com.example.spinlog.article.entity.Emotion;
