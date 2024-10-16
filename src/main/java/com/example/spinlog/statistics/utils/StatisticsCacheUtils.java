@@ -6,7 +6,7 @@ import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.dto.repository.GenderDataDto;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.dto.repository.GenderSatisfactionAverageDto;
-import com.example.spinlog.statistics.dto.cache.CountsAndSums;
+import com.example.spinlog.statistics.dto.cache.SumsAndCounts;
 import com.example.spinlog.user.entity.Gender;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -68,9 +68,9 @@ public class StatisticsCacheUtils {
                         GenderDataDto::getValue));
     }
 
-    public static List<GenderEmotionAmountAverageDto> convertToGenderEmotionAmountAverageDto(CountsAndSums countsAndSums) {
-        Map<String, Object> sumsMap = countsAndSums.sumsMap();
-        Map<String, Object> countsMap = countsAndSums.countsMap();
+    public static List<GenderEmotionAmountAverageDto> convertToGenderEmotionAmountAverageDto(SumsAndCounts sumsAndCounts) {
+        Map<String, Object> sumsMap = sumsAndCounts.sumsMap();
+        Map<String, Object> countsMap = sumsAndCounts.countsMap();
         verifyCacheSumsAndCountsMap(sumsMap, countsMap);
 
         Map<String, Long> genderEmotionAmountAverage = new HashMap<>();
@@ -82,7 +82,7 @@ public class StatisticsCacheUtils {
             }
             long count = castLong(countsMap.get(k));
             if(count == 0) {
-                throw new InvalidCacheException("sum is not zero, but count is zero, countAndSums = " + countsAndSums);
+                throw new InvalidCacheException("sum is not zero, but count is zero, countAndSums = " + sumsAndCounts);
             }
             long average =  amount / count;
             genderEmotionAmountAverage.put(k, average);
@@ -115,9 +115,9 @@ public class StatisticsCacheUtils {
                 }).toList();
     }
 
-    public static List<GenderSatisfactionAverageDto> convertToGenderSatisfactionAverageDto(CountsAndSums countsAndSums) {
-        Map<String, Object> sumsMap = countsAndSums.sumsMap();
-        Map<String, Object> countsMap = countsAndSums.countsMap();
+    public static List<GenderSatisfactionAverageDto> convertToGenderSatisfactionAverageDto(SumsAndCounts sumsAndCounts) {
+        Map<String, Object> sumsMap = sumsAndCounts.sumsMap();
+        Map<String, Object> countsMap = sumsAndCounts.countsMap();
         verifyCacheSumsAndCountsMap(sumsMap, countsMap);
 
         Map<String, Float> genderSatisfactionAverage = new HashMap<>();
@@ -129,7 +129,7 @@ public class StatisticsCacheUtils {
             }
             long count = castLong(countsMap.get(k));
             if(count == 0) {
-                throw new InvalidCacheException("sum is not zero, but count is zero, countAndSums = " + countsAndSums);
+                throw new InvalidCacheException("sum is not zero, but count is zero, countAndSums = " + sumsAndCounts);
             }
             float average = (float)(satisfactionSum / (double) count);
             genderSatisfactionAverage.put(k, average);

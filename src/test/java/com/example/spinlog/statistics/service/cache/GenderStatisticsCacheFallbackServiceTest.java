@@ -1,7 +1,7 @@
 package com.example.spinlog.statistics.service.cache;
 
 import com.example.spinlog.article.entity.Emotion;
-import com.example.spinlog.statistics.dto.cache.CountsAndSums;
+import com.example.spinlog.statistics.dto.cache.SumsAndCounts;
 import com.example.spinlog.statistics.exception.InvalidCacheException;
 import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
@@ -20,7 +20,6 @@ import java.time.Clock;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -48,7 +47,7 @@ class GenderStatisticsCacheFallbackServiceTest {
         void CacheFetchService의_반환_값을_그대로_반환한다() throws Exception {
             // given
             when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
-                    .thenReturn(new CountsAndSums(Map.of(), Map.of()));
+                    .thenReturn(new SumsAndCounts(Map.of(), Map.of()));
             
             // when
             List<GenderEmotionAmountAverageDto> dtos =
@@ -64,7 +63,7 @@ class GenderStatisticsCacheFallbackServiceTest {
             when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
                     .thenThrow(new InvalidCacheException());
             when(genderStatisticsRepositoryFetchService.getGenderEmotionAmountCountsAndSums(any(), any(), any()))
-                    .thenReturn(new CountsAndSums(Map.of(), Map.of()));
+                    .thenReturn(new SumsAndCounts(Map.of(), Map.of()));
 
             // when
             targetService.getAmountAveragesEachGenderAndEmotion(null);
@@ -79,15 +78,15 @@ class GenderStatisticsCacheFallbackServiceTest {
             when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
                     .thenThrow(new InvalidCacheException());
 
-            CountsAndSums countsAndSums = new CountsAndSums(Map.of("MALE::SAD", 1000L), Map.of("MALE::SAD", 10L));
+            SumsAndCounts sumsAndCounts = new SumsAndCounts(Map.of("MALE::SAD", 1000L), Map.of("MALE::SAD", 10L));
             when(genderStatisticsRepositoryFetchService.getGenderEmotionAmountCountsAndSums(any(), any(), any()))
-                    .thenReturn(countsAndSums);
+                    .thenReturn(sumsAndCounts);
 
             // when
             targetService.getAmountAveragesEachGenderAndEmotion(null);
 
             // then
-            verify(genderStatisticsCacheWriteService).putAmountCountsAndSumsByGenderAndEmotion(eq(countsAndSums), any());
+            verify(genderStatisticsCacheWriteService).putAmountCountsAndSumsByGenderAndEmotion(eq(sumsAndCounts), any());
         }
 
         @Test
@@ -96,9 +95,9 @@ class GenderStatisticsCacheFallbackServiceTest {
             when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
                     .thenThrow(new InvalidCacheException());
 
-            CountsAndSums countsAndSums = new CountsAndSums(Map.of("MALE::SAD", 1000L), Map.of("MALE::SAD", 10L));
+            SumsAndCounts sumsAndCounts = new SumsAndCounts(Map.of("MALE::SAD", 1000L), Map.of("MALE::SAD", 10L));
             when(genderStatisticsRepositoryFetchService.getGenderEmotionAmountCountsAndSums(any(), any(), any()))
-                    .thenReturn(countsAndSums);
+                    .thenReturn(sumsAndCounts);
 
             // when
             List<GenderEmotionAmountAverageDto> dtos = targetService.getAmountAveragesEachGenderAndEmotion(null);
@@ -185,7 +184,7 @@ class GenderStatisticsCacheFallbackServiceTest {
         void CacheFetchService의_반환_값을_그대로_반환한다() throws Exception {
             // given
             when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
-                    .thenReturn(new CountsAndSums(Map.of(), Map.of()));
+                    .thenReturn(new SumsAndCounts(Map.of(), Map.of()));
 
             // when
             List<GenderSatisfactionAverageDto> dtos = targetService.getSatisfactionAveragesEachGender(null);
@@ -200,7 +199,7 @@ class GenderStatisticsCacheFallbackServiceTest {
             when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
                     .thenThrow(new InvalidCacheException());
             when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))
-                    .thenReturn(new CountsAndSums(Map.of(), Map.of()));
+                    .thenReturn(new SumsAndCounts(Map.of(), Map.of()));
 
             // when
             targetService.getSatisfactionAveragesEachGender(null);
@@ -215,15 +214,15 @@ class GenderStatisticsCacheFallbackServiceTest {
             when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
                     .thenThrow(new InvalidCacheException());
 
-            CountsAndSums countsAndSums = new CountsAndSums(Map.of("MALE", 5.0), Map.of("MALE", 1L));
+            SumsAndCounts sumsAndCounts = new SumsAndCounts(Map.of("MALE", 5.0), Map.of("MALE", 1L));
             when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))
-                    .thenReturn(countsAndSums);
+                    .thenReturn(sumsAndCounts);
 
             // when
             targetService.getSatisfactionAveragesEachGender(null);
 
             // then
-            verify(genderStatisticsCacheWriteService).putSatisfactionCountsAndSumsByGender(eq(countsAndSums), any());
+            verify(genderStatisticsCacheWriteService).putSatisfactionCountsAndSumsByGender(eq(sumsAndCounts), any());
         }
 
         @Test
@@ -232,9 +231,9 @@ class GenderStatisticsCacheFallbackServiceTest {
             when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
                     .thenThrow(new InvalidCacheException());
 
-            CountsAndSums countsAndSums = new CountsAndSums(Map.of("MALE", 5.0), Map.of("MALE", 1L));
+            SumsAndCounts sumsAndCounts = new SumsAndCounts(Map.of("MALE", 5.0), Map.of("MALE", 1L));
             when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))
-                    .thenReturn(countsAndSums);
+                    .thenReturn(sumsAndCounts);
 
             // when
             List<GenderSatisfactionAverageDto> dtos = targetService.getSatisfactionAveragesEachGender(null);

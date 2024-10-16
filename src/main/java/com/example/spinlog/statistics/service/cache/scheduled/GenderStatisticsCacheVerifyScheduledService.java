@@ -1,7 +1,7 @@
 package com.example.spinlog.statistics.service.cache.scheduled;
 
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.statistics.dto.cache.CountsAndSums;
+import com.example.spinlog.statistics.dto.cache.SumsAndCounts;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.util.Map;
 
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
-import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils.*;
 
 @Service
@@ -44,21 +43,21 @@ public class GenderStatisticsCacheVerifyScheduledService {
     public void updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType registerType, Period period) {
         LocalDate endDate = period.endDate();
         LocalDate startDate = period.startDate();
-        CountsAndSums cacheData;
+        SumsAndCounts cacheData;
         try{
             cacheData = genderStatisticsCacheFetchService
                     .getAmountAveragesEachGenderAndEmotion(registerType);
         } catch (Exception e) {
             log.warn("RegisterType(" + registerType
                     + ") Error occurred while fetching cache data. Cache will be updated.", e);
-            CountsAndSums repositoryData = genderStatisticsRepositoryFetchService
+            SumsAndCounts repositoryData = genderStatisticsRepositoryFetchService
                     .getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
             repositoryData = zeroPaddingToGenderEmotionAmountCountsAndSums(repositoryData);
             genderStatisticsCacheWriteService.replaceAmountCountsAndSumsByGenderAndEmotion(repositoryData, registerType);
             return;
         }
 
-        CountsAndSums repositoryData = genderStatisticsRepositoryFetchService
+        SumsAndCounts repositoryData = genderStatisticsRepositoryFetchService
                 .getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
         repositoryData = zeroPaddingToGenderEmotionAmountCountsAndSums(repositoryData);
 
@@ -109,21 +108,21 @@ public class GenderStatisticsCacheVerifyScheduledService {
     public void updateGenderSatisfactionAverageCacheIfCacheMiss(RegisterType registerType, Period period) {
         LocalDate endDate = period.endDate();
         LocalDate startDate = period.startDate();
-        CountsAndSums cacheData;
+        SumsAndCounts cacheData;
         try {
             cacheData = genderStatisticsCacheFetchService
                     .getSatisfactionAveragesEachGender(registerType);
         } catch (Exception e) {
             log.warn("RegisterType(" + registerType
                     + ") Error occurred while fetching cache data. Cache will be updated.", e);
-            CountsAndSums repositoryData = genderStatisticsRepositoryFetchService
+            SumsAndCounts repositoryData = genderStatisticsRepositoryFetchService
                     .getGenderSatisfactionCountsAndSums(registerType, startDate, endDate);
             repositoryData = zeroPaddingToGenderSatisfactionAmountCountsAndSums(repositoryData);
             genderStatisticsCacheWriteService.replaceSatisfactionCountsAndSumsByGender(repositoryData, registerType);
             return;
         }
 
-        CountsAndSums repositoryData = genderStatisticsRepositoryFetchService
+        SumsAndCounts repositoryData = genderStatisticsRepositoryFetchService
                 .getGenderSatisfactionCountsAndSums(registerType, startDate, endDate);
         repositoryData = zeroPaddingToGenderSatisfactionAmountCountsAndSums(repositoryData);
 
@@ -138,12 +137,12 @@ public class GenderStatisticsCacheVerifyScheduledService {
                     + ") GenderSatisfactionAverage Cache Data and Repository Data are same.");
     }
 
-    private boolean areNotEqual(CountsAndSums cacheData, CountsAndSums repositoryData) {
+    private boolean areNotEqual(SumsAndCounts cacheData, SumsAndCounts repositoryData) {
         return !(cacheData.sumsMap().equals(repositoryData.sumsMap()) &&
                 cacheData.countsMap().equals(repositoryData.countsMap()));
     }
 
-    private boolean areNotApproximatelyEqual(CountsAndSums cacheData, CountsAndSums repositoryData) {
+    private boolean areNotApproximatelyEqual(SumsAndCounts cacheData, SumsAndCounts repositoryData) {
         double epsilon = 0.0001;
         for(var e: cacheData.sumsMap().entrySet()){
             String k = e.getKey();

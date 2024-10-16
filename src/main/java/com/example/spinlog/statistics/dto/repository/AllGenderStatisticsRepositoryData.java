@@ -6,7 +6,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record AllStatisticsResult(
+public record AllGenderStatisticsRepositoryData(
         List<GenderEmotionAmountAverageDto> genderEmotionAmountSpendSums,
         List<GenderEmotionAmountAverageDto> genderEmotionAmountSpendCounts,
         List<GenderEmotionAmountAverageDto> genderEmotionAmountSaveSums,

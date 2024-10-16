@@ -1,8 +1,8 @@
 package com.example.spinlog.statistics.service.cache;
 
-import com.example.spinlog.statistics.dto.cache.AllStatisticsMap;
-import com.example.spinlog.statistics.dto.cache.CountsAndSums;
-import com.example.spinlog.statistics.dto.repository.AllStatisticsResult;
+import com.example.spinlog.statistics.dto.cache.AllGenderStatisticsCacheData;
+import com.example.spinlog.statistics.dto.cache.SumsAndCounts;
+import com.example.spinlog.statistics.dto.repository.AllGenderStatisticsRepositoryData;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.user.entity.User;
@@ -15,7 +15,6 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import java.time.LocalDate;
 
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
-import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.*;
 
 @Component
@@ -36,39 +35,39 @@ public class StatisticsCacheSynchronizerAfterUserWrite {
             Period period = statisticsPeriodManager.getStatisticsPeriod();
             LocalDate endDate = period.endDate();
             LocalDate startDate = period.startDate();
-            AllStatisticsResult repositoryResult = genderStatisticsRepositoryFetchService
+            AllGenderStatisticsRepositoryData repositoryResult = genderStatisticsRepositoryFetchService
                     .getGenderStatisticsAllDataByUserId(updatedUser.getId(), startDate, endDate);
 
-            AllStatisticsMap statisticsAllData = AllStatisticsMap.builder()
-                    .genderEmotionAmountSpendCountsAndSums(
-                            new CountsAndSums(toGenderEmotionMap(repositoryResult.genderEmotionAmountSpendSums()),
+            AllGenderStatisticsCacheData statisticsAllData = AllGenderStatisticsCacheData.builder()
+                    .genderEmotionAmountSpendSumsAndCounts(
+                            new SumsAndCounts(toGenderEmotionMap(repositoryResult.genderEmotionAmountSpendSums()),
                                     toGenderEmotionMap(repositoryResult.genderEmotionAmountSpendCounts())))
-                    .genderEmotionAmountSaveCountsAndSums(
-                            new CountsAndSums(toGenderEmotionMap(repositoryResult.genderEmotionAmountSaveSums()),
+                    .genderEmotionAmountSaveSumsAndCounts(
+                            new SumsAndCounts(toGenderEmotionMap(repositoryResult.genderEmotionAmountSaveSums()),
                                     toGenderEmotionMap(repositoryResult.genderEmotionAmountSaveCounts())))
                     .genderDailyAmountSpendSums(toGenderDateMap(repositoryResult.genderDailyAmountSpendSums()))
                     .genderDailyAmountSaveSums(toGenderDateMap(repositoryResult.genderDailyAmountSaveSums()))
-                    .genderSatisfactionSpendCountsAndSums(
-                            new CountsAndSums(toGenderMap(repositoryResult.genderSatisfactionSpendSums()),
+                    .genderSatisfactionSpendSumsAndCounts(
+                            new SumsAndCounts(toGenderMap(repositoryResult.genderSatisfactionSpendSums()),
                                     toGenderMap(repositoryResult.genderSatisfactionSpendCounts())))
-                    .genderSatisfactionSaveCountsAndSums(
-                            new CountsAndSums(toGenderMap(repositoryResult.genderSatisfactionSaveSums()),
+                    .genderSatisfactionSaveSumsAndCounts(
+                            new SumsAndCounts(toGenderMap(repositoryResult.genderSatisfactionSaveSums()),
                                     toGenderMap(repositoryResult.genderSatisfactionSaveCounts())))
                     .build();
-            AllStatisticsMap genderReversedData = AllStatisticsMap.builder()
-                    .genderEmotionAmountSpendCountsAndSums(
-                            new CountsAndSums(toReverseGenderEmotionMap(repositoryResult.genderEmotionAmountSpendSums()),
+            AllGenderStatisticsCacheData genderReversedData = AllGenderStatisticsCacheData.builder()
+                    .genderEmotionAmountSpendSumsAndCounts(
+                            new SumsAndCounts(toReverseGenderEmotionMap(repositoryResult.genderEmotionAmountSpendSums()),
                                     toReverseGenderEmotionMap(repositoryResult.genderEmotionAmountSpendCounts())))
-                    .genderEmotionAmountSaveCountsAndSums(
-                            new CountsAndSums(toReverseGenderEmotionMap(repositoryResult.genderEmotionAmountSaveSums()),
+                    .genderEmotionAmountSaveSumsAndCounts(
+                            new SumsAndCounts(toReverseGenderEmotionMap(repositoryResult.genderEmotionAmountSaveSums()),
                                     toReverseGenderEmotionMap(repositoryResult.genderEmotionAmountSaveCounts())))
                     .genderDailyAmountSpendSums(toReverseGenderDateMap(repositoryResult.genderDailyAmountSpendSums()))
                     .genderDailyAmountSaveSums(toReverseGenderDateMap(repositoryResult.genderDailyAmountSaveSums()))
-                    .genderSatisfactionSpendCountsAndSums(
-                            new CountsAndSums(toReverseGenderMap(repositoryResult.genderSatisfactionSpendSums()),
+                    .genderSatisfactionSpendSumsAndCounts(
+                            new SumsAndCounts(toReverseGenderMap(repositoryResult.genderSatisfactionSpendSums()),
                                     toReverseGenderMap(repositoryResult.genderSatisfactionSpendCounts())))
-                    .genderSatisfactionSaveCountsAndSums(
-                            new CountsAndSums(toReverseGenderMap(repositoryResult.genderSatisfactionSaveSums()),
+                    .genderSatisfactionSaveSumsAndCounts(
+                            new SumsAndCounts(toReverseGenderMap(repositoryResult.genderSatisfactionSaveSums()),
                                     toReverseGenderMap(repositoryResult.genderSatisfactionSaveCounts())))
                     .build();
 

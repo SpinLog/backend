@@ -2,7 +2,7 @@ package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheHashRepository;
-import com.example.spinlog.statistics.dto.cache.CountsAndSums;
+import com.example.spinlog.statistics.dto.cache.SumsAndCounts;
 import com.example.spinlog.statistics.dto.repository.MemoDto;
 import com.example.spinlog.user.entity.Gender;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import static com.example.spinlog.utils.MapCastingUtils.*;
 public class GenderStatisticsCacheFetchService {
     private final CacheHashRepository cacheHashRepository;
 
-    public CountsAndSums getAmountAveragesEachGenderAndEmotion(RegisterType registerType) {
+    public SumsAndCounts getAmountAveragesEachGenderAndEmotion(RegisterType registerType) {
         Map<String, Object> sumsMap = cacheHashRepository.getHashEntries(
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType));
         sumsMap = convertValuesToLong(sumsMap);
@@ -30,7 +30,7 @@ public class GenderStatisticsCacheFetchService {
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType));
         countsMap = convertValuesToLong(countsMap);
 
-        return new CountsAndSums(sumsMap, countsMap);
+        return new SumsAndCounts(sumsMap, countsMap);
     }
 
     public Map<String, Object> getAmountSumsEachGenderAndDay(RegisterType registerType) {
@@ -45,7 +45,7 @@ public class GenderStatisticsCacheFetchService {
         return null;
     }
 
-    public CountsAndSums getSatisfactionAveragesEachGender(RegisterType registerType) {
+    public SumsAndCounts getSatisfactionAveragesEachGender(RegisterType registerType) {
         Map<String, Object> sumsMap = cacheHashRepository.getHashEntries(
                 GENDER_SATISFACTION_SUM_KEY_NAME(registerType));
         sumsMap = convertValuesToDouble(sumsMap);
@@ -54,6 +54,6 @@ public class GenderStatisticsCacheFetchService {
                 GENDER_SATISFACTION_COUNT_KEY_NAME(registerType));
         countsMap = convertValuesToLong(countsMap);
 
-        return new CountsAndSums(sumsMap, countsMap);
+        return new SumsAndCounts(sumsMap, countsMap);
     }
 }

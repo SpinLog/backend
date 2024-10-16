@@ -2,7 +2,7 @@ package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheHashRepository;
-import com.example.spinlog.statistics.dto.cache.CountsAndSums;
+import com.example.spinlog.statistics.dto.cache.SumsAndCounts;
 import org.junit.jupiter.api.*;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -44,7 +44,7 @@ class GenderStatisticsCacheFetchServiceTest {
                     .thenReturn(countsMap);
 
             // when
-            CountsAndSums results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
+            SumsAndCounts results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
 
             // then
             assertThat(results.sumsMap()).isEqualTo(sumsMap);
@@ -71,7 +71,7 @@ class GenderStatisticsCacheFetchServiceTest {
                             "FEMALE::SAD", "5"));
 
             // when
-            CountsAndSums results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
+            SumsAndCounts results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
 
             // then
             for(var e: results.sumsMap().entrySet()) {
@@ -147,7 +147,7 @@ class GenderStatisticsCacheFetchServiceTest {
                     .thenReturn(countsMap);
 
             // when
-            CountsAndSums results = genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType);
+            SumsAndCounts results = genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType);
 
             // then
             assertThat(results.sumsMap()).isEqualTo(sumsMap);
@@ -170,7 +170,7 @@ class GenderStatisticsCacheFetchServiceTest {
                             "FEMALE", "20"));
 
             // when
-            CountsAndSums results = genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType);
+            SumsAndCounts results = genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType);
 
             // then
             for(var e: results.sumsMap().entrySet()) {

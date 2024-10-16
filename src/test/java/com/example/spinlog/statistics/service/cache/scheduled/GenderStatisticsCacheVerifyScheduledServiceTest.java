@@ -1,12 +1,11 @@
 package com.example.spinlog.statistics.service.cache.scheduled;
 
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.statistics.dto.cache.CountsAndSums;
+import com.example.spinlog.statistics.dto.cache.SumsAndCounts;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
-import com.example.spinlog.statistics.service.cache.scheduled.GenderStatisticsCacheVerifyScheduledService;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
@@ -17,7 +16,6 @@ import java.time.Clock;
 import java.util.Map;
 
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
-import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils.*;
 import static org.mockito.Mockito.*;
 
@@ -44,7 +42,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
                     .thenThrow(new RuntimeException());
 
-            CountsAndSums repositoryData = new CountsAndSums(
+            SumsAndCounts repositoryData = new SumsAndCounts(
                     Map.of("MALE::SAD", 1, "MALE::PROUD", 2),
                     Map.of("MALE::SAD", 1, "MALE::PROUD", 2));
             when(genderStatisticsRepositoryFetchService.getGenderEmotionAmountCountsAndSums(any(), any(), any()))
@@ -63,14 +61,14 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
         @Test
         void 캐시와_레포지토리로부터_받은_데이터가_같다면_CacheWriteService를_호출하지_않는다() throws Exception {
             // given
-            CountsAndSums cacheData = new CountsAndSums(
+            SumsAndCounts cacheData = new SumsAndCounts(
                     Map.of("MALE::SAD", 1, "MALE::PROUD", 2),
                     Map.of("MALE::SAD", 1, "MALE::PROUD", 2));
             cacheData = zeroPaddingToGenderEmotionAmountCountsAndSums(cacheData);
             when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
                     .thenReturn(cacheData);
             when(genderStatisticsRepositoryFetchService.getGenderEmotionAmountCountsAndSums(any(), any(), any()))
-                    .thenReturn(new CountsAndSums(
+                    .thenReturn(new SumsAndCounts(
                             Map.of("MALE::SAD", 1, "MALE::PROUD", 2),
                             Map.of("MALE::SAD", 1, "MALE::PROUD", 2)));
 
@@ -86,13 +84,13 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
         @Test
         void 캐시와_레포지토리로부터_받은_데이터가_다르다면_CacheWriteService를_호출한다() throws Exception {
             // given
-            CountsAndSums cacheData = new CountsAndSums(
+            SumsAndCounts cacheData = new SumsAndCounts(
                     Map.of("MALE::SAD", 1, "MALE::PROUD", 2),
                     Map.of("MALE::SAD", 1, "MALE::PROUD", 2));
             cacheData = zeroPaddingToGenderEmotionAmountCountsAndSums(cacheData);
             when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
                     .thenReturn(cacheData);
-            CountsAndSums repositoryData = new CountsAndSums(
+            SumsAndCounts repositoryData = new SumsAndCounts(
                     Map.of("MALE::SAD", 1, "MALE::PROUD", 2),
                     Map.of("MALE::SAD", 1, "MALE::PROUD", 100));
             when(genderStatisticsRepositoryFetchService.getGenderEmotionAmountCountsAndSums(any(), any(), any()))
@@ -178,7 +176,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             // given
             when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
                     .thenThrow(new RuntimeException());
-            CountsAndSums repositoryData = new CountsAndSums(
+            SumsAndCounts repositoryData = new SumsAndCounts(
                     Map.of("MALE", 1.0, "FEMALE", 2.0),
                     Map.of("MALE", 1, "FEMALE", 2));
             when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))
@@ -197,11 +195,11 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
         void 캐시와_레포지토리로부터_받은_데이터가_같다면_CacheWriteService를_호출하지_않는다() throws Exception {
             // given
             when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
-                    .thenReturn(new CountsAndSums(
+                    .thenReturn(new SumsAndCounts(
                             Map.of("MALE", 1.0, "FEMALE", 2.0),
                             Map.of("MALE", 1, "FEMALE", 2)));
             when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))
-                    .thenReturn(new CountsAndSums(
+                    .thenReturn(new SumsAndCounts(
                             Map.of("MALE", 1.0, "FEMALE", 2.0),
                             Map.of("MALE", 1, "FEMALE", 2)));
 
@@ -218,10 +216,10 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
         void 캐시와_레포지토리로부터_받은_데이터가_다르다면_CacheWriteService를_호출한다() throws Exception {
             // given
             when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
-                    .thenReturn(new CountsAndSums(
+                    .thenReturn(new SumsAndCounts(
                             Map.of("MALE", 1.0, "FEMALE", 2.0),
                             Map.of("MALE", 1, "FEMALE", 2)));
-            CountsAndSums repositoryData = new CountsAndSums(
+            SumsAndCounts repositoryData = new SumsAndCounts(
                     Map.of("MALE", 1.0, "FEMALE", 2.0),
                     Map.of("MALE", 1, "FEMALE", 100));
             when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))
@@ -240,10 +238,10 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
         void 캐시와_레포지토리로부터_받은_sumsMap들이_근사하게_같지_않다면_CacheWriteService를_호출한다() throws Exception {
             // given
             when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
-                    .thenReturn(new CountsAndSums(
+                    .thenReturn(new SumsAndCounts(
                             Map.of("MALE", 1.0, "FEMALE", 2.0),
                             Map.of("MALE", 1, "FEMALE", 2)));
-            CountsAndSums repositoryData = new CountsAndSums(
+            SumsAndCounts repositoryData = new SumsAndCounts(
                     Map.of("MALE", 1.0, "FEMALE", 4.0),
                     Map.of("MALE", 1, "FEMALE", 2));
             when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))

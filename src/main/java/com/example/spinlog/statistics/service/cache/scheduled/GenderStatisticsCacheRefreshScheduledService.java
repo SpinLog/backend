@@ -1,7 +1,7 @@
 package com.example.spinlog.statistics.service.cache.scheduled;
 
 import com.example.spinlog.global.cache.CacheHashRepository;
-import com.example.spinlog.statistics.dto.cache.AllStatisticsMap;
+import com.example.spinlog.statistics.dto.cache.AllGenderStatisticsCacheData;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
@@ -17,7 +17,6 @@ import java.util.Arrays;
 import static com.example.spinlog.article.entity.RegisterType.SAVE;
 import static com.example.spinlog.article.entity.RegisterType.SPEND;
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
-import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.GENDER_DAILY_AMOUNT_SUM_KEY_NAME;
 
 @Service
@@ -41,7 +40,7 @@ public class GenderStatisticsCacheRefreshScheduledService {
         LocalDate todayEndDate = todayStartDate.plusDays(1);
         log.info("newData's startDate: {}, endDate: {}", todayStartDate, todayEndDate);
 
-        AllStatisticsMap newStatisticsData = genderStatisticsRepositoryFetchService
+        AllGenderStatisticsCacheData newStatisticsData = genderStatisticsRepositoryFetchService
                 .getGenderStatisticsAllData(todayStartDate, todayEndDate);
         log.info("\nnewStatisticsData: {}\n", newStatisticsData);
 
@@ -49,7 +48,7 @@ public class GenderStatisticsCacheRefreshScheduledService {
         LocalDate oldEndDate = oldStartDate.plusDays(1);
         log.info("expiringData's startDate: {}, endDate: {}", oldStartDate, oldEndDate);
 
-        AllStatisticsMap expiringStatisticsData = genderStatisticsRepositoryFetchService
+        AllGenderStatisticsCacheData expiringStatisticsData = genderStatisticsRepositoryFetchService
                 .getGenderStatisticsAllData(oldStartDate, oldEndDate);
         log.info("\nexpiringStatisticsData: {}\n", expiringStatisticsData);
 
@@ -68,12 +67,12 @@ public class GenderStatisticsCacheRefreshScheduledService {
         }
     }
 
-    private void incrementNewCacheData(AllStatisticsMap newStatisticsData) {
+    private void incrementNewCacheData(AllGenderStatisticsCacheData newStatisticsData) {
         log.info("try to increase all data");
         genderStatisticsCacheWriteService.incrementAllData(newStatisticsData);
     }
 
-    private void decrementOldCacheData(AllStatisticsMap expiringStatisticsData) {
+    private void decrementOldCacheData(AllGenderStatisticsCacheData expiringStatisticsData) {
         log.info("try to decrease all data");
         genderStatisticsCacheWriteService.decrementAllData(expiringStatisticsData);
     }
