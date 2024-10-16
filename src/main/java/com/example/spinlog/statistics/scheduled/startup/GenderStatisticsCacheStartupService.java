@@ -1,6 +1,6 @@
 package com.example.spinlog.statistics.scheduled.startup;
 
-import com.example.spinlog.global.cache.HashCacheService;
+import com.example.spinlog.global.cache.CacheHashRepository;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils;
@@ -22,7 +22,7 @@ import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 @RequiredArgsConstructor
 @Slf4j
 class GenderStatisticsCacheStartupService {
-    private final HashCacheService hashCacheService;
+    private final CacheHashRepository cacheHashRepository;
     private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
     private final StatisticsPeriodManager statisticsPeriodManager;
 
@@ -40,36 +40,36 @@ class GenderStatisticsCacheStartupService {
         AllStatisticsMap allData = genderStatisticsRepositoryFetchService.getGenderStatisticsAllData(startDate, endDate);
         allData = StatisticsZeroPaddingUtils.zeroPaddingAllStatisticsMap(allData, period);
 
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
                 allData.genderEmotionAmountSpendCountsAndSums().sumsMap());
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND),
                 allData.genderEmotionAmountSpendCountsAndSums().countsMap());
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE),
                 allData.genderEmotionAmountSaveCountsAndSums().sumsMap());
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE),
                 allData.genderEmotionAmountSaveCountsAndSums().countsMap());
 
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND),
                 allData.genderDailyAmountSpendSums());
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE),
                 allData.genderDailyAmountSaveSums());
 
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_SATISFACTION_SUM_KEY_NAME(SPEND),
                 allData.genderSatisfactionSpendCountsAndSums().sumsMap());
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND),
                 allData.genderSatisfactionSpendCountsAndSums().countsMap());
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_SATISFACTION_SUM_KEY_NAME(SAVE),
                 allData.genderSatisfactionSaveCountsAndSums().sumsMap());
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE),
                 allData.genderSatisfactionSaveCountsAndSums().countsMap());
 

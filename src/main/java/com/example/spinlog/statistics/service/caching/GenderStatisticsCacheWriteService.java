@@ -1,7 +1,7 @@
 package com.example.spinlog.statistics.service.caching;
 
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.global.cache.HashCacheService;
+import com.example.spinlog.global.cache.CacheHashRepository;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.CountsAndSums;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,89 +19,89 @@ import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 @Slf4j
 @Transactional
 public class GenderStatisticsCacheWriteService {
-    private final HashCacheService hashCacheService;
+    private final CacheHashRepository cacheHashRepository;
 
     public void putAmountCountsAndSumsByGenderAndEmotion(CountsAndSums amountCountsAndSums, RegisterType registerType) {
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType), amountCountsAndSums.countsMap());
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType), amountCountsAndSums.sumsMap());
     }
 
     public void putAmountSumsByGenderAndDate(Map<String, Object> amountSums, RegisterType registerType) {
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType), amountSums);
     }
 
     public void putSatisfactionCountsAndSumsByGender(CountsAndSums satisfactionCountsAndSums, RegisterType registerType) {
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_SATISFACTION_COUNT_KEY_NAME(registerType), satisfactionCountsAndSums.countsMap());
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_SATISFACTION_SUM_KEY_NAME(registerType), satisfactionCountsAndSums.sumsMap());
     }
 
     public void decrementAllData(AllStatisticsMap statisticsAllData) {
-        hashCacheService.decrementAllDataInHash(
+        cacheHashRepository.decrementAllDataInHash(
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendCountsAndSums().countsMap());
-        hashCacheService.decrementAllDataInHash(
+        cacheHashRepository.decrementAllDataInHash(
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendCountsAndSums().sumsMap());
-        hashCacheService.decrementAllDataInHash(
+        cacheHashRepository.decrementAllDataInHash(
                 GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderDailyAmountSpendSums());
-        hashCacheService.decrementAllDataInHash(
+        cacheHashRepository.decrementAllDataInHash(
                 GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendCountsAndSums().countsMap());
-        hashCacheService.decrementAllDataInHash(
+        cacheHashRepository.decrementAllDataInHash(
                 GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendCountsAndSums().sumsMap());
 
-        hashCacheService.decrementAllDataInHash(
+        cacheHashRepository.decrementAllDataInHash(
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveCountsAndSums().countsMap());
-        hashCacheService.decrementAllDataInHash(
+        cacheHashRepository.decrementAllDataInHash(
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveCountsAndSums().sumsMap());
-        hashCacheService.decrementAllDataInHash(
+        cacheHashRepository.decrementAllDataInHash(
                 GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderDailyAmountSaveSums());
-        hashCacheService.decrementAllDataInHash(
+        cacheHashRepository.decrementAllDataInHash(
                 GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveCountsAndSums().countsMap());
-        hashCacheService.decrementAllDataInHash(
+        cacheHashRepository.decrementAllDataInHash(
                 GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveCountsAndSums().sumsMap());
     }
 
     public void incrementAllData(AllStatisticsMap statisticsAllData) {
-        hashCacheService.incrementAllDataInHash(
+        cacheHashRepository.incrementAllDataInHash(
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendCountsAndSums().countsMap());
-        hashCacheService.incrementAllDataInHash(
+        cacheHashRepository.incrementAllDataInHash(
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendCountsAndSums().sumsMap());
-        hashCacheService.incrementAllDataInHash(
+        cacheHashRepository.incrementAllDataInHash(
                 GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderDailyAmountSpendSums());
-        hashCacheService.incrementAllDataInHash(
+        cacheHashRepository.incrementAllDataInHash(
                 GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendCountsAndSums().countsMap());
-        hashCacheService.incrementAllDataInHash(
+        cacheHashRepository.incrementAllDataInHash(
                 GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendCountsAndSums().sumsMap());
 
-        hashCacheService.incrementAllDataInHash(
+        cacheHashRepository.incrementAllDataInHash(
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveCountsAndSums().countsMap());
-        hashCacheService.incrementAllDataInHash(
+        cacheHashRepository.incrementAllDataInHash(
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveCountsAndSums().sumsMap());
-        hashCacheService.incrementAllDataInHash(
+        cacheHashRepository.incrementAllDataInHash(
                 GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderDailyAmountSaveSums());
-        hashCacheService.incrementAllDataInHash(
+        cacheHashRepository.incrementAllDataInHash(
                 GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveCountsAndSums().countsMap());
-        hashCacheService.incrementAllDataInHash(
+        cacheHashRepository.incrementAllDataInHash(
                 GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveCountsAndSums().sumsMap());
     }
 
     public void replaceAmountCountsAndSumsByGenderAndEmotion(CountsAndSums amountCountsAndSums, RegisterType registerType) {
-        hashCacheService.deleteData(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType));
-        hashCacheService.deleteData(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType));
+        cacheHashRepository.deleteData(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType));
+        cacheHashRepository.deleteData(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType));
         putAmountCountsAndSumsByGenderAndEmotion(amountCountsAndSums, registerType);
     }
 
     public void replaceAmountSumsByGenderAndDate(Map<String, Object> amountSums, RegisterType registerType) {
-        hashCacheService.deleteData(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType));
+        cacheHashRepository.deleteData(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType));
         putAmountSumsByGenderAndDate(amountSums, registerType);
     }
 
     public void replaceSatisfactionCountsAndSumsByGender(CountsAndSums satisfactionCountsAndSums, RegisterType registerType) {
-        hashCacheService.deleteData(GENDER_SATISFACTION_COUNT_KEY_NAME(registerType));
-        hashCacheService.deleteData(GENDER_SATISFACTION_SUM_KEY_NAME(registerType));
+        cacheHashRepository.deleteData(GENDER_SATISFACTION_COUNT_KEY_NAME(registerType));
+        cacheHashRepository.deleteData(GENDER_SATISFACTION_SUM_KEY_NAME(registerType));
         putSatisfactionCountsAndSumsByGender(satisfactionCountsAndSums, registerType);
     }
 }

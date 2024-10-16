@@ -1,6 +1,6 @@
 package com.example.spinlog.statistics.scheduled.startup;
 
-import com.example.spinlog.global.cache.HashCacheService;
+import com.example.spinlog.global.cache.CacheHashRepository;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
@@ -16,7 +16,7 @@ class GenderStatisticsCacheStartupServiceSetPeriodTest {
     GenderStatisticsRepository genderStatisticsRepository = mock(GenderStatisticsRepository.class);
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService =
             new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
-    HashCacheService hashCacheService = mock(HashCacheService.class);
+    CacheHashRepository cacheHashRepository = mock(CacheHashRepository.class);
 
     @ParameterizedTest
     @ValueSource(strings = {"00:00:00", "03:59:59"})
@@ -27,7 +27,7 @@ class GenderStatisticsCacheStartupServiceSetPeriodTest {
 
         GenderStatisticsCacheStartupService genderStatisticsStartupService =
                 new GenderStatisticsCacheStartupService(
-                        hashCacheService,
+                        cacheHashRepository,
                         genderStatisticsRepositoryFetchService,
                         statisticsPeriodManager);
 
@@ -51,7 +51,7 @@ class GenderStatisticsCacheStartupServiceSetPeriodTest {
 
         GenderStatisticsCacheStartupService genderStatisticsStartupService =
                 new GenderStatisticsCacheStartupService(
-                        hashCacheService,
+                        cacheHashRepository,
                         genderStatisticsRepositoryFetchService,
                         statisticsPeriodManager);
 

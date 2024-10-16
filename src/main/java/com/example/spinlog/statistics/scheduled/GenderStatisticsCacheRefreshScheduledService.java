@@ -1,6 +1,6 @@
 package com.example.spinlog.statistics.scheduled;
 
-import com.example.spinlog.global.cache.HashCacheService;
+import com.example.spinlog.global.cache.CacheHashRepository;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
@@ -23,7 +23,7 @@ import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.GENDER_DAIL
 @RequiredArgsConstructor
 @Slf4j
 public class GenderStatisticsCacheRefreshScheduledService {
-    private final HashCacheService hashCacheService;
+    private final CacheHashRepository cacheHashRepository;
     private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
     private final GenderStatisticsCacheWriteService genderStatisticsCacheWriteService;
     private final StatisticsPeriodManager statisticsPeriodManager;
@@ -82,11 +82,11 @@ public class GenderStatisticsCacheRefreshScheduledService {
         Arrays.stream(Gender.values()).filter(g -> !g.equals(Gender.NONE))
                 .map(g -> g + "::" + todayStartDate)
                 .forEach(k -> {
-                    if(hashCacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k) == null) {
-                        hashCacheService.putDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k, 0L);
+                    if(cacheHashRepository.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k) == null) {
+                        cacheHashRepository.putDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k, 0L);
                     }
-                    if(hashCacheService.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k) == null) {
-                        hashCacheService.putDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k, 0L);
+                    if(cacheHashRepository.getDataFromHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k) == null) {
+                        cacheHashRepository.putDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k, 0L);
                     }
                 });
     }
@@ -96,8 +96,8 @@ public class GenderStatisticsCacheRefreshScheduledService {
         Arrays.stream(Gender.values()).filter(g -> !g.equals(Gender.NONE))
                 .map(g -> g + "::" + oldStartDate)
                 .forEach(k -> {
-                    hashCacheService.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k);
-                    hashCacheService.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k);
+                    cacheHashRepository.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k);
+                    cacheHashRepository.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k);
                 });
     }
 }

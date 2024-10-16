@@ -2,7 +2,7 @@ package com.example.spinlog.global.cache;
 
 import java.util.Map;
 
-public interface HashCacheService {
+public interface CacheHashRepository {
     void putDataInHash(String key, String hashKey, Object data);
 
     void incrementDataInHash(String key, String hashKey, long delta);

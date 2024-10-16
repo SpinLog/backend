@@ -2,13 +2,13 @@ package com.example.spinlog.statistics.scheduled.startup;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.global.cache.HashCacheService;
+import com.example.spinlog.global.cache.CacheHashRepository;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.user.entity.Gender;
-import com.example.spinlog.util.MockHashCacheService;
+import com.example.spinlog.util.MockCacheHashRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,13 +28,13 @@ class GenderStatisticsCacheStartupServiceTest {
     GenderStatisticsRepository genderStatisticsRepository = mock(GenderStatisticsRepository.class);
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService =
             new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
-    HashCacheService hashCacheService = new MockHashCacheService();
+    CacheHashRepository cacheHashRepository = new MockCacheHashRepository();
 
     // todo set fixed clock and test
     StatisticsPeriodManager statisticsPeriodManager = new StatisticsPeriodManager(Clock.systemDefaultZone());
 
     GenderStatisticsCacheStartupService genderStatisticsStartupService =
-            new GenderStatisticsCacheStartupService(hashCacheService, genderStatisticsRepositoryFetchService, statisticsPeriodManager);
+            new GenderStatisticsCacheStartupService(cacheHashRepository, genderStatisticsRepositoryFetchService, statisticsPeriodManager);
 
 
 
@@ -66,7 +66,7 @@ class GenderStatisticsCacheStartupServiceTest {
         // then
         List<String> keys = List.of("MALE::PROUD", "MALE::SAD", "FEMALE::PROUD", "FEMALE::SAD");
         List<Long> amounts = List.of(1L, 2L, 3L, 4L);
-        Map<String, Object> genderEmotionAmountSums = hashCacheService.getHashEntries(
+        Map<String, Object> genderEmotionAmountSums = cacheHashRepository.getHashEntries(
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(RegisterType.SPEND));
         for(var key: keys){
             assertThat(genderEmotionAmountSums.get(key)).isNotNull();
@@ -74,7 +74,7 @@ class GenderStatisticsCacheStartupServiceTest {
                     .isEqualTo(amounts.get(keys.indexOf(key)));
         }
 
-        Map<String, Object> genderEmotionAmountCounts = hashCacheService.getHashEntries(
+        Map<String, Object> genderEmotionAmountCounts = cacheHashRepository.getHashEntries(
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(RegisterType.SPEND));
 
         for (var key: keys) {
@@ -111,14 +111,14 @@ class GenderStatisticsCacheStartupServiceTest {
 
         // then
         List<String> keys = List.of("MALE::PROUD", "MALE::SAD", "FEMALE::PROUD", "FEMALE::SAD");
-        Map<String, Object> genderEmotionAmountSums = hashCacheService.getHashEntries(
+        Map<String, Object> genderEmotionAmountSums = cacheHashRepository.getHashEntries(
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(RegisterType.SPEND));
         for(var key: genderEmotionAmountSums.keySet()){
             if(keys.contains(key)) continue;
             assertThat(genderEmotionAmountSums.get(key)).isEqualTo(0L);
         }
 
-        Map<String, Object> genderEmotionAmountCounts = hashCacheService.getHashEntries(
+        Map<String, Object> genderEmotionAmountCounts = cacheHashRepository.getHashEntries(
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(RegisterType.SPEND));
         for(var key: genderEmotionAmountCounts.keySet()){
             if(keys.contains(key)) continue;
@@ -128,7 +128,7 @@ class GenderStatisticsCacheStartupServiceTest {
         for(var key: getAllCacheKeyNames()) {
             if(key.equals(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(RegisterType.SPEND)) ||
                     key.equals(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(RegisterType.SPEND))) continue;
-            Map<String, Object> entries = hashCacheService.getHashEntries(key);
+            Map<String, Object> entries = cacheHashRepository.getHashEntries(key);
             for(var e: entries.entrySet()){
                 if(e.getValue() instanceof Double){
                     assertThat(e.getValue()).isEqualTo(0.0);

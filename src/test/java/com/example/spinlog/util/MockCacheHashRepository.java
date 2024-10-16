@@ -1,6 +1,6 @@
 package com.example.spinlog.util;
 
-import com.example.spinlog.global.cache.HashCacheService;
+import com.example.spinlog.global.cache.CacheHashRepository;
 import com.example.spinlog.statistics.exception.InvalidCacheException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
@@ -12,7 +12,7 @@ import java.util.Map;
 @Component
 @Primary
 @Profile("test")
-public class MockHashCacheService implements HashCacheService {
+public class MockCacheHashRepository implements CacheHashRepository {
     Map<String, Map<String, Object>> cache = new HashMap<>();
     @Override
     public void putDataInHash(String key, String hashKey, Object data) {

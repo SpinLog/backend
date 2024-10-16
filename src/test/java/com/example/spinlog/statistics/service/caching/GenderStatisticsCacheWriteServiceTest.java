@@ -1,8 +1,8 @@
 package com.example.spinlog.statistics.service.caching;
 
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.global.cache.HashCacheService;
-import com.example.spinlog.util.MockHashCacheService;
+import com.example.spinlog.global.cache.CacheHashRepository;
+import com.example.spinlog.util.MockCacheHashRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -16,10 +16,10 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 public class GenderStatisticsCacheWriteServiceTest {
-    HashCacheService hashCacheService = spy(MockHashCacheService.class);
+    CacheHashRepository cacheHashRepository = spy(MockCacheHashRepository.class);
 
     GenderStatisticsCacheWriteService genderStatisticsCacheWriteService =
-            new GenderStatisticsCacheWriteService(hashCacheService);
+            new GenderStatisticsCacheWriteService(cacheHashRepository);
 
     @Test
     void putAmountCountsAndSumsByGenderAndEmotion() {
@@ -30,9 +30,9 @@ public class GenderStatisticsCacheWriteServiceTest {
         genderStatisticsCacheWriteService.putAmountCountsAndSumsByGenderAndEmotion(countsAndSums, SAVE);
 
         // then
-        Map<String, Object> entries = hashCacheService.getHashEntries(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE));
+        Map<String, Object> entries = cacheHashRepository.getHashEntries(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE));
         assertThat(entries).isEqualTo(Map.of("key1", 1));
-        entries = hashCacheService.getHashEntries(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE));
+        entries = cacheHashRepository.getHashEntries(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE));
         assertThat(entries).isEqualTo(Map.of("key2", 2));
     }
 
@@ -45,7 +45,7 @@ public class GenderStatisticsCacheWriteServiceTest {
         genderStatisticsCacheWriteService.putAmountSumsByGenderAndDate(amountSums, SPEND);
 
         // then
-        Map<String, Object> entries = hashCacheService.getHashEntries(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND));
+        Map<String, Object> entries = cacheHashRepository.getHashEntries(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND));
         assertThat(entries).isEqualTo(Map.of("key1", 1));
     }
 
@@ -58,11 +58,11 @@ public class GenderStatisticsCacheWriteServiceTest {
         genderStatisticsCacheWriteService.putSatisfactionCountsAndSumsByGender(countsAndSums, SAVE);
 
         // then
-        verify(hashCacheService).putAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), countsAndSums.countsMap());
-        verify(hashCacheService).putAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), countsAndSums.sumsMap());
-        Map<String, Object> entries = hashCacheService.getHashEntries(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE));
+        verify(cacheHashRepository).putAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), countsAndSums.countsMap());
+        verify(cacheHashRepository).putAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), countsAndSums.sumsMap());
+        Map<String, Object> entries = cacheHashRepository.getHashEntries(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE));
         assertThat(entries).isEqualTo(Map.of("key1", 1));
-        entries = hashCacheService.getHashEntries(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE));
+        entries = cacheHashRepository.getHashEntries(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE));
         assertThat(entries).isEqualTo(Map.of("key2", 2));
     }
 
@@ -86,17 +86,17 @@ public class GenderStatisticsCacheWriteServiceTest {
         genderStatisticsCacheWriteService.decrementAllData(statisticsAllData);
 
         // then
-        verify(hashCacheService).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendCountsAndSums().countsMap());
-        verify(hashCacheService).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendCountsAndSums().sumsMap());
-        verify(hashCacheService).decrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderDailyAmountSpendSums());
-        verify(hashCacheService).decrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendCountsAndSums().countsMap());
-        verify(hashCacheService).decrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendCountsAndSums().sumsMap());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendCountsAndSums().countsMap());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendCountsAndSums().sumsMap());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderDailyAmountSpendSums());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendCountsAndSums().countsMap());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendCountsAndSums().sumsMap());
 
-        verify(hashCacheService).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveCountsAndSums().countsMap());
-        verify(hashCacheService).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveCountsAndSums().sumsMap());
-        verify(hashCacheService).decrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderDailyAmountSaveSums());
-        verify(hashCacheService).decrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveCountsAndSums().countsMap());
-        verify(hashCacheService).decrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveCountsAndSums().sumsMap());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveCountsAndSums().countsMap());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveCountsAndSums().sumsMap());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderDailyAmountSaveSums());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveCountsAndSums().countsMap());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveCountsAndSums().sumsMap());
     }
 
     @Test
@@ -119,27 +119,27 @@ public class GenderStatisticsCacheWriteServiceTest {
         genderStatisticsCacheWriteService.incrementAllData(statisticsAllData);
 
         // then
-        verify(hashCacheService).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendCountsAndSums().countsMap());
-        verify(hashCacheService).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendCountsAndSums().sumsMap());
-        verify(hashCacheService).incrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderDailyAmountSpendSums());
-        verify(hashCacheService).incrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendCountsAndSums().countsMap());
-        verify(hashCacheService).incrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendCountsAndSums().sumsMap());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendCountsAndSums().countsMap());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendCountsAndSums().sumsMap());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderDailyAmountSpendSums());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendCountsAndSums().countsMap());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendCountsAndSums().sumsMap());
 
-        verify(hashCacheService).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveCountsAndSums().countsMap());
-        verify(hashCacheService).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveCountsAndSums().sumsMap());
-        verify(hashCacheService).incrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderDailyAmountSaveSums());
-        verify(hashCacheService).incrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveCountsAndSums().countsMap());
-        verify(hashCacheService).incrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveCountsAndSums().sumsMap());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveCountsAndSums().countsMap());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveCountsAndSums().sumsMap());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderDailyAmountSaveSums());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveCountsAndSums().countsMap());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveCountsAndSums().sumsMap());
     }
 
     @Test
     void replaceAmountCountsAndSumsByGenderAndEmotion() {
         // given
         RegisterType registerType = SAVE;
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType),
                 Map.of("randomKey1", 123456));
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType),
                 Map.of("randomKey2", 12345));
         CountsAndSums countsAndSums = new CountsAndSums(Map.of("key1", 1), Map.of("key2", 2));
@@ -148,9 +148,9 @@ public class GenderStatisticsCacheWriteServiceTest {
         genderStatisticsCacheWriteService.replaceAmountCountsAndSumsByGenderAndEmotion(countsAndSums, registerType);
 
         // then
-        Map<String, Object> entries = hashCacheService.getHashEntries(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType));
+        Map<String, Object> entries = cacheHashRepository.getHashEntries(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType));
         assertThat(entries).isEqualTo(Map.of("key1", 1));
-        entries = hashCacheService.getHashEntries(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType));
+        entries = cacheHashRepository.getHashEntries(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType));
         assertThat(entries).isEqualTo(Map.of("key2", 2));
     }
 
@@ -158,7 +158,7 @@ public class GenderStatisticsCacheWriteServiceTest {
     void replaceAmountSumsByGenderAndDate() {
         // given
         RegisterType registerType = SPEND;
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType),
                 Map.of("randomKey1", 123456));
         Map<String, Object> amountSums = Map.of("key1", 1);
@@ -167,7 +167,7 @@ public class GenderStatisticsCacheWriteServiceTest {
         genderStatisticsCacheWriteService.replaceAmountSumsByGenderAndDate(amountSums, registerType);
 
         // then
-        Map<String, Object> entries = hashCacheService.getHashEntries(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType));
+        Map<String, Object> entries = cacheHashRepository.getHashEntries(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType));
         assertThat(entries).isEqualTo(Map.of("key1", 1));
     }
 
@@ -175,10 +175,10 @@ public class GenderStatisticsCacheWriteServiceTest {
     void replaceSatisfactionCountsAndSumsByGender() {
         // given
         RegisterType registerType = SAVE;
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_SATISFACTION_SUM_KEY_NAME(registerType),
                 Map.of("randomKey1", 123456));
-        hashCacheService.putAllDataInHash(
+        cacheHashRepository.putAllDataInHash(
                 GENDER_SATISFACTION_COUNT_KEY_NAME(registerType),
                 Map.of("randomKey2", 12345));
         CountsAndSums countsAndSums = new CountsAndSums(Map.of("key1", 1), Map.of("key2", 2));
@@ -187,9 +187,9 @@ public class GenderStatisticsCacheWriteServiceTest {
         genderStatisticsCacheWriteService.replaceSatisfactionCountsAndSumsByGender(countsAndSums, registerType);
 
         // then
-        Map<String, Object> entries = hashCacheService.getHashEntries(GENDER_SATISFACTION_SUM_KEY_NAME(registerType));
+        Map<String, Object> entries = cacheHashRepository.getHashEntries(GENDER_SATISFACTION_SUM_KEY_NAME(registerType));
         assertThat(entries).isEqualTo(Map.of("key1", 1));
-        entries = hashCacheService.getHashEntries(GENDER_SATISFACTION_COUNT_KEY_NAME(registerType));
+        entries = cacheHashRepository.getHashEntries(GENDER_SATISFACTION_COUNT_KEY_NAME(registerType));
         assertThat(entries).isEqualTo(Map.of("key2", 2));
     }
 

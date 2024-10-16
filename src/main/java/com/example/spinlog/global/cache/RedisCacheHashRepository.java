@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RedisHashCacheService implements HashCacheService {
+public class RedisCacheHashRepository implements CacheHashRepository {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
