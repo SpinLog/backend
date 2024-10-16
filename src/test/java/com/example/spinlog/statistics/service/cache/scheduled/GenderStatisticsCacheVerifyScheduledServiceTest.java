@@ -1,10 +1,11 @@
-package com.example.spinlog.statistics.scheduled;
+package com.example.spinlog.statistics.service.cache.scheduled;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
+import com.example.spinlog.statistics.service.cache.scheduled.GenderStatisticsCacheVerifyScheduledService;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;

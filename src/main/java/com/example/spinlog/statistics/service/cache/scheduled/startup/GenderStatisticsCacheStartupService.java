@@ -1,4 +1,4 @@
-package com.example.spinlog.statistics.scheduled.startup;
+package com.example.spinlog.statistics.service.cache.scheduled.startup;
 
 import com.example.spinlog.global.cache.CacheHashRepository;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;

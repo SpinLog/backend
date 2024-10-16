@@ -1,4 +1,4 @@
-package com.example.spinlog.statistics.scheduled.startup;
+package com.example.spinlog.statistics.service.cache.scheduled.startup;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
