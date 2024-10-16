@@ -1,5 +1,6 @@
-package com.example.spinlog.statistics.service.dto;
+package com.example.spinlog.statistics.dto.response;
 
+import com.example.spinlog.statistics.dto.wordanalysis.WordFrequency;
 import com.example.spinlog.user.entity.Mbti;
 import lombok.Builder;
 import lombok.Getter;

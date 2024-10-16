@@ -1,9 +1,9 @@
 package com.example.spinlog.utils;
 
 import com.example.spinlog.statistics.exception.InvalidCacheException;
-import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
-import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
-import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.GenderDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.GenderSatisfactionAverageDto;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.CountsAndSums;
 import com.example.spinlog.statistics.utils.StatisticsCacheUtils;
 import org.junit.jupiter.api.*;

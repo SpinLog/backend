@@ -1,7 +1,7 @@
 package com.example.spinlog.statistics.service;
 
-import com.example.spinlog.statistics.service.dto.Token;
-import com.example.spinlog.statistics.service.dto.WordFrequency;
+import com.example.spinlog.statistics.dto.wordanalysis.Token;
+import com.example.spinlog.statistics.dto.wordanalysis.WordFrequency;
 import com.example.spinlog.statistics.service.wordanalysis.MorphemeExtractionService;
 import com.example.spinlog.statistics.service.wordanalysis.WordExtractionService;
 import org.junit.jupiter.api.DisplayNameGeneration;

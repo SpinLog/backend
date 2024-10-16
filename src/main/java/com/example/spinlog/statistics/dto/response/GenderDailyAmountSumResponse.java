@@ -1,6 +1,6 @@
-package com.example.spinlog.statistics.service.dto;
+package com.example.spinlog.statistics.dto.response;
 
-import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.GenderDailyAmountSumDto;
 import com.example.spinlog.user.entity.Gender;
 import lombok.Builder;
 import lombok.Getter;

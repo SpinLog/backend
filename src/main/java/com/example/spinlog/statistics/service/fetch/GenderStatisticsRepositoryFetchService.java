@@ -2,9 +2,9 @@ package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
-import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
-import com.example.spinlog.statistics.repository.dto.GenderDataDto;
-import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.GenderDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.GenderDataDto;
+import com.example.spinlog.statistics.dto.GenderEmotionAmountAverageDto;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

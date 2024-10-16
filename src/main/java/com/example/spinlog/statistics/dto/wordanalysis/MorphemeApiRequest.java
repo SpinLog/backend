@@ -1,11 +1,11 @@
-package com.example.spinlog.statistics.service.dto;
+package com.example.spinlog.statistics.dto.wordanalysis;
 
 import lombok.*;
 
 @Builder
 @Getter
 @EqualsAndHashCode
-public class MorphemeApiRequestDto {
+public class MorphemeApiRequest {
 
     private final String request_id;
     private final Argument argument;

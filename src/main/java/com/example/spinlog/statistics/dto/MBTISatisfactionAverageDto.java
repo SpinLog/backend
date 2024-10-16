@@ -1,4 +1,4 @@
-package com.example.spinlog.statistics.repository.dto;
+package com.example.spinlog.statistics.dto;
 
 import com.example.spinlog.statistics.entity.MBTIFactor;
 import lombok.Builder;

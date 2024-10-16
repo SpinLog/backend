@@ -1,7 +1,7 @@
-package com.example.spinlog.statistics.service.dto;
+package com.example.spinlog.statistics.dto.response;
 
 import com.example.spinlog.article.entity.Emotion;
-import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.GenderEmotionAmountAverageDto;
 import com.example.spinlog.user.entity.Gender;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

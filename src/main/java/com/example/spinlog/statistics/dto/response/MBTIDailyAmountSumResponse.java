@@ -1,7 +1,7 @@
-package com.example.spinlog.statistics.service.dto;
+package com.example.spinlog.statistics.dto.response;
 
 import com.example.spinlog.statistics.entity.MBTIFactor;
-import com.example.spinlog.statistics.repository.dto.MBTIDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.MBTIDailyAmountSumDto;
 import com.example.spinlog.user.entity.Mbti;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
