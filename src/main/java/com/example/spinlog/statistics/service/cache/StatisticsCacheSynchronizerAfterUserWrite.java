@@ -1,5 +1,8 @@
 package com.example.spinlog.statistics.service.cache;
 
+import com.example.spinlog.statistics.dto.cache.AllStatisticsMap;
+import com.example.spinlog.statistics.dto.cache.CountsAndSums;
+import com.example.spinlog.statistics.dto.repository.AllStatisticsResult;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.user.entity.User;

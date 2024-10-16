@@ -1,6 +1,8 @@
 package com.example.spinlog.statistics.utils;
 
 import com.example.spinlog.article.entity.Emotion;
+import com.example.spinlog.statistics.dto.cache.AllStatisticsMap;
+import com.example.spinlog.statistics.dto.cache.CountsAndSums;
 import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
 import com.example.spinlog.user.entity.Gender;

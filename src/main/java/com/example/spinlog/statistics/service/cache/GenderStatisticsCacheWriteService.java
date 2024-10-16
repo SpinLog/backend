@@ -2,7 +2,8 @@ package com.example.spinlog.statistics.service.cache;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheHashRepository;
-import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.CountsAndSums;
+import com.example.spinlog.statistics.dto.cache.AllStatisticsMap;
+import com.example.spinlog.statistics.dto.cache.CountsAndSums;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Map;
 
 import static com.example.spinlog.article.entity.RegisterType.*;
-import static com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.*;
 import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 
 @Service

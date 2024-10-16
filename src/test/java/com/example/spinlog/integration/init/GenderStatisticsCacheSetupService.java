@@ -1,6 +1,7 @@
 package com.example.spinlog.integration.init;
 
 import com.example.spinlog.global.cache.CacheHashRepository;
+import com.example.spinlog.statistics.dto.cache.AllStatisticsMap;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import lombok.RequiredArgsConstructor;

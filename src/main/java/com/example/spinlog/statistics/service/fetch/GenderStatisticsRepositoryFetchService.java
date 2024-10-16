@@ -1,6 +1,9 @@
 package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
+import com.example.spinlog.statistics.dto.cache.AllStatisticsMap;
+import com.example.spinlog.statistics.dto.cache.CountsAndSums;
+import com.example.spinlog.statistics.dto.repository.AllStatisticsResult;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.dto.repository.GenderDataDto;
@@ -134,49 +137,4 @@ public class GenderStatisticsRepositoryFetchService {
                 .build();
 
     }
-
-    // todo 별도의 클래스로 분리
-    public record CountsAndSums(Map<String, Object> sumsMap, Map<String, Object> countsMap) {
-        @Override
-        public String toString() {
-            return "CountsAndSums{" +
-                    "\n\tsumsMap=" + sumsMap +
-                    "\n\tcountsMap=" + countsMap +
-                    '}';
-        }
-    }
-    @Builder
-    public record AllStatisticsMap(
-            // todo 필드 이름 수정
-            CountsAndSums genderEmotionAmountSpendCountsAndSums,
-            CountsAndSums genderEmotionAmountSaveCountsAndSums,
-            Map<String, Object> genderDailyAmountSpendSums,
-            Map<String, Object> genderDailyAmountSaveSums,
-            CountsAndSums genderSatisfactionSpendCountsAndSums,
-            CountsAndSums genderSatisfactionSaveCountsAndSums) {
-        @Override
-        public String toString() {
-            return "AllStatisticsMap{" +
-                    "\ngenderEmotionAmountSpendCountsAndSums=" + genderEmotionAmountSpendCountsAndSums +
-                    "\n\ngenderEmotionAmountSaveCountsAndSums=" + genderEmotionAmountSaveCountsAndSums +
-                    "\n\ngenderDailyAmountSpendSums=" + genderDailyAmountSpendSums +
-                    "\n\ngenderDailyAmountSaveSums=" + genderDailyAmountSaveSums +
-                    "\n\ngenderSatisfactionSpendCountsAndSums=" + genderSatisfactionSpendCountsAndSums +
-                    "\n\ngenderSatisfactionSaveCountsAndSums=" + genderSatisfactionSaveCountsAndSums +
-                    "\n}";
-        }
-    }
-
-    @Builder
-    public record AllStatisticsResult(
-            List<GenderEmotionAmountAverageDto> genderEmotionAmountSpendSums,
-            List<GenderEmotionAmountAverageDto> genderEmotionAmountSpendCounts,
-            List<GenderEmotionAmountAverageDto> genderEmotionAmountSaveSums,
-            List<GenderEmotionAmountAverageDto> genderEmotionAmountSaveCounts,
-            List<GenderDailyAmountSumDto> genderDailyAmountSpendSums,
-            List<GenderDailyAmountSumDto> genderDailyAmountSaveSums,
-            List<GenderDataDto<Double>> genderSatisfactionSpendSums,
-            List<GenderDataDto<Long>> genderSatisfactionSpendCounts,
-            List<GenderDataDto<Double>> genderSatisfactionSaveSums,
-            List<GenderDataDto<Long>> genderSatisfactionSaveCounts) {}
 }

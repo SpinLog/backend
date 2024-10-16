@@ -1,6 +1,7 @@
 package com.example.spinlog.utils;
 
 import com.example.spinlog.article.entity.Emotion;
+import com.example.spinlog.statistics.dto.cache.CountsAndSums;
 import com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils;
 import com.example.spinlog.user.entity.Gender;
 import org.junit.jupiter.api.DisplayNameGeneration;
