@@ -1,10 +1,10 @@
 package com.example.spinlog.statistics.repository;
 
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.statistics.dto.MemoDto;
-import com.example.spinlog.statistics.dto.MBTIDailyAmountSumDto;
-import com.example.spinlog.statistics.dto.MBTIEmotionAmountAverageDto;
-import com.example.spinlog.statistics.dto.MBTISatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.repository.MemoDto;
+import com.example.spinlog.statistics.dto.repository.MBTIDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.repository.MBTIEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.repository.MBTISatisfactionAverageDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

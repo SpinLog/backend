@@ -1,7 +1,10 @@
 package com.example.spinlog.statistics.service;
 
 import com.example.spinlog.article.entity.Emotion;
-import com.example.spinlog.statistics.dto.*;
+import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.repository.GenderSatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.repository.MemoDto;
 import com.example.spinlog.statistics.dto.response.GenderDailyAmountSumResponse;
 import com.example.spinlog.statistics.dto.response.GenderEmotionAmountAverageResponse;
 import com.example.spinlog.statistics.dto.response.GenderWordFrequencyResponse;

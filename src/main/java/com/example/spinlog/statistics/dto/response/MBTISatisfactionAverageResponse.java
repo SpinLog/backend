@@ -1,6 +1,6 @@
 package com.example.spinlog.statistics.dto.response;
 
-import com.example.spinlog.statistics.dto.MBTISatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.repository.MBTISatisfactionAverageDto;
 import com.example.spinlog.user.entity.Mbti;
 import lombok.Builder;
 import lombok.Getter;

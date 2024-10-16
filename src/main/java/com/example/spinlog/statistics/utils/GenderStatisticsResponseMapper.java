@@ -1,8 +1,8 @@
 package com.example.spinlog.statistics.utils;
 
-import com.example.spinlog.statistics.dto.GenderDailyAmountSumDto;
-import com.example.spinlog.statistics.dto.GenderEmotionAmountAverageDto;
-import com.example.spinlog.statistics.dto.GenderSatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.repository.GenderSatisfactionAverageDto;
 import com.example.spinlog.statistics.dto.response.GenderDailyAmountSumResponse;
 import com.example.spinlog.statistics.dto.response.GenderEmotionAmountAverageResponse;
 import lombok.AccessLevel;

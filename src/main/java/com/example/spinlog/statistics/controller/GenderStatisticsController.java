@@ -3,7 +3,7 @@ package com.example.spinlog.statistics.controller;
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.response.ApiResponseWrapper;
 import com.example.spinlog.global.response.ResponseUtils;
-import com.example.spinlog.statistics.dto.GenderSatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.repository.GenderSatisfactionAverageDto;
 import com.example.spinlog.statistics.service.GenderStatisticsService;
 import com.example.spinlog.statistics.dto.response.GenderDailyAmountSumResponse;
 import com.example.spinlog.statistics.dto.response.GenderEmotionAmountAverageResponse;

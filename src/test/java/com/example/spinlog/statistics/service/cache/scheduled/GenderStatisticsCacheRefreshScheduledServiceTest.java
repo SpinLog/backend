@@ -2,7 +2,7 @@ package com.example.spinlog.statistics.service.cache.scheduled;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
-import com.example.spinlog.statistics.dto.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;

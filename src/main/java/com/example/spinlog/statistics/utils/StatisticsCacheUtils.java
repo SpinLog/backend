@@ -2,10 +2,10 @@ package com.example.spinlog.statistics.utils;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.statistics.exception.InvalidCacheException;
-import com.example.spinlog.statistics.dto.GenderDailyAmountSumDto;
-import com.example.spinlog.statistics.dto.GenderDataDto;
-import com.example.spinlog.statistics.dto.GenderEmotionAmountAverageDto;
-import com.example.spinlog.statistics.dto.GenderSatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.repository.GenderDataDto;
+import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.repository.GenderSatisfactionAverageDto;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.CountsAndSums;
 import com.example.spinlog.user.entity.Gender;
 import lombok.AccessLevel;

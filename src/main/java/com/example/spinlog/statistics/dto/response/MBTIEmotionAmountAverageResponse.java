@@ -2,7 +2,7 @@ package com.example.spinlog.statistics.dto.response;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.statistics.entity.MBTIFactor;
-import com.example.spinlog.statistics.dto.MBTIEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.repository.MBTIEmotionAmountAverageDto;
 import com.example.spinlog.user.entity.Mbti;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

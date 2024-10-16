@@ -2,7 +2,7 @@ package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheHashRepository;
-import com.example.spinlog.statistics.dto.MemoDto;
+import com.example.spinlog.statistics.dto.repository.MemoDto;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.CountsAndSums;
 import com.example.spinlog.user.entity.Gender;
 import lombok.RequiredArgsConstructor;

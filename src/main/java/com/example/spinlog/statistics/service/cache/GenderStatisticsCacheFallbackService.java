@@ -2,9 +2,9 @@ package com.example.spinlog.statistics.service.cache;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.statistics.exception.InvalidCacheException;
-import com.example.spinlog.statistics.dto.GenderDailyAmountSumDto;
-import com.example.spinlog.statistics.dto.GenderEmotionAmountAverageDto;
-import com.example.spinlog.statistics.dto.GenderSatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.repository.GenderSatisfactionAverageDto;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;

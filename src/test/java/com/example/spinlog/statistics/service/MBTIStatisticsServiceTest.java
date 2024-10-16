@@ -1,7 +1,10 @@
 package com.example.spinlog.statistics.service;
 
 import com.example.spinlog.article.entity.Emotion;
-import com.example.spinlog.statistics.dto.*;
+import com.example.spinlog.statistics.dto.repository.MBTIDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.repository.MBTIEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.repository.MBTISatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.repository.MemoDto;
 import com.example.spinlog.statistics.dto.response.MBTIDailyAmountSumResponse;
 import com.example.spinlog.statistics.dto.response.MBTIEmotionAmountAverageResponse;
 import com.example.spinlog.statistics.dto.response.MBTISatisfactionAverageResponse;
