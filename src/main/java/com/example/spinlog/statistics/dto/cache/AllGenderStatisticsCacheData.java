@@ -6,22 +6,21 @@ import java.util.Map;
 
 @Builder
 public record AllGenderStatisticsCacheData(
-        // todo 필드 이름 수정
-        SumsAndCounts genderEmotionAmountSpendSumsAndCounts,
-        SumsAndCounts genderEmotionAmountSaveSumsAndCounts,
+        SumAndCountStatisticsData genderEmotionAmountSpendSumAndCountStatisticsData,
+        SumAndCountStatisticsData genderEmotionAmountSaveSumAndCountStatisticsData,
         Map<String, Object> genderDailyAmountSpendSums,
         Map<String, Object> genderDailyAmountSaveSums,
-        SumsAndCounts genderSatisfactionSpendSumsAndCounts,
-        SumsAndCounts genderSatisfactionSaveSumsAndCounts) {
+        SumAndCountStatisticsData genderSatisfactionSpendSumAndCountStatisticsData,
+        SumAndCountStatisticsData genderSatisfactionSaveSumAndCountStatisticsData) {
     @Override
     public String toString() {
         return "AllGenderStatisticsCacheData{" +
-                "\ngenderEmotionAmountSpendSumsAndCounts=" + genderEmotionAmountSpendSumsAndCounts +
-                "\n\ngenderEmotionAmountSaveSumsAndCounts=" + genderEmotionAmountSaveSumsAndCounts +
+                "\ngenderEmotionAmountSpendSumsAndCounts=" + genderEmotionAmountSpendSumAndCountStatisticsData +
+                "\n\ngenderEmotionAmountSaveSumsAndCounts=" + genderEmotionAmountSaveSumAndCountStatisticsData +
                 "\n\ngenderDailyAmountSpendSums=" + genderDailyAmountSpendSums +
                 "\n\ngenderDailyAmountSaveSums=" + genderDailyAmountSaveSums +
-                "\n\ngenderSatisfactionSpendSumsAndCounts=" + genderSatisfactionSpendSumsAndCounts +
-                "\n\ngenderSatisfactionSaveSumsAndCounts=" + genderSatisfactionSaveSumsAndCounts +
+                "\n\ngenderSatisfactionSpendSumsAndCounts=" + genderSatisfactionSpendSumAndCountStatisticsData +
+                "\n\ngenderSatisfactionSaveSumsAndCounts=" + genderSatisfactionSaveSumAndCountStatisticsData +
                 "\n}";
     }
 }

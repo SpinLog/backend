@@ -1,7 +1,7 @@
 package com.example.spinlog.statistics.service.cache;
 
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.statistics.dto.cache.SumsAndCounts;
+import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.statistics.exception.InvalidCacheException;
 import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
@@ -39,13 +39,13 @@ public class GenderStatisticsCacheFallbackService {
             Period period = statisticsPeriodManager.getStatisticsPeriod();
             LocalDate endDate = period.endDate();
             LocalDate startDate = period.startDate();
-            SumsAndCounts genderEmotionAmountSumsAndCounts = genderStatisticsRepositoryFetchService
+            SumAndCountStatisticsData genderEmotionAmountSumAndCountStatisticsData = genderStatisticsRepositoryFetchService
                     .getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
 
-            genderStatisticsCacheWriteService.putAmountCountsAndSumsByGenderAndEmotion(genderEmotionAmountSumsAndCounts, registerType);
+            genderStatisticsCacheWriteService.putAmountCountsAndSumsByGenderAndEmotion(genderEmotionAmountSumAndCountStatisticsData, registerType);
 
             return convertToGenderEmotionAmountAverageDto(
-                    genderEmotionAmountSumsAndCounts);
+                    genderEmotionAmountSumAndCountStatisticsData);
         }
     }
 
@@ -78,13 +78,13 @@ public class GenderStatisticsCacheFallbackService {
             Period period = statisticsPeriodManager.getStatisticsPeriod();
             LocalDate endDate = period.endDate();
             LocalDate startDate = period.startDate();
-            SumsAndCounts genderSatisfactionSumsAndCounts = genderStatisticsRepositoryFetchService
+            SumAndCountStatisticsData genderSatisfactionSumAndCountStatisticsData = genderStatisticsRepositoryFetchService
                     .getGenderSatisfactionCountsAndSums(registerType, startDate, endDate);
 
-            genderStatisticsCacheWriteService.putSatisfactionCountsAndSumsByGender(genderSatisfactionSumsAndCounts, registerType);
+            genderStatisticsCacheWriteService.putSatisfactionCountsAndSumsByGender(genderSatisfactionSumAndCountStatisticsData, registerType);
 
             return convertToGenderSatisfactionAverageDto(
-                    genderSatisfactionSumsAndCounts);
+                    genderSatisfactionSumAndCountStatisticsData);
         }
     }
 }

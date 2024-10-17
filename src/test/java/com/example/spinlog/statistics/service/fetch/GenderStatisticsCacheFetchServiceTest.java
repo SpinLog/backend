@@ -2,7 +2,7 @@ package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheHashRepository;
-import com.example.spinlog.statistics.dto.cache.SumsAndCounts;
+import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import org.junit.jupiter.api.*;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -44,11 +44,11 @@ class GenderStatisticsCacheFetchServiceTest {
                     .thenReturn(countsMap);
 
             // when
-            SumsAndCounts results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
+            SumAndCountStatisticsData results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
 
             // then
-            assertThat(results.sumsMap()).isEqualTo(sumsMap);
-            assertThat(results.countsMap()).isEqualTo(countsMap);
+            assertThat(results.sumData()).isEqualTo(sumsMap);
+            assertThat(results.countData()).isEqualTo(countsMap);
         }
 
         @Test
@@ -71,13 +71,13 @@ class GenderStatisticsCacheFetchServiceTest {
                             "FEMALE::SAD", "5"));
 
             // when
-            SumsAndCounts results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
+            SumAndCountStatisticsData results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
 
             // then
-            for(var e: results.sumsMap().entrySet()) {
+            for(var e: results.sumData().entrySet()) {
                 assertThat(e.getValue()).isInstanceOf(Long.class);
             }
-            for(var e: results.countsMap().entrySet()) {
+            for(var e: results.countData().entrySet()) {
                 assertThat(e.getValue()).isInstanceOf(Long.class);
             }
         }
@@ -147,11 +147,11 @@ class GenderStatisticsCacheFetchServiceTest {
                     .thenReturn(countsMap);
 
             // when
-            SumsAndCounts results = genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType);
+            SumAndCountStatisticsData results = genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType);
 
             // then
-            assertThat(results.sumsMap()).isEqualTo(sumsMap);
-            assertThat(results.countsMap()).isEqualTo(countsMap);
+            assertThat(results.sumData()).isEqualTo(sumsMap);
+            assertThat(results.countData()).isEqualTo(countsMap);
         }
 
         @Test
@@ -170,13 +170,13 @@ class GenderStatisticsCacheFetchServiceTest {
                             "FEMALE", "20"));
 
             // when
-            SumsAndCounts results = genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType);
+            SumAndCountStatisticsData results = genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType);
 
             // then
-            for(var e: results.sumsMap().entrySet()) {
+            for(var e: results.sumData().entrySet()) {
                 assertThat(e.getValue()).isInstanceOf(Double.class);
             }
-            for(var e: results.countsMap().entrySet()) {
+            for(var e: results.countData().entrySet()) {
                 assertThat(e.getValue()).isInstanceOf(Long.class);
             }
         }

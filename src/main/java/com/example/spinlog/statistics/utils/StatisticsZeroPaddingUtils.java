@@ -2,7 +2,7 @@ package com.example.spinlog.statistics.utils;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.statistics.dto.cache.AllGenderStatisticsCacheData;
-import com.example.spinlog.statistics.dto.cache.SumsAndCounts;
+import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
 import com.example.spinlog.user.entity.Gender;
@@ -64,9 +64,9 @@ public class StatisticsZeroPaddingUtils {
                 .toList();
     }
 
-    public static SumsAndCounts zeroPaddingToGenderEmotionAmountCountsAndSums(SumsAndCounts sumsAndCounts) {
+    public static SumAndCountStatisticsData zeroPaddingToGenderEmotionAmountCountsAndSums(SumAndCountStatisticsData sumAndCountStatisticsData) {
         List<String> keys = getGenderEmotionKeys();
-        verifyKeys(sumsAndCounts, keys);
+        verifyKeys(sumAndCountStatisticsData, keys);
 
         Map<String, Object> sumsMap = new HashMap<>();
         Map<String, Object> countsMap = new HashMap<>();
@@ -74,15 +74,15 @@ public class StatisticsZeroPaddingUtils {
         keys.forEach(key -> {
             countsMap.put(
                     key,
-                    sumsAndCounts.countsMap()
+                    sumAndCountStatisticsData.countData()
                             .getOrDefault(key, 0L));
             sumsMap.put(
                     key,
-                    sumsAndCounts.sumsMap()
+                    sumAndCountStatisticsData.sumData()
                             .getOrDefault(key, 0L));
         });
 
-        return new SumsAndCounts(
+        return new SumAndCountStatisticsData(
                 Collections.unmodifiableMap(sumsMap),
                 Collections.unmodifiableMap(countsMap));
     }
@@ -103,9 +103,9 @@ public class StatisticsZeroPaddingUtils {
         return Collections.unmodifiableMap(sumsMap);
     }
 
-    public static SumsAndCounts zeroPaddingToGenderSatisfactionAmountCountsAndSums(SumsAndCounts sumsAndCounts) {
+    public static SumAndCountStatisticsData zeroPaddingToGenderSatisfactionAmountCountsAndSums(SumAndCountStatisticsData sumAndCountStatisticsData) {
         List<String> keys = getGenderKeys();
-        verifyKeys(sumsAndCounts, keys);
+        verifyKeys(sumAndCountStatisticsData, keys);
 
         Map<String, Object> sumsMap = new HashMap<>();
         Map<String, Object> countsMap = new HashMap<>();
@@ -113,33 +113,33 @@ public class StatisticsZeroPaddingUtils {
         keys.forEach(key -> {
             countsMap.put(
                     key,
-                    sumsAndCounts.countsMap()
+                    sumAndCountStatisticsData.countData()
                             .getOrDefault(key, 0L));
             sumsMap.put(
                     key,
-                    sumsAndCounts.sumsMap()
+                    sumAndCountStatisticsData.sumData()
                             .getOrDefault(key, 0.0));
         });
 
-        return new SumsAndCounts(
+        return new SumAndCountStatisticsData(
                 Collections.unmodifiableMap(sumsMap),
                 Collections.unmodifiableMap(countsMap));
     }
 
     public static AllGenderStatisticsCacheData zeroPaddingAllStatisticsMap(AllGenderStatisticsCacheData allData, Period period) {
         return AllGenderStatisticsCacheData.builder()
-                .genderEmotionAmountSpendSumsAndCounts(
-                        zeroPaddingToGenderEmotionAmountCountsAndSums(allData.genderEmotionAmountSpendSumsAndCounts()))
-                .genderEmotionAmountSaveSumsAndCounts(
-                        zeroPaddingToGenderEmotionAmountCountsAndSums(allData.genderEmotionAmountSaveSumsAndCounts()))
+                .genderEmotionAmountSpendSumAndCountStatisticsData(
+                        zeroPaddingToGenderEmotionAmountCountsAndSums(allData.genderEmotionAmountSpendSumAndCountStatisticsData()))
+                .genderEmotionAmountSaveSumAndCountStatisticsData(
+                        zeroPaddingToGenderEmotionAmountCountsAndSums(allData.genderEmotionAmountSaveSumAndCountStatisticsData()))
                 .genderDailyAmountSpendSums(
                         zeroPaddingToGenderDailyAmountSums(allData.genderDailyAmountSpendSums(), period))
                 .genderDailyAmountSaveSums(
                         zeroPaddingToGenderDailyAmountSums(allData.genderDailyAmountSaveSums(), period))
-                .genderSatisfactionSpendSumsAndCounts(
-                        zeroPaddingToGenderSatisfactionAmountCountsAndSums(allData.genderSatisfactionSpendSumsAndCounts()))
-                .genderSatisfactionSaveSumsAndCounts(
-                        zeroPaddingToGenderSatisfactionAmountCountsAndSums(allData.genderSatisfactionSaveSumsAndCounts()))
+                .genderSatisfactionSpendSumAndCountStatisticsData(
+                        zeroPaddingToGenderSatisfactionAmountCountsAndSums(allData.genderSatisfactionSpendSumAndCountStatisticsData()))
+                .genderSatisfactionSaveSumAndCountStatisticsData(
+                        zeroPaddingToGenderSatisfactionAmountCountsAndSums(allData.genderSatisfactionSaveSumAndCountStatisticsData()))
                 .build();
     }
 
@@ -175,16 +175,16 @@ public class StatisticsZeroPaddingUtils {
         return keys;
     }
 
-    private static void verifyKeys(SumsAndCounts sumsAndCounts, List<String> keys) {
-        if(!sumsAndCounts.sumsMap().isEmpty()){
-            for(var e: sumsAndCounts.sumsMap().keySet()){
+    private static void verifyKeys(SumAndCountStatisticsData sumAndCountStatisticsData, List<String> keys) {
+        if(!sumAndCountStatisticsData.sumData().isEmpty()){
+            for(var e: sumAndCountStatisticsData.sumData().keySet()){
                 if(!keys.contains(e)){
-                    throw new IllegalArgumentException("Invalid key, countsAndSums: " + sumsAndCounts);
+                    throw new IllegalArgumentException("Invalid key, countsAndSums: " + sumAndCountStatisticsData);
                 }
             }
-            for(var e: sumsAndCounts.countsMap().keySet()){
+            for(var e: sumAndCountStatisticsData.countData().keySet()){
                 if(!keys.contains(e)){
-                    throw new IllegalArgumentException("Invalid key, countsAndSums: " + sumsAndCounts);
+                    throw new IllegalArgumentException("Invalid key, countsAndSums: " + sumAndCountStatisticsData);
                 }
             }
         }

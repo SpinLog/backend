@@ -1,7 +1,7 @@
 package com.example.spinlog.utils;
 
 import com.example.spinlog.article.entity.Emotion;
-import com.example.spinlog.statistics.dto.cache.SumsAndCounts;
+import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils;
 import com.example.spinlog.user.entity.Gender;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.*;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class StatisticsZeroPaddingUtilsTest {
     @Nested
-    class zeroPaddingToGenderEmotionAmountSumsAndCounts {
+    class zeroPaddingToGenderEmotionAmountSumAndCountStatisticsData {
         @Test
         void GenderEmotionAmountCountsAndSums에_대해_zero_padding을_수행한다() throws Exception {
             // given
@@ -28,24 +28,24 @@ class StatisticsZeroPaddingUtilsTest {
             sumsMap.put("MALE::SAD", 10L);
             Map<String, Object> countsMap = new HashMap<>();
             countsMap.put("MALE::SAD", 1L);
-            SumsAndCounts sumsAndCounts = new SumsAndCounts(sumsMap, countsMap);
+            SumAndCountStatisticsData sumAndCountStatisticsData = new SumAndCountStatisticsData(sumsMap, countsMap);
 
             // when
-            sumsAndCounts = StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderEmotionAmountCountsAndSums(sumsAndCounts);
+            sumAndCountStatisticsData = StatisticsZeroPaddingUtils
+                    .zeroPaddingToGenderEmotionAmountCountsAndSums(sumAndCountStatisticsData);
 
             // then
             List<String> genderEmotionKeys = getGenderEmotionKeys();
-            assertThat(sumsAndCounts.countsMap().size()).isEqualTo(genderEmotionKeys.size());
-            assertThat(sumsAndCounts.sumsMap().size()).isEqualTo(genderEmotionKeys.size());
+            assertThat(sumAndCountStatisticsData.countData().size()).isEqualTo(genderEmotionKeys.size());
+            assertThat(sumAndCountStatisticsData.sumData().size()).isEqualTo(genderEmotionKeys.size());
 
             for (var key : genderEmotionKeys) {
                 if (key.equals("MALE::SAD")) {
-                    assertThat(sumsAndCounts.sumsMap().get(key)).isEqualTo(10L);
-                    assertThat(sumsAndCounts.countsMap().get(key)).isEqualTo(1L);
+                    assertThat(sumAndCountStatisticsData.sumData().get(key)).isEqualTo(10L);
+                    assertThat(sumAndCountStatisticsData.countData().get(key)).isEqualTo(1L);
                 } else {
-                    assertThat(sumsAndCounts.sumsMap().get(key)).isEqualTo(0L);
-                    assertThat(sumsAndCounts.countsMap().get(key)).isEqualTo(0L);
+                    assertThat(sumAndCountStatisticsData.sumData().get(key)).isEqualTo(0L);
+                    assertThat(sumAndCountStatisticsData.countData().get(key)).isEqualTo(0L);
                 }
             }
         }
@@ -57,11 +57,11 @@ class StatisticsZeroPaddingUtilsTest {
             sumsMap.put("MAL::SAD", 10L);
             Map<String, Object> countsMap = new HashMap<>();
             countsMap.put("MALE::SADD", 1L);
-            SumsAndCounts sumsAndCounts = new SumsAndCounts(sumsMap, countsMap);
+            SumAndCountStatisticsData sumAndCountStatisticsData = new SumAndCountStatisticsData(sumsMap, countsMap);
 
             // when // then
             assertThatThrownBy(() -> StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderEmotionAmountCountsAndSums(sumsAndCounts))
+                    .zeroPaddingToGenderEmotionAmountCountsAndSums(sumAndCountStatisticsData))
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
@@ -134,7 +134,7 @@ class StatisticsZeroPaddingUtilsTest {
     }
 
     @Nested
-    class zeroPaddingToGenderSatisfactionAmountSumsAndCounts {
+    class zeroPaddingToGenderSatisfactionAmountSumAndCountStatisticsData {
         @Test
         void GenderSatisfactionAmountCountsAndSums에_대해_zero_padding을_수행한다() throws Exception {
             // given
@@ -142,24 +142,24 @@ class StatisticsZeroPaddingUtilsTest {
             sumsMap.put("MALE", 10.0);
             Map<String, Object> countsMap = new HashMap<>();
             countsMap.put("MALE", 2L);
-            SumsAndCounts sumsAndCounts = new SumsAndCounts(sumsMap, countsMap);
+            SumAndCountStatisticsData sumAndCountStatisticsData = new SumAndCountStatisticsData(sumsMap, countsMap);
 
             // when
-            sumsAndCounts = StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderSatisfactionAmountCountsAndSums(sumsAndCounts);
+            sumAndCountStatisticsData = StatisticsZeroPaddingUtils
+                    .zeroPaddingToGenderSatisfactionAmountCountsAndSums(sumAndCountStatisticsData);
 
             // then
             List<String> keys = getGenderKeys();
-            assertThat(sumsAndCounts.countsMap().size()).isEqualTo(keys.size());
-            assertThat(sumsAndCounts.sumsMap().size()).isEqualTo(keys.size());
+            assertThat(sumAndCountStatisticsData.countData().size()).isEqualTo(keys.size());
+            assertThat(sumAndCountStatisticsData.sumData().size()).isEqualTo(keys.size());
 
             for (var key : keys) {
                 if (key.equals("MALE")) {
-                    assertThat(sumsAndCounts.sumsMap().get(key)).isEqualTo(10.0);
-                    assertThat(sumsAndCounts.countsMap().get(key)).isEqualTo(2L);
+                    assertThat(sumAndCountStatisticsData.sumData().get(key)).isEqualTo(10.0);
+                    assertThat(sumAndCountStatisticsData.countData().get(key)).isEqualTo(2L);
                 } else {
-                    assertThat(sumsAndCounts.sumsMap().get(key)).isEqualTo(0.0);
-                    assertThat(sumsAndCounts.countsMap().get(key)).isEqualTo(0L);
+                    assertThat(sumAndCountStatisticsData.sumData().get(key)).isEqualTo(0.0);
+                    assertThat(sumAndCountStatisticsData.countData().get(key)).isEqualTo(0L);
                 }
             }
         }
@@ -171,11 +171,11 @@ class StatisticsZeroPaddingUtilsTest {
             sumsMap.put("MALEE", 10.0);
             Map<String, Object> countsMap = new HashMap<>();
             countsMap.put("MALE", 2L);
-            SumsAndCounts sumsAndCounts = new SumsAndCounts(sumsMap, countsMap);
+            SumAndCountStatisticsData sumAndCountStatisticsData = new SumAndCountStatisticsData(sumsMap, countsMap);
 
             // when // then
             assertThatThrownBy(() -> StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderSatisfactionAmountCountsAndSums(sumsAndCounts))
+                    .zeroPaddingToGenderSatisfactionAmountCountsAndSums(sumAndCountStatisticsData))
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
