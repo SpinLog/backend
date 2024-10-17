@@ -17,12 +17,12 @@ public interface CacheHashRepository {
 
     Map<String, Object> getHashEntries(String key);
 
-    void putAllDataInHash(String key, Map<String, Object> data);
+    void putAllDataInHash(String key, Map<String, ?> data);
 
     void deleteHashKey(String key, String hashKey);
 
-    void decrementAllDataInHash(String key, Map<String, Object> data);
-    void incrementAllDataInHash(String key, Map<String, Object> data);
+    void decrementAllDataInHash(String key, Map<String, ?> data);
+    void incrementAllDataInHash(String key, Map<String, ?> data);
 
     void deleteData(String key);
 }
