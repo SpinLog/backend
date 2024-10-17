@@ -1,10 +1,16 @@
 package com.example.spinlog.statistics.service;
 
 import com.example.spinlog.article.entity.Emotion;
+import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.repository.GenderSatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.repository.MemoDto;
+import com.example.spinlog.statistics.dto.response.GenderDailyAmountSumResponse;
+import com.example.spinlog.statistics.dto.response.GenderEmotionAmountAverageResponse;
+import com.example.spinlog.statistics.dto.response.GenderWordFrequencyResponse;
+import com.example.spinlog.statistics.dto.wordanalysis.WordFrequency;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
-import com.example.spinlog.statistics.repository.dto.*;
-import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheFallbackService;
-import com.example.spinlog.statistics.service.dto.*;
+import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheFallbackService;
 import com.example.spinlog.statistics.service.wordanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Gender;
 import org.assertj.core.groups.Tuple;
