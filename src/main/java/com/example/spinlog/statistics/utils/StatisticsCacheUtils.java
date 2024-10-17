@@ -8,6 +8,7 @@ import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageD
 import com.example.spinlog.statistics.dto.repository.GenderSatisfactionAverageDto;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.user.entity.Gender;
+import com.mysql.cj.log.Log;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -25,66 +26,64 @@ public class StatisticsCacheUtils {
     // todo mbti 캐싱 작업 후 삭제
     public static final int PERIOD_CRITERIA = 30;
 
-    public static Map<String, Object> toGenderEmotionMap(List<GenderEmotionAmountAverageDto> dtos){
+    public static Map<String, Long> toGenderEmotionMap(List<GenderEmotionAmountAverageDto> dtos){
         return dtos.stream()
                 .collect(Collectors.toMap(
                         dto -> dto.getGender() + "::" + dto.getEmotion(),
                         GenderEmotionAmountAverageDto::getAmountAverage));
     }
 
-    public static Map<String, Object> toGenderDateMap(List<GenderDailyAmountSumDto> dtos){
+    public static Map<String, Long> toGenderDateMap(List<GenderDailyAmountSumDto> dtos){
         return dtos.stream()
                 .collect(Collectors.toMap(
                         dto -> dto.getGender() + "::" + dto.getLocalDate(),
                         GenderDailyAmountSumDto::getAmountSum));
     }
 
-    public static <T extends Number> Map<String, Object> toGenderMap(List<GenderDataDto<T>> dtos){
+    public static <T extends Number> Map<String, T> toGenderMap(List<GenderDataDto<T>> dtos){
         return dtos.stream()
                 .collect(Collectors.toMap(
                         dto -> dto.getGender().toString(),
                         GenderDataDto::getValue));
     }
 
-    // todo Map to Map reverse, not list
-    public static Map<String, Object> toReverseGenderEmotionMap(List<GenderEmotionAmountAverageDto> dtos){
+    public static Map<String, Long> toReverseGenderEmotionMap(List<GenderEmotionAmountAverageDto> dtos){
         return dtos.stream()
                 .collect(Collectors.toMap(
                         dto -> ((dto.getGender()== MALE)?FEMALE:MALE) + "::" + dto.getEmotion(),
                         GenderEmotionAmountAverageDto::getAmountAverage));
     }
 
-    public static Map<String, Object> toReverseGenderDateMap(List<GenderDailyAmountSumDto> dtos){
+    public static Map<String, Long> toReverseGenderDateMap(List<GenderDailyAmountSumDto> dtos){
         return dtos.stream()
                 .collect(Collectors.toMap(
                         dto -> ((dto.getGender()== MALE)?FEMALE:MALE) + "::" + dto.getLocalDate(),
                         GenderDailyAmountSumDto::getAmountSum));
     }
 
-    public static <T extends Number> Map<String, Object> toReverseGenderMap(List<GenderDataDto<T>> dtos){
+    public static <T extends Number> Map<String, T> toReverseGenderMap(List<GenderDataDto<T>> dtos){
         return dtos.stream()
                 .collect(Collectors.toMap(
                         dto -> ((dto.getGender()== MALE)?FEMALE:MALE).name(),
                         GenderDataDto::getValue));
     }
 
-    public static List<GenderEmotionAmountAverageDto> convertToGenderEmotionAmountAverageDto(SumAndCountStatisticsData sumAndCountStatisticsData) {
-        Map<String, Object> sumsMap = sumAndCountStatisticsData.sumData();
-        Map<String, Object> countsMap = sumAndCountStatisticsData.countData();
+    public static List<GenderEmotionAmountAverageDto> convertToGenderEmotionAmountAverageDto(SumAndCountStatisticsData<Long> sumAndCountStatisticsData) {
+        Map<String, Long> sumsMap = sumAndCountStatisticsData.sumData();
+        Map<String, Long> countsMap = sumAndCountStatisticsData.countData();
         verifyCacheSumsAndCountsMap(sumsMap, countsMap);
 
         Map<String, Long> genderEmotionAmountAverage = new HashMap<>();
-        sumsMap.forEach((k, v) -> {
-            long amount = castLong(v);
-            if(amount == 0) {
+        sumsMap.forEach((k, sum) -> {
+            if(sum == 0) {
                 genderEmotionAmountAverage.put(k, 0L);
                 return;
             }
-            long count = castLong(countsMap.get(k));
+            long count = countsMap.get(k);
             if(count == 0) {
                 throw new InvalidCacheException("sum is not zero, but count is zero, countAndSums = " + sumAndCountStatisticsData);
             }
-            long average =  amount / count;
+            long average =  sum / count;
             genderEmotionAmountAverage.put(k, average);
         });
 
@@ -100,7 +99,7 @@ public class StatisticsCacheUtils {
                 }).toList();
     }
 
-    public static List<GenderDailyAmountSumDto> convertToGenderDailyAmountSumDto(Map<String, Object> sumsMap) {
+    public static List<GenderDailyAmountSumDto> convertToGenderDailyAmountSumDto(Map<String, Long> sumsMap) {
         verifyEntries(sumsMap);
 
         return sumsMap.entrySet().stream()
@@ -111,27 +110,26 @@ public class StatisticsCacheUtils {
                     return new GenderDailyAmountSumDto(
                             castGender(key[0]),
                             date,
-                            castLong(e.getValue()));
+                            e.getValue());
                 }).toList();
     }
 
-    public static List<GenderSatisfactionAverageDto> convertToGenderSatisfactionAverageDto(SumAndCountStatisticsData sumAndCountStatisticsData) {
-        Map<String, Object> sumsMap = sumAndCountStatisticsData.sumData();
-        Map<String, Object> countsMap = sumAndCountStatisticsData.countData();
+    public static List<GenderSatisfactionAverageDto> convertToGenderSatisfactionAverageDto(SumAndCountStatisticsData<Double> sumAndCountStatisticsData) {
+        Map<String, Double> sumsMap = sumAndCountStatisticsData.sumData();
+        Map<String, Long> countsMap = sumAndCountStatisticsData.countData();
         verifyCacheSumsAndCountsMap(sumsMap, countsMap);
 
         Map<String, Float> genderSatisfactionAverage = new HashMap<>();
-        sumsMap.forEach((k, v) -> {
-            double satisfactionSum = castDouble(v);
-            if(satisfactionSum == 0.0) {
+        sumsMap.forEach((k, sum) -> {
+            if(sum == 0.0) {
                 genderSatisfactionAverage.put(k, 0f);
                 return;
             }
-            long count = castLong(countsMap.get(k));
+            long count = countsMap.get(k);
             if(count == 0) {
                 throw new InvalidCacheException("sum is not zero, but count is zero, countAndSums = " + sumAndCountStatisticsData);
             }
-            float average = (float)(satisfactionSum / (double) count);
+            float average = (float)(sum / (double) count);
             genderSatisfactionAverage.put(k, average);
         });
 
@@ -143,7 +141,7 @@ public class StatisticsCacheUtils {
                 .toList();
     }
 
-    private static void verifyCacheSumsAndCountsMap(Map<String, Object> sumsMap, Map<String, Object> countsMap) {
+    private static <T extends Number> void verifyCacheSumsAndCountsMap(Map<String, T> sumsMap, Map<String, Long> countsMap) {
         if(sumsMap == null) {
             throw new InvalidCacheException("Cache sum entries are null");
         }
@@ -162,7 +160,7 @@ public class StatisticsCacheUtils {
         });
     }
 
-    private static void verifyEntries(Map<String, Object> entries) {
+    private static void verifyEntries(Map<String, Long> entries) {
         if(entries == null) {
             throw new InvalidCacheException("Cache entries are null");
         }
@@ -176,21 +174,6 @@ public class StatisticsCacheUtils {
     }
 
     // todo 작업은 common 작업으로, 에러만 캐시 에러로 변경
-    private static long castLong(Object o) {
-        try {
-            return Long.parseLong(o.toString());
-        } catch (NumberFormatException e) {
-            throw new InvalidCacheException("Invalid long format, value = " + o, e);
-        }
-    }
-
-    private static double castDouble(Object o) {
-        try {
-            return Double.parseDouble(o.toString());
-        } catch (NumberFormatException e) {
-            throw new InvalidCacheException("Invalid double format, value = " + o, e);
-        }
-    }
 
     private static LocalDate castLocalDate(String key) {
         try {

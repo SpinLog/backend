@@ -19,7 +19,7 @@ class MapCastingUtilsTest {
                 "key3", "3");
 
         // when
-        Map<String, Object> convertedMap = MapCastingUtils.convertValuesToLong(map);
+        Map<String, Long> convertedMap = MapCastingUtils.convertValuesToLong(map);
 
         // then
         for(var e: convertedMap.entrySet()) {
@@ -37,7 +37,7 @@ class MapCastingUtilsTest {
                 "key3", "3.3");
 
         // when
-        Map<String, Object> convertedMap = MapCastingUtils.convertValuesToDouble(map);
+        Map<String, Double> convertedMap = MapCastingUtils.convertValuesToDouble(map);
 
         // then
         for(var e: convertedMap.entrySet()) {

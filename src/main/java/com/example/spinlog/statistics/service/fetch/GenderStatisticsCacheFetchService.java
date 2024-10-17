@@ -21,39 +21,39 @@ import static com.example.spinlog.utils.MapCastingUtils.*;
 public class GenderStatisticsCacheFetchService {
     private final CacheHashRepository cacheHashRepository;
 
-    public SumAndCountStatisticsData getAmountAveragesEachGenderAndEmotion(RegisterType registerType) {
-        Map<String, Object> sumsMap = cacheHashRepository.getHashEntries(
+    public SumAndCountStatisticsData<Long> getAmountAveragesEachGenderAndEmotion(RegisterType registerType) {
+        Map<String, Object> sumData = cacheHashRepository.getHashEntries(
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType));
-        sumsMap = convertValuesToLong(sumsMap);
+        Map<String, Long> castedSumData = convertValuesToLong(sumData);
 
         Map<String, Object> countsMap = cacheHashRepository.getHashEntries(
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType));
-        countsMap = convertValuesToLong(countsMap);
+        Map<String, Long> castedCountData = convertValuesToLong(countsMap);
 
-        return new SumAndCountStatisticsData(sumsMap, countsMap);
+        return new SumAndCountStatisticsData<>(
+                castedSumData, castedCountData);
     }
 
-    public Map<String, Object> getAmountSumsEachGenderAndDay(RegisterType registerType) {
-        Map<String, Object> sumsMap = cacheHashRepository.getHashEntries(
+    public Map<String, Long> getAmountSumsEachGenderAndDay(RegisterType registerType) {
+        Map<String, Object> sumData = cacheHashRepository.getHashEntries(
                 GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType));
-        sumsMap = convertValuesToLong(sumsMap);
-
-        return sumsMap;
+        return convertValuesToLong(sumData);
     }
 
     public List<MemoDto> getAllMemosByGender(RegisterType registerType, Gender gender) {
         return null;
     }
 
-    public SumAndCountStatisticsData getSatisfactionAveragesEachGender(RegisterType registerType) {
-        Map<String, Object> sumsMap = cacheHashRepository.getHashEntries(
+    public SumAndCountStatisticsData<Double> getSatisfactionAveragesEachGender(RegisterType registerType) {
+        Map<String, Object> sumData = cacheHashRepository.getHashEntries(
                 GENDER_SATISFACTION_SUM_KEY_NAME(registerType));
-        sumsMap = convertValuesToDouble(sumsMap);
+        Map<String, Double> castedSumData = convertValuesToDouble(sumData);
 
-        Map<String, Object> countsMap = cacheHashRepository.getHashEntries(
+        Map<String, Object> countData = cacheHashRepository.getHashEntries(
                 GENDER_SATISFACTION_COUNT_KEY_NAME(registerType));
-        countsMap = convertValuesToLong(countsMap);
+        Map<String, Long> castedCountData = convertValuesToLong(countData);
 
-        return new SumAndCountStatisticsData(sumsMap, countsMap);
+        return new SumAndCountStatisticsData<>(
+                castedSumData, castedCountData);
     }
 }

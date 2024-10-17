@@ -21,19 +21,19 @@ import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 public class GenderStatisticsCacheWriteService {
     private final CacheHashRepository cacheHashRepository;
 
-    public void putAmountCountsAndSumsByGenderAndEmotion(SumAndCountStatisticsData amountSumAndCountStatisticsData, RegisterType registerType) {
+    public void putAmountCountsAndSumsByGenderAndEmotion(SumAndCountStatisticsData<Long> amountSumAndCountStatisticsData, RegisterType registerType) {
         cacheHashRepository.putAllDataInHash(
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType), amountSumAndCountStatisticsData.countData());
         cacheHashRepository.putAllDataInHash(
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType), amountSumAndCountStatisticsData.sumData());
     }
 
-    public void putAmountSumsByGenderAndDate(Map<String, Object> amountSums, RegisterType registerType) {
+    public void putAmountSumsByGenderAndDate(Map<String, Long> amountSums, RegisterType registerType) {
         cacheHashRepository.putAllDataInHash(
                 GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType), amountSums);
     }
 
-    public void putSatisfactionCountsAndSumsByGender(SumAndCountStatisticsData satisfactionSumAndCountStatisticsData, RegisterType registerType) {
+    public void putSatisfactionCountsAndSumsByGender(SumAndCountStatisticsData<Double> satisfactionSumAndCountStatisticsData, RegisterType registerType) {
         cacheHashRepository.putAllDataInHash(
                 GENDER_SATISFACTION_COUNT_KEY_NAME(registerType), satisfactionSumAndCountStatisticsData.countData());
         cacheHashRepository.putAllDataInHash(
@@ -88,18 +88,18 @@ public class GenderStatisticsCacheWriteService {
                 GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveSumAndCountStatisticsData().sumData());
     }
 
-    public void replaceAmountCountsAndSumsByGenderAndEmotion(SumAndCountStatisticsData amountSumAndCountStatisticsData, RegisterType registerType) {
+    public void replaceAmountCountsAndSumsByGenderAndEmotion(SumAndCountStatisticsData<Long> amountSumAndCountStatisticsData, RegisterType registerType) {
         cacheHashRepository.deleteData(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType));
         cacheHashRepository.deleteData(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType));
         putAmountCountsAndSumsByGenderAndEmotion(amountSumAndCountStatisticsData, registerType);
     }
 
-    public void replaceAmountSumsByGenderAndDate(Map<String, Object> amountSums, RegisterType registerType) {
+    public void replaceAmountSumsByGenderAndDate(Map<String, Long> amountSums, RegisterType registerType) {
         cacheHashRepository.deleteData(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType));
         putAmountSumsByGenderAndDate(amountSums, registerType);
     }
 
-    public void replaceSatisfactionCountsAndSumsByGender(SumAndCountStatisticsData satisfactionSumAndCountStatisticsData, RegisterType registerType) {
+    public void replaceSatisfactionCountsAndSumsByGender(SumAndCountStatisticsData<Double> satisfactionSumAndCountStatisticsData, RegisterType registerType) {
         cacheHashRepository.deleteData(GENDER_SATISFACTION_COUNT_KEY_NAME(registerType));
         cacheHashRepository.deleteData(GENDER_SATISFACTION_SUM_KEY_NAME(registerType));
         putSatisfactionCountsAndSumsByGender(satisfactionSumAndCountStatisticsData, registerType);

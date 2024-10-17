@@ -42,9 +42,9 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
                     .thenThrow(new RuntimeException());
 
-            SumAndCountStatisticsData repositoryData = new SumAndCountStatisticsData(
-                    Map.of("MALE::SAD", 1, "MALE::PROUD", 2),
-                    Map.of("MALE::SAD", 1, "MALE::PROUD", 2));
+            SumAndCountStatisticsData<Long> repositoryData = new SumAndCountStatisticsData<>(
+                    Map.of("MALE::SAD", 1L, "MALE::PROUD", 2L),
+                    Map.of("MALE::SAD", 1L, "MALE::PROUD", 2L));
             when(genderStatisticsRepositoryFetchService.getGenderEmotionAmountCountsAndSums(any(), any(), any()))
                     .thenReturn(repositoryData);
 
@@ -61,16 +61,16 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
         @Test
         void 캐시와_레포지토리로부터_받은_데이터가_같다면_CacheWriteService를_호출하지_않는다() throws Exception {
             // given
-            SumAndCountStatisticsData cacheData = new SumAndCountStatisticsData(
-                    Map.of("MALE::SAD", 1, "MALE::PROUD", 2),
-                    Map.of("MALE::SAD", 1, "MALE::PROUD", 2));
+            SumAndCountStatisticsData<Long> cacheData = new SumAndCountStatisticsData<>(
+                    Map.of("MALE::SAD", 1L, "MALE::PROUD", 2L),
+                    Map.of("MALE::SAD", 1L, "MALE::PROUD", 2L));
             cacheData = zeroPaddingToGenderEmotionAmountCountsAndSums(cacheData);
             when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
                     .thenReturn(cacheData);
             when(genderStatisticsRepositoryFetchService.getGenderEmotionAmountCountsAndSums(any(), any(), any()))
-                    .thenReturn(new SumAndCountStatisticsData(
-                            Map.of("MALE::SAD", 1, "MALE::PROUD", 2),
-                            Map.of("MALE::SAD", 1, "MALE::PROUD", 2)));
+                    .thenReturn(new SumAndCountStatisticsData<>(
+                            Map.of("MALE::SAD", 1L, "MALE::PROUD", 2L),
+                            Map.of("MALE::SAD", 1L, "MALE::PROUD", 2L)));
 
             Period period = statisticsPeriodManager.getStatisticsPeriod();
 
@@ -84,15 +84,15 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
         @Test
         void 캐시와_레포지토리로부터_받은_데이터가_다르다면_CacheWriteService를_호출한다() throws Exception {
             // given
-            SumAndCountStatisticsData cacheData = new SumAndCountStatisticsData(
-                    Map.of("MALE::SAD", 1, "MALE::PROUD", 2),
-                    Map.of("MALE::SAD", 1, "MALE::PROUD", 2));
+            SumAndCountStatisticsData<Long> cacheData = new SumAndCountStatisticsData<>(
+                    Map.of("MALE::SAD", 1L, "MALE::PROUD", 2L),
+                    Map.of("MALE::SAD", 1L, "MALE::PROUD", 2L));
             cacheData = zeroPaddingToGenderEmotionAmountCountsAndSums(cacheData);
             when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
                     .thenReturn(cacheData);
-            SumAndCountStatisticsData repositoryData = new SumAndCountStatisticsData(
-                    Map.of("MALE::SAD", 1, "MALE::PROUD", 2),
-                    Map.of("MALE::SAD", 1, "MALE::PROUD", 100));
+            SumAndCountStatisticsData<Long> repositoryData = new SumAndCountStatisticsData<>(
+                    Map.of("MALE::SAD", 1L, "MALE::PROUD", 2L),
+                    Map.of("MALE::SAD", 1L, "MALE::PROUD", 100L));
             when(genderStatisticsRepositoryFetchService.getGenderEmotionAmountCountsAndSums(any(), any(), any()))
                     .thenReturn(repositoryData);
 
@@ -114,7 +114,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             when(genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(any()))
                     .thenThrow(new RuntimeException());
 
-            Map<String, Object> repositoryData = Map.of("MALE::2024-10-05", 1, "MALE::2024-10-04", 2);
+            Map<String, Long> repositoryData = Map.of("MALE::2024-10-05", 1L, "MALE::2024-10-04", 2L);
             when(genderStatisticsRepositoryFetchService.getGenderDateAmountSums(any(), any(), any()))
                     .thenReturn(repositoryData);
 
@@ -133,13 +133,13 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             // given
             Period period = statisticsPeriodManager.getStatisticsPeriod();
 
-            Map<String, Object> cacheData = Map.of("MALE::2024-10-05", 1, "MALE::2024-10-04", 2);
+            Map<String, Long> cacheData = Map.of("MALE::2024-10-05", 1L, "MALE::2024-10-04", 2L);
             cacheData = zeroPaddingToGenderDailyAmountSums(cacheData, period);
             when(genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(any()))
                     .thenReturn(cacheData);
             when(genderStatisticsRepositoryFetchService.getGenderDateAmountSums(any(), any(), any()))
                     .thenReturn(
-                            Map.of("MALE::2024-10-05", 1, "MALE::2024-10-04", 2));
+                            Map.of("MALE::2024-10-05", 1L, "MALE::2024-10-04", 2L));
 
             // when
             targetService.updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType.SPEND, period);
@@ -153,11 +153,11 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             // given
 
             Period period = statisticsPeriodManager.getStatisticsPeriod();
-            Map<String, Object> cacheData = Map.of("MALE::2024-10-05", 1, "MALE::2024-10-04", 2);
+            Map<String, Long> cacheData = Map.of("MALE::2024-10-05", 1L, "MALE::2024-10-04", 2L);
             cacheData = zeroPaddingToGenderDailyAmountSums(cacheData, period);
             when(genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(any()))
                     .thenReturn(cacheData);
-            Map<String, Object> repositoryData = Map.of("MALE::2024-10-05", 1, "MALE::2024-10-04", 200);
+            Map<String, Long> repositoryData = Map.of("MALE::2024-10-05", 1L, "MALE::2024-10-04", 200L);
             when(genderStatisticsRepositoryFetchService.getGenderDateAmountSums(any(), any(), any()))
                     .thenReturn(repositoryData);
 
@@ -176,9 +176,9 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             // given
             when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
                     .thenThrow(new RuntimeException());
-            SumAndCountStatisticsData repositoryData = new SumAndCountStatisticsData(
+            SumAndCountStatisticsData<Double> repositoryData = new SumAndCountStatisticsData<>(
                     Map.of("MALE", 1.0, "FEMALE", 2.0),
-                    Map.of("MALE", 1, "FEMALE", 2));
+                    Map.of("MALE", 1L, "FEMALE", 2L));
             when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))
                     .thenReturn(repositoryData);
 
@@ -195,13 +195,13 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
         void 캐시와_레포지토리로부터_받은_데이터가_같다면_CacheWriteService를_호출하지_않는다() throws Exception {
             // given
             when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
-                    .thenReturn(new SumAndCountStatisticsData(
+                    .thenReturn(new SumAndCountStatisticsData<>(
                             Map.of("MALE", 1.0, "FEMALE", 2.0),
-                            Map.of("MALE", 1, "FEMALE", 2)));
+                            Map.of("MALE", 1L, "FEMALE", 2L)));
             when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))
-                    .thenReturn(new SumAndCountStatisticsData(
+                    .thenReturn(new SumAndCountStatisticsData<>(
                             Map.of("MALE", 1.0, "FEMALE", 2.0),
-                            Map.of("MALE", 1, "FEMALE", 2)));
+                            Map.of("MALE", 1L, "FEMALE", 2L)));
 
             Period period = statisticsPeriodManager.getStatisticsPeriod();
 
@@ -216,12 +216,12 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
         void 캐시와_레포지토리로부터_받은_데이터가_다르다면_CacheWriteService를_호출한다() throws Exception {
             // given
             when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
-                    .thenReturn(new SumAndCountStatisticsData(
+                    .thenReturn(new SumAndCountStatisticsData<>(
                             Map.of("MALE", 1.0, "FEMALE", 2.0),
-                            Map.of("MALE", 1, "FEMALE", 2)));
-            SumAndCountStatisticsData repositoryData = new SumAndCountStatisticsData(
+                            Map.of("MALE", 1L, "FEMALE", 2L)));
+            SumAndCountStatisticsData<Double> repositoryData = new SumAndCountStatisticsData<>(
                     Map.of("MALE", 1.0, "FEMALE", 2.0),
-                    Map.of("MALE", 1, "FEMALE", 100));
+                    Map.of("MALE", 1L, "FEMALE", 100L));
             when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))
                     .thenReturn(repositoryData);
 
@@ -238,12 +238,12 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
         void 캐시와_레포지토리로부터_받은_sumsMap들이_근사하게_같지_않다면_CacheWriteService를_호출한다() throws Exception {
             // given
             when(genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(any()))
-                    .thenReturn(new SumAndCountStatisticsData(
+                    .thenReturn(new SumAndCountStatisticsData<>(
                             Map.of("MALE", 1.0, "FEMALE", 2.0),
-                            Map.of("MALE", 1, "FEMALE", 2)));
-            SumAndCountStatisticsData repositoryData = new SumAndCountStatisticsData(
+                            Map.of("MALE", 1L, "FEMALE", 2L)));
+            SumAndCountStatisticsData<Double> repositoryData = new SumAndCountStatisticsData<>(
                     Map.of("MALE", 1.0, "FEMALE", 4.0),
-                    Map.of("MALE", 1, "FEMALE", 2));
+                    Map.of("MALE", 1L, "FEMALE", 2L));
             when(genderStatisticsRepositoryFetchService.getGenderSatisfactionCountsAndSums(any(), any(), any()))
                     .thenReturn(repositoryData);
 

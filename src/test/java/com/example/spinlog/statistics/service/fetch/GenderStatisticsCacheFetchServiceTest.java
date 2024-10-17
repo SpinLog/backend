@@ -44,7 +44,7 @@ class GenderStatisticsCacheFetchServiceTest {
                     .thenReturn(countsMap);
 
             // when
-            SumAndCountStatisticsData results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
+            SumAndCountStatisticsData<Long> results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
 
             // then
             assertThat(results.sumData()).isEqualTo(sumsMap);
@@ -71,7 +71,7 @@ class GenderStatisticsCacheFetchServiceTest {
                             "FEMALE::SAD", "5"));
 
             // when
-            SumAndCountStatisticsData results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
+            SumAndCountStatisticsData<Long> results = genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(registerType);
 
             // then
             for(var e: results.sumData().entrySet()) {
@@ -99,7 +99,7 @@ class GenderStatisticsCacheFetchServiceTest {
                     .thenReturn(sumsMap);
             
             // when
-            Map<String, Object> results = genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(registerType);
+            Map<String, Long> results = genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(registerType);
 
             // then
             assertThat(results).isEqualTo(sumsMap);
@@ -118,7 +118,7 @@ class GenderStatisticsCacheFetchServiceTest {
                             "FEMALE::2024-07-02", "4000"));
 
             // when
-            Map<String, Object> results = genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(registerType);
+            Map<String, Long> results = genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(registerType);
 
             // then
             for(var e: results.entrySet()) {
@@ -147,7 +147,7 @@ class GenderStatisticsCacheFetchServiceTest {
                     .thenReturn(countsMap);
 
             // when
-            SumAndCountStatisticsData results = genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType);
+            SumAndCountStatisticsData<Double> results = genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType);
 
             // then
             assertThat(results.sumData()).isEqualTo(sumsMap);
@@ -170,7 +170,7 @@ class GenderStatisticsCacheFetchServiceTest {
                             "FEMALE", "20"));
 
             // when
-            SumAndCountStatisticsData results = genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType);
+            SumAndCountStatisticsData<Double> results = genderStatisticsCacheFetchService.getSatisfactionAveragesEachGender(registerType);
 
             // then
             for(var e: results.sumData().entrySet()) {
