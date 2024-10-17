@@ -1,11 +1,11 @@
 package com.example.spinlog.statistics.repository;
 
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.statistics.repository.dto.GenderDataDto;
-import com.example.spinlog.statistics.repository.dto.GenderDailyAmountSumDto;
-import com.example.spinlog.statistics.repository.dto.GenderEmotionAmountAverageDto;
-import com.example.spinlog.statistics.repository.dto.GenderSatisfactionAverageDto;
-import com.example.spinlog.statistics.repository.dto.MemoDto;
+import com.example.spinlog.statistics.dto.repository.GenderDataDto;
+import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.repository.GenderSatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.repository.MemoDto;
 import com.example.spinlog.user.entity.Gender;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

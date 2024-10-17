@@ -1,7 +1,7 @@
 package com.example.spinlog.statistics.service.wordanalysis;
 
-import com.example.spinlog.statistics.service.dto.Token;
-import com.example.spinlog.statistics.service.dto.WordFrequency;
+import com.example.spinlog.statistics.dto.wordanalysis.Token;
+import com.example.spinlog.statistics.dto.wordanalysis.WordFrequency;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

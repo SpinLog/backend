@@ -1,13 +1,17 @@
 package com.example.spinlog.statistics.service;
 
 import com.example.spinlog.article.entity.Emotion;
+import com.example.spinlog.statistics.dto.repository.MBTIDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.repository.MBTIEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.repository.MBTISatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.repository.MemoDto;
+import com.example.spinlog.statistics.dto.response.MBTIDailyAmountSumResponse;
+import com.example.spinlog.statistics.dto.response.MBTIEmotionAmountAverageResponse;
+import com.example.spinlog.statistics.dto.response.MBTISatisfactionAverageResponse;
+import com.example.spinlog.statistics.dto.response.MBTIWordFrequencyResponse;
+import com.example.spinlog.statistics.dto.wordanalysis.WordFrequency;
 import com.example.spinlog.statistics.entity.MBTIFactor;
-import com.example.spinlog.statistics.repository.dto.MBTISatisfactionAverageDto;
-import com.example.spinlog.statistics.service.dto.*;
 import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
-import com.example.spinlog.statistics.repository.dto.MBTIDailyAmountSumDto;
-import com.example.spinlog.statistics.repository.dto.MBTIEmotionAmountAverageDto;
-import com.example.spinlog.statistics.repository.dto.MemoDto;
 import com.example.spinlog.statistics.loginService.AuthenticatedUserService;
 import com.example.spinlog.statistics.service.wordanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Mbti;

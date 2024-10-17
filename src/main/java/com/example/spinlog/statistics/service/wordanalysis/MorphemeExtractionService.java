@@ -1,8 +1,8 @@
 package com.example.spinlog.statistics.service.wordanalysis;
 
-import com.example.spinlog.statistics.service.dto.MorphemeApiRequestDto;
-import com.example.spinlog.statistics.service.dto.MorphemeResponse;
-import com.example.spinlog.statistics.service.dto.Token;
+import com.example.spinlog.statistics.dto.wordanalysis.MorphemeApiRequest;
+import com.example.spinlog.statistics.dto.wordanalysis.MorphemeResponse;
+import com.example.spinlog.statistics.dto.wordanalysis.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,10 +43,10 @@ public class MorphemeExtractionService {
     private List<Token> extractTokens(StringBuilder input) {
         MorphemeResponse response = morphemeApiClient.getMorphemes(
                 apiKey,
-                MorphemeApiRequestDto.builder()
+                MorphemeApiRequest.builder()
                         .request_id("request")
                         .argument(
-                                new MorphemeApiRequestDto.Argument(
+                                new MorphemeApiRequest.Argument(
                                         input.toString()))
                         .build());
 

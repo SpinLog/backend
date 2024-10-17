@@ -1,9 +1,9 @@
 package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.global.cache.HashCacheService;
-import com.example.spinlog.statistics.repository.dto.MemoDto;
-import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService.CountsAndSums;
+import com.example.spinlog.global.cache.CacheHashRepository;
+import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
+import com.example.spinlog.statistics.dto.repository.MemoDto;
 import com.example.spinlog.user.entity.Gender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,22 +19,22 @@ import static com.example.spinlog.utils.MapCastingUtils.*;
 @RequiredArgsConstructor
 @Slf4j
 public class GenderStatisticsCacheFetchService {
-    private final HashCacheService hashCacheService;
+    private final CacheHashRepository cacheHashRepository;
 
-    public CountsAndSums getAmountAveragesEachGenderAndEmotion(RegisterType registerType) {
-        Map<String, Object> sumsMap = hashCacheService.getHashEntries(
+    public SumAndCountStatisticsData getAmountAveragesEachGenderAndEmotion(RegisterType registerType) {
+        Map<String, Object> sumsMap = cacheHashRepository.getHashEntries(
                 GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(registerType));
         sumsMap = convertValuesToLong(sumsMap);
 
-        Map<String, Object> countsMap = hashCacheService.getHashEntries(
+        Map<String, Object> countsMap = cacheHashRepository.getHashEntries(
                 GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType));
         countsMap = convertValuesToLong(countsMap);
 
-        return new CountsAndSums(sumsMap, countsMap);
+        return new SumAndCountStatisticsData(sumsMap, countsMap);
     }
 
     public Map<String, Object> getAmountSumsEachGenderAndDay(RegisterType registerType) {
-        Map<String, Object> sumsMap = hashCacheService.getHashEntries(
+        Map<String, Object> sumsMap = cacheHashRepository.getHashEntries(
                 GENDER_DAILY_AMOUNT_SUM_KEY_NAME(registerType));
         sumsMap = convertValuesToLong(sumsMap);
 
@@ -45,15 +45,15 @@ public class GenderStatisticsCacheFetchService {
         return null;
     }
 
-    public CountsAndSums getSatisfactionAveragesEachGender(RegisterType registerType) {
-        Map<String, Object> sumsMap = hashCacheService.getHashEntries(
+    public SumAndCountStatisticsData getSatisfactionAveragesEachGender(RegisterType registerType) {
+        Map<String, Object> sumsMap = cacheHashRepository.getHashEntries(
                 GENDER_SATISFACTION_SUM_KEY_NAME(registerType));
         sumsMap = convertValuesToDouble(sumsMap);
 
-        Map<String, Object> countsMap = hashCacheService.getHashEntries(
+        Map<String, Object> countsMap = cacheHashRepository.getHashEntries(
                 GENDER_SATISFACTION_COUNT_KEY_NAME(registerType));
         countsMap = convertValuesToLong(countsMap);
 
-        return new CountsAndSums(sumsMap, countsMap);
+        return new SumAndCountStatisticsData(sumsMap, countsMap);
     }
 }

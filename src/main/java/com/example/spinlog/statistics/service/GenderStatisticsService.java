@@ -1,12 +1,13 @@
 package com.example.spinlog.statistics.service;
 
 import com.example.spinlog.article.entity.RegisterType;
+import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.repository.GenderSatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.repository.MemoDto;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
-import com.example.spinlog.statistics.repository.dto.*;
-import com.example.spinlog.statistics.service.caching.GenderStatisticsCacheFallbackService;
-import com.example.spinlog.statistics.service.dto.GenderDailyAmountSumResponse;
-import com.example.spinlog.statistics.service.dto.GenderEmotionAmountAverageResponse;
-import com.example.spinlog.statistics.service.dto.GenderWordFrequencyResponse;
+import com.example.spinlog.statistics.dto.response.*;
+import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheFallbackService;
 import com.example.spinlog.statistics.service.wordanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Gender;
 import lombok.extern.slf4j.Slf4j;
