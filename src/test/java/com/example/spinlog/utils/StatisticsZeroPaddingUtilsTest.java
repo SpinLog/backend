@@ -80,7 +80,7 @@ class StatisticsZeroPaddingUtilsTest {
         @Test
         void GenderDailyAmountSums에_대해_zero_padding을_수행한다() throws Exception {
             // given
-            Map<String, Object> sums = new HashMap<>();
+            Map<String, Long> sums = new HashMap<>();
             sums.put("MALE::2021-01-01", 10L);
             Period period = new Period(
                     LocalDate.of(2021, 1, 1),
@@ -105,7 +105,7 @@ class StatisticsZeroPaddingUtilsTest {
         @Test
         void 유효하지_않은_키가_있다면_실패한다() throws Exception {
             // given
-            Map<String, Object> sums = new HashMap<>();
+            Map<String, Long> sums = new HashMap<>();
             sums.put("MALE::22021-01-01", 10L);
             Period period = new Period(
                     LocalDate.of(2021, 1, 1),

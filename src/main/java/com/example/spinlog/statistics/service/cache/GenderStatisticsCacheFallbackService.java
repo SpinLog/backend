@@ -59,7 +59,7 @@ public class GenderStatisticsCacheFallbackService {
             Period period = statisticsPeriodManager.getStatisticsPeriod();
             LocalDate endDate = period.endDate();
             LocalDate startDate = period.startDate();
-            Map<String, Object> genderDailyAmountSums = genderStatisticsRepositoryFetchService
+            Map<String, Long> genderDailyAmountSums = genderStatisticsRepositoryFetchService
                     .getGenderDateAmountSums(registerType, startDate, endDate);
 
             genderStatisticsCacheWriteService.putAmountSumsByGenderAndDate(genderDailyAmountSums, registerType);

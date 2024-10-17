@@ -90,8 +90,9 @@ public class MockCacheHashRepository implements CacheHashRepository {
     }
 
     @Override
-    public void putAllDataInHash(String key, Map<String, Object> data) {
-        cache.put(key, data);
+    public void putAllDataInHash(String key, Map<String, ?> data) {
+        cache.putIfAbsent(key, new HashMap<>());
+        cache.get(key).putAll(data);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class MockCacheHashRepository implements CacheHashRepository {
     }
 
     @Override
-    public void decrementAllDataInHash(String key, Map<String, Object> data) {
+    public void decrementAllDataInHash(String key, Map<String, ?> data) {
         data.forEach((hashKey, value) -> {
             if (value instanceof Long) {
                 decrementDataInHash(key, hashKey, (Long) value);
@@ -116,7 +117,7 @@ public class MockCacheHashRepository implements CacheHashRepository {
     }
 
     @Override
-    public void incrementAllDataInHash(String key, Map<String, Object> data) {
+    public void incrementAllDataInHash(String key, Map<String, ?> data) {
         data.forEach((hashKey, value) -> {
             if (value instanceof Long) {
                 incrementDataInHash(key, hashKey, (Long) value);

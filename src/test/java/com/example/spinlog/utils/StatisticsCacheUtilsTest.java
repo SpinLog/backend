@@ -26,7 +26,7 @@ class StatisticsCacheUtilsTest {
         @Test
         void 성별_감정별_CountsAndSums_객체를_받아서_GenderEmotionAmountAverageDto의_리스트를_반환한다() throws Exception {
             // given
-            SumAndCountStatisticsData sumAndCountStatisticsData = new SumAndCountStatisticsData(
+            SumAndCountStatisticsData<Long> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(
                     Map.of(
                             "MALE::PROUD", 1000L,
                             "MALE::SAD", 2000L,
@@ -64,14 +64,18 @@ class StatisticsCacheUtilsTest {
         @Test
         void sumsMap이_null이라면_실패한다() throws Exception {
             // when // then
-            assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderEmotionAmountAverageDto(new SumAndCountStatisticsData(null, Map.of())))
+            assertThatThrownBy(() ->
+                    StatisticsCacheUtils
+                            .convertToGenderEmotionAmountAverageDto(new SumAndCountStatisticsData<>(null, Map.of())))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
         @Test
         void countsMap이_null이라면_실패한다() throws Exception {
             // when // then
-            assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderEmotionAmountAverageDto(new SumAndCountStatisticsData(Map.of(), null)))
+            assertThatThrownBy(() ->
+                    StatisticsCacheUtils
+                            .convertToGenderEmotionAmountAverageDto(new SumAndCountStatisticsData<>(Map.of(), null)))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
@@ -79,7 +83,7 @@ class StatisticsCacheUtilsTest {
         void sumsMap과_countsMap의_개수가_맞지_않는다면_실패한다() throws Exception {
             // when // then
             assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderEmotionAmountAverageDto(
-                    new SumAndCountStatisticsData(
+                    new SumAndCountStatisticsData<>(
                             Map.of("key1", 1000L),
                             Map.of("key1", 5L, "key2", 10L))))
                     .isInstanceOf(InvalidCacheException.class);
@@ -89,31 +93,9 @@ class StatisticsCacheUtilsTest {
         void sumsMap의_key와_countsMap의_key가_맞지_않는다면_실패한다() throws Exception {
             // when // then
             assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderEmotionAmountAverageDto(
-                    new SumAndCountStatisticsData(
+                    new SumAndCountStatisticsData<>(
                             Map.of("key1", 1000L, "key2", 2000L),
                             Map.of("key1", 5L, "key3", 10L))))
-                    .isInstanceOf(InvalidCacheException.class);
-        }
-
-        @ParameterizedTest
-        @ValueSource(strings = {"string", "1.0f", "1.0"})
-        void sumsMap의_value가_long_타입이_아니라면_실패한다(String value) throws Exception {
-            // when // then
-            assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderEmotionAmountAverageDto(
-                    new SumAndCountStatisticsData(
-                            Map.of("key1", value),
-                            Map.of("key1", 5L))))
-                    .isInstanceOf(InvalidCacheException.class);
-        }
-
-        @ParameterizedTest
-        @ValueSource(strings = {"string", "1.0f", "1.0"})
-        void countsMap의_value가_long_타입이_아니라면_실패한다(String value) throws Exception {
-            // when // then
-            assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderEmotionAmountAverageDto(
-                    new SumAndCountStatisticsData(
-                            Map.of("key1", 10000L),
-                            Map.of("key1", value))))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
@@ -123,7 +105,7 @@ class StatisticsCacheUtilsTest {
         void test_map_key(String key) throws Exception {
             // when // then
             assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderEmotionAmountAverageDto(
-                    new SumAndCountStatisticsData(
+                    new SumAndCountStatisticsData<>(
                             Map.of(key, 10000L),
                             Map.of(key, 5L))))
                     .isInstanceOf(InvalidCacheException.class);
@@ -135,7 +117,7 @@ class StatisticsCacheUtilsTest {
         @Test
         void 성별_일별_sumsMap을_받아서_GenderDailyAmountSumDto를_반환한다() throws Exception {
             // given
-            Map<String, Object> sumsMap = Map.of(
+            Map<String, Long> sumsMap = Map.of(
                     "MALE::2024-07-01", 1000L,
                     "MALE::2024-07-02", 2000L,
                     "FEMALE::2024-07-01", 3000L,
@@ -181,15 +163,6 @@ class StatisticsCacheUtilsTest {
                     Map.of(key, 1000L)))
                     .isInstanceOf(InvalidCacheException.class);
         }
-
-        @ParameterizedTest
-        @ValueSource(strings = {"string", "1.0f", "1.0"})
-        void sumsMap의_value가_long_타입이_아니라면_실패한다(String value) throws Exception {
-            // when // then
-            assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderDailyAmountSumDto(
-                    Map.of("key1", value)))
-                    .isInstanceOf(InvalidCacheException.class);
-        }
     }
 
     @Nested
@@ -197,7 +170,7 @@ class StatisticsCacheUtilsTest {
         @Test
         void 성별_Satisfaction에_대한_CountsAndSums를_받아서_GenderSatisfactionAverageDto의_리스트를_반환한다() throws Exception {
             // given
-            SumAndCountStatisticsData sumAndCountStatisticsData = new SumAndCountStatisticsData(
+            SumAndCountStatisticsData<Double> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(
                     Map.of(
                             "MALE", 34.0,
                             "FEMALE", 78.0),
@@ -225,7 +198,7 @@ class StatisticsCacheUtilsTest {
         void sumsMap이_null이라면_실패한다() throws Exception {
             // when // then
             assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderSatisfactionAverageDto(
-                    new SumAndCountStatisticsData(
+                    new SumAndCountStatisticsData<>(
                             null,
                             Map.of())))
                     .isInstanceOf(InvalidCacheException.class);
@@ -235,7 +208,7 @@ class StatisticsCacheUtilsTest {
         void countsMap이_null이라면_실패한다() throws Exception {
             // when // then
             assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderSatisfactionAverageDto(
-                    new SumAndCountStatisticsData(
+                    new SumAndCountStatisticsData<>(
                             Map.of(),
                             null)))
                     .isInstanceOf(InvalidCacheException.class);
@@ -245,7 +218,7 @@ class StatisticsCacheUtilsTest {
         void sumsMap과_countsMap의_개수가_맞지_않는다면_실패한다() throws Exception {
             // when // then
             assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderSatisfactionAverageDto(
-                    new SumAndCountStatisticsData(
+                    new SumAndCountStatisticsData<>(
                             Map.of("key1", 10.0),
                             Map.of("key1", 5L, "key2", 10L))))
                     .isInstanceOf(InvalidCacheException.class);
@@ -255,31 +228,9 @@ class StatisticsCacheUtilsTest {
         void sumsMap의_key와_countsMap의_key가_맞지_않는다면_실패한다() throws Exception {
             // when // then
             assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderSatisfactionAverageDto(
-                    new SumAndCountStatisticsData(
+                    new SumAndCountStatisticsData<>(
                             Map.of("key1", 12.0, "key2", 10.0),
                             Map.of("key1", 5L, "key3", 10L))))
-                    .isInstanceOf(InvalidCacheException.class);
-        }
-
-        @ParameterizedTest
-        @ValueSource(strings = {"string", "1000"})
-        void sumsMap의_value가_double_타입이_아니라면_실패한다(String value) throws Exception {
-            // when // then
-            assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderSatisfactionAverageDto(
-                    new SumAndCountStatisticsData(
-                            Map.of("key1", value),
-                            Map.of("key1", 5L))))
-                    .isInstanceOf(InvalidCacheException.class);
-        }
-
-        @ParameterizedTest
-        @ValueSource(strings = {"string", "1.0f", "1.0"})
-        void countsMap의_value가_long_타입이_아니라면_실패한다(String value) throws Exception {
-            // when // then
-            assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderSatisfactionAverageDto(
-                    new SumAndCountStatisticsData(
-                            Map.of("key1", 10000L),
-                            Map.of("key1", value))))
                     .isInstanceOf(InvalidCacheException.class);
         }
 
@@ -291,8 +242,8 @@ class StatisticsCacheUtilsTest {
 
             // when // then
             assertThatThrownBy(() -> StatisticsCacheUtils.convertToGenderSatisfactionAverageDto(
-                    new SumAndCountStatisticsData(
-                            Map.of(key, 10000L),
+                    new SumAndCountStatisticsData<>(
+                            Map.of(key, 1.0),
                             Map.of(key, 5L))))
                     .isInstanceOf(InvalidCacheException.class);
         }

@@ -64,12 +64,12 @@ public class StatisticsZeroPaddingUtils {
                 .toList();
     }
 
-    public static SumAndCountStatisticsData zeroPaddingToGenderEmotionAmountCountsAndSums(SumAndCountStatisticsData sumAndCountStatisticsData) {
+    public static SumAndCountStatisticsData<Long> zeroPaddingToGenderEmotionAmountCountsAndSums(SumAndCountStatisticsData<Long> sumAndCountStatisticsData) {
         List<String> keys = getGenderEmotionKeys();
         verifyKeys(sumAndCountStatisticsData, keys);
 
-        Map<String, Object> sumsMap = new HashMap<>();
-        Map<String, Object> countsMap = new HashMap<>();
+        Map<String, Long> sumsMap = new HashMap<>();
+        Map<String, Long> countsMap = new HashMap<>();
 
         keys.forEach(key -> {
             countsMap.put(
@@ -82,33 +82,30 @@ public class StatisticsZeroPaddingUtils {
                             .getOrDefault(key, 0L));
         });
 
-        return new SumAndCountStatisticsData(
+        return new SumAndCountStatisticsData<>(
                 Collections.unmodifiableMap(sumsMap),
                 Collections.unmodifiableMap(countsMap));
     }
 
-    public static Map<String, Object> zeroPaddingToGenderDailyAmountSums(Map<String, Object> sums, Period period) {
+    public static Map<String, Long> zeroPaddingToGenderDailyAmountSums(Map<String, Long> sums, Period period) {
         List<String> keys = getGenderDailyKeys(period);
 
         verifyKeys(sums, keys);
-        Map<String, Object> sumsMap = new HashMap<>();
+        Map<String, Long> sumsMap = new HashMap<>();
 
-        keys.forEach(key -> {
-            sumsMap.put(
+        keys.forEach(key -> sumsMap.put(
                     key,
-                    sums.getOrDefault(key, 0L));
-
-        });
+                    sums.getOrDefault(key, 0L)));
 
         return Collections.unmodifiableMap(sumsMap);
     }
 
-    public static SumAndCountStatisticsData zeroPaddingToGenderSatisfactionAmountCountsAndSums(SumAndCountStatisticsData sumAndCountStatisticsData) {
+    public static SumAndCountStatisticsData<Double> zeroPaddingToGenderSatisfactionAmountCountsAndSums(SumAndCountStatisticsData<Double> sumAndCountStatisticsData) {
         List<String> keys = getGenderKeys();
         verifyKeys(sumAndCountStatisticsData, keys);
 
-        Map<String, Object> sumsMap = new HashMap<>();
-        Map<String, Object> countsMap = new HashMap<>();
+        Map<String, Double> sumsMap = new HashMap<>();
+        Map<String, Long> countsMap = new HashMap<>();
 
         keys.forEach(key -> {
             countsMap.put(
@@ -121,7 +118,7 @@ public class StatisticsZeroPaddingUtils {
                             .getOrDefault(key, 0.0));
         });
 
-        return new SumAndCountStatisticsData(
+        return new SumAndCountStatisticsData<>(
                 Collections.unmodifiableMap(sumsMap),
                 Collections.unmodifiableMap(countsMap));
     }
@@ -144,13 +141,12 @@ public class StatisticsZeroPaddingUtils {
     }
 
     private static List<String> getGenderEmotionKeys() {
-        List<String> keys = Arrays.stream(Gender.values())
+        return Arrays.stream(Gender.values())
                 .filter(g -> !g.equals(Gender.NONE))
                 .flatMap(g ->
                         Arrays.stream(Emotion.values())
                                 .map(e -> g + "::" + e))
                 .toList();
-        return keys;
     }
 
     private static List<String> getGenderDailyKeys(Period period) {
@@ -168,14 +164,13 @@ public class StatisticsZeroPaddingUtils {
     }
 
     private static List<String> getGenderKeys() {
-        List<String> keys = Arrays.stream(Gender.values())
+        return Arrays.stream(Gender.values())
                 .filter(g -> !g.equals(Gender.NONE))
                 .map(Gender::name)
                 .toList();
-        return keys;
     }
 
-    private static void verifyKeys(SumAndCountStatisticsData sumAndCountStatisticsData, List<String> keys) {
+    private static <T extends Number> void verifyKeys(SumAndCountStatisticsData<T> sumAndCountStatisticsData, List<String> keys) {
         if(!sumAndCountStatisticsData.sumData().isEmpty()){
             for(var e: sumAndCountStatisticsData.sumData().keySet()){
                 if(!keys.contains(e)){
@@ -190,7 +185,7 @@ public class StatisticsZeroPaddingUtils {
         }
     }
 
-    private static void verifyKeys(Map<String, Object> sums, List<String> keys) {
+    private static <T extends Number> void verifyKeys(Map<String, T> sums, List<String> keys) {
         if(!sums.isEmpty()){
             for(var e: sums.keySet()){
                 if(!keys.contains(e)){

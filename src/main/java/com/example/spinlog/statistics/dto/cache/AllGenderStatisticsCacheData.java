@@ -6,12 +6,12 @@ import java.util.Map;
 
 @Builder
 public record AllGenderStatisticsCacheData(
-        SumAndCountStatisticsData genderEmotionAmountSpendSumAndCountStatisticsData,
-        SumAndCountStatisticsData genderEmotionAmountSaveSumAndCountStatisticsData,
-        Map<String, Object> genderDailyAmountSpendSums,
-        Map<String, Object> genderDailyAmountSaveSums,
-        SumAndCountStatisticsData genderSatisfactionSpendSumAndCountStatisticsData,
-        SumAndCountStatisticsData genderSatisfactionSaveSumAndCountStatisticsData) {
+        SumAndCountStatisticsData<Long> genderEmotionAmountSpendSumAndCountStatisticsData,
+        SumAndCountStatisticsData<Long> genderEmotionAmountSaveSumAndCountStatisticsData,
+        Map<String, Long> genderDailyAmountSpendSums,
+        Map<String, Long> genderDailyAmountSaveSums,
+        SumAndCountStatisticsData<Double> genderSatisfactionSpendSumAndCountStatisticsData,
+        SumAndCountStatisticsData<Double> genderSatisfactionSaveSumAndCountStatisticsData) {
     @Override
     public String toString() {
         return "AllGenderStatisticsCacheData{" +

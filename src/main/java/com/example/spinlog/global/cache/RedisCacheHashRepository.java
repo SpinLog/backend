@@ -1,5 +1,6 @@
 package com.example.spinlog.global.cache;
 
+import com.example.spinlog.statistics.exception.InvalidCacheException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
@@ -49,7 +50,6 @@ public class RedisCacheHashRepository implements CacheHashRepository {
         return redisTemplate.opsForHash().get(key, hashKey);
     }
 
-    // todo 예외 처리 - ex) key가 없을 때, hashKey가 없을 때, 캐스팅 에러 등
     @Override
     public Map<String, Object> getHashEntries(String key) {
         HashOperations<String, String, Object> opsForHash = redisTemplate.opsForHash();
@@ -57,7 +57,7 @@ public class RedisCacheHashRepository implements CacheHashRepository {
     }
 
     @Override
-    public void putAllDataInHash(String key, Map<String, Object> data) {
+    public void putAllDataInHash(String key, Map<String, ?> data) {
         Map<String, String> stringData = data.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
@@ -67,23 +67,29 @@ public class RedisCacheHashRepository implements CacheHashRepository {
     }
 
     @Override
-    public void decrementAllDataInHash(String key, Map<String, Object> data) {
+    public void decrementAllDataInHash(String key, Map<String, ?> data) {
         data.forEach((hashKey, value) -> {
             if (value instanceof Long) {
                 decrementDataInHash(key, hashKey, (Long) value);
             } else if (value instanceof Double) {
                 decrementDataInHash(key, hashKey, (Double) value);
+            } else {
+                log.error("Invalid data type: {}, key: {}, hashKey: {}, value: {}", value.getClass(), key, hashKey, value);
+                throw new InvalidCacheException("Invalid data type: " + value.getClass());
             }
         });
     }
 
     @Override
-    public void incrementAllDataInHash(String key, Map<String, Object> data) {
+    public void incrementAllDataInHash(String key, Map<String, ?> data) {
         data.forEach((hashKey, value) -> {
             if (value instanceof Long) {
                 incrementDataInHash(key, hashKey, (Long) value);
             } else if (value instanceof Double) {
                 incrementDataInHash(key, hashKey, (Double) value);
+            } else {
+                log.error("Invalid data type: {}, key: {}, hashKey: {}, value: {}", value.getClass(), key, hashKey, value);
+                throw new InvalidCacheException("Invalid data type: " + value.getClass());
             }
         });
     }
