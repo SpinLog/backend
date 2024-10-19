@@ -24,11 +24,11 @@ class StatisticsZeroPaddingUtilsTest {
         @Test
         void GenderEmotionAmountCountsAndSums에_대해_zero_padding을_수행한다() throws Exception {
             // given
-            Map<String, Object> sumsMap = new HashMap<>();
+            Map<String, Long> sumsMap = new HashMap<>();
             sumsMap.put("MALE::SAD", 10L);
-            Map<String, Object> countsMap = new HashMap<>();
+            Map<String, Long> countsMap = new HashMap<>();
             countsMap.put("MALE::SAD", 1L);
-            SumAndCountStatisticsData sumAndCountStatisticsData = new SumAndCountStatisticsData(sumsMap, countsMap);
+            SumAndCountStatisticsData<Long> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(sumsMap, countsMap);
 
             // when
             sumAndCountStatisticsData = StatisticsZeroPaddingUtils
@@ -53,11 +53,11 @@ class StatisticsZeroPaddingUtilsTest {
         @Test
         void 유효하지_않은_키가_있다면_실패한다() throws Exception {
             // given
-            Map<String, Object> sumsMap = new HashMap<>();
+            Map<String, Long> sumsMap = new HashMap<>();
             sumsMap.put("MAL::SAD", 10L);
-            Map<String, Object> countsMap = new HashMap<>();
+            Map<String, Long> countsMap = new HashMap<>();
             countsMap.put("MALE::SADD", 1L);
-            SumAndCountStatisticsData sumAndCountStatisticsData = new SumAndCountStatisticsData(sumsMap, countsMap);
+            SumAndCountStatisticsData<Long> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(sumsMap, countsMap);
 
             // when // then
             assertThatThrownBy(() -> StatisticsZeroPaddingUtils
@@ -138,11 +138,11 @@ class StatisticsZeroPaddingUtilsTest {
         @Test
         void GenderSatisfactionAmountCountsAndSums에_대해_zero_padding을_수행한다() throws Exception {
             // given
-            Map<String, Object> sumsMap = new HashMap<>();
+            Map<String, Double> sumsMap = new HashMap<>();
             sumsMap.put("MALE", 10.0);
-            Map<String, Object> countsMap = new HashMap<>();
+            Map<String, Long> countsMap = new HashMap<>();
             countsMap.put("MALE", 2L);
-            SumAndCountStatisticsData sumAndCountStatisticsData = new SumAndCountStatisticsData(sumsMap, countsMap);
+            SumAndCountStatisticsData<Double> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(sumsMap, countsMap);
 
             // when
             sumAndCountStatisticsData = StatisticsZeroPaddingUtils
@@ -167,11 +167,11 @@ class StatisticsZeroPaddingUtilsTest {
         @Test
         void 유효하지_않은_키가_있다면_실패한다() throws Exception {
             // given
-            Map<String, Object> sumsMap = new HashMap<>();
+            Map<String, Double> sumsMap = new HashMap<>();
             sumsMap.put("MALEE", 10.0);
-            Map<String, Object> countsMap = new HashMap<>();
+            Map<String, Long> countsMap = new HashMap<>();
             countsMap.put("MALE", 2L);
-            SumAndCountStatisticsData sumAndCountStatisticsData = new SumAndCountStatisticsData(sumsMap, countsMap);
+            SumAndCountStatisticsData<Double> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(sumsMap, countsMap);
 
             // when // then
             assertThatThrownBy(() -> StatisticsZeroPaddingUtils

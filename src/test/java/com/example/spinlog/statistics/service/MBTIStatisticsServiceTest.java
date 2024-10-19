@@ -13,6 +13,7 @@ import com.example.spinlog.statistics.dto.wordanalysis.WordFrequency;
 import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
 import com.example.spinlog.statistics.loginService.AuthenticatedUserService;
+import com.example.spinlog.statistics.service.cache.MBTIStatisticsCacheFallbackService;
 import com.example.spinlog.statistics.service.wordanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Mbti;
 import org.assertj.core.groups.Tuple;
@@ -42,6 +43,8 @@ class MBTIStatisticsServiceTest {
     @Mock
     MBTIStatisticsRepository mbtiStatisticsRepository;
     @Mock
+    MBTIStatisticsCacheFallbackService mbtiStatisticsCacheFallbackService;
+    @Mock
     AuthenticatedUserService authenticatedUserService;
 
     @InjectMocks
@@ -60,7 +63,7 @@ class MBTIStatisticsServiceTest {
             );
             List<Boolean> visited = new ArrayList<>(returned.size());
 
-            when(mbtiStatisticsRepository.getAmountAveragesEachMBTIAndEmotionBetweenStartDateAndEndDate(any(), any(), any()))
+            when(mbtiStatisticsCacheFallbackService.getAmountAveragesEachMBTIAndEmotion(any()))
                     .thenReturn(returned);
             when(authenticatedUserService.getUserMBTI())
                     .thenReturn(Mbti.ISTJ);
@@ -105,7 +108,7 @@ class MBTIStatisticsServiceTest {
             );
             List<Boolean> visited = new ArrayList<>(returned.size());
 
-            when(mbtiStatisticsRepository.getAmountAveragesEachMBTIAndEmotionBetweenStartDateAndEndDate(any(), any(), any()))
+            when(mbtiStatisticsCacheFallbackService.getAmountAveragesEachMBTIAndEmotion(any()))
                     .thenReturn(returned);
 
             // when
@@ -169,7 +172,7 @@ class MBTIStatisticsServiceTest {
                     new MBTIDailyAmountSumDto(MBTIFactor.E, LocalDate.now().minusDays(2L), 3L),
                     new MBTIDailyAmountSumDto(MBTIFactor.E, LocalDate.now().minusDays(1L), 4L)
             );
-            when(mbtiStatisticsRepository.getAmountSumsEachMBTIAndDayBetweenStartDateAndEndDate(any(), any(), any()))
+            when(mbtiStatisticsCacheFallbackService.getAmountSumsEachMBTIAndDay(any()))
                     .thenReturn(returned);
             when(authenticatedUserService.getUserMBTI())
                     .thenReturn(Mbti.ISTJ);
@@ -212,7 +215,7 @@ class MBTIStatisticsServiceTest {
                     new MBTIDailyAmountSumDto(MBTIFactor.E, LocalDate.now().minusDays(2L), 3L),
                     new MBTIDailyAmountSumDto(MBTIFactor.E, LocalDate.now().minusDays(1L), 4L)
             );
-            when(mbtiStatisticsRepository.getAmountSumsEachMBTIAndDayBetweenStartDateAndEndDate(any(), any(), any()))
+            when(mbtiStatisticsCacheFallbackService.getAmountSumsEachMBTIAndDay(any()))
                     .thenReturn(returned);
             when(authenticatedUserService.getUserMBTI())
                     .thenReturn(Mbti.ISTJ);
@@ -396,9 +399,7 @@ class MBTIStatisticsServiceTest {
                             .satisfactionAverage(1.0f)
                             .build()
             );
-            when(mbtiStatisticsRepository
-                    .getSatisfactionAveragesEachMBTIBetweenStartDateAndEndDate(
-                            any(),any(),any()))
+            when(mbtiStatisticsCacheFallbackService.getSatisfactionAveragesEachMBTI(any()))
                     .thenReturn(returned);
             when(authenticatedUserService.getUserMBTI())
                     .thenReturn(Mbti.ISTJ);

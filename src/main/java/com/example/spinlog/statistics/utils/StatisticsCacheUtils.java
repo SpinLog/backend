@@ -1,14 +1,13 @@
 package com.example.spinlog.statistics.utils;
 
 import com.example.spinlog.article.entity.Emotion;
+import com.example.spinlog.statistics.dto.MBTIEmotionAmountSumAndCountDto;
+import com.example.spinlog.statistics.dto.MBTISatisfactionSumAndCountDto;
+import com.example.spinlog.statistics.dto.repository.*;
+import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.exception.InvalidCacheException;
-import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
-import com.example.spinlog.statistics.dto.repository.GenderDataDto;
-import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
-import com.example.spinlog.statistics.dto.repository.GenderSatisfactionAverageDto;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.user.entity.Gender;
-import com.mysql.cj.log.Log;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -68,24 +67,46 @@ public class StatisticsCacheUtils {
                         GenderDataDto::getValue));
     }
 
-    public static List<GenderEmotionAmountAverageDto> convertToGenderEmotionAmountAverageDto(SumAndCountStatisticsData<Long> sumAndCountStatisticsData) {
-        Map<String, Long> sumsMap = sumAndCountStatisticsData.sumData();
-        Map<String, Long> countsMap = sumAndCountStatisticsData.countData();
-        verifyCacheSumsAndCountsMap(sumsMap, countsMap);
+    public static SumAndCountStatisticsData<Long> toAmountSumAndCountStatisticsData(List<MBTIEmotionAmountSumAndCountDto> dtos) {
+        Map<String, Long> sumsMap = dtos.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getMbtiFactor() + "::" + dto.getEmotion(),
+                        MBTIEmotionAmountSumAndCountDto::getAmountSum));
+        Map<String, Long> countsMap = dtos.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getMbtiFactor() + "::" + dto.getEmotion(),
+                        MBTIEmotionAmountSumAndCountDto::getAmountCount));
+        return new SumAndCountStatisticsData<>(sumsMap, countsMap);
+    }
 
-        Map<String, Long> genderEmotionAmountAverage = new HashMap<>();
-        sumsMap.forEach((k, sum) -> {
-            if(sum == 0) {
-                genderEmotionAmountAverage.put(k, 0L);
-                return;
-            }
-            long count = countsMap.get(k);
-            if(count == 0) {
-                throw new InvalidCacheException("sum is not zero, but count is zero, countAndSums = " + sumAndCountStatisticsData);
-            }
-            long average =  sum / count;
-            genderEmotionAmountAverage.put(k, average);
-        });
+    public static SumAndCountStatisticsData<Double> toSatisfactionSumAndCountStatisticsData(List<MBTISatisfactionSumAndCountDto> dtos) {
+        Map<String, Double> sumsMap = dtos.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getMbtiFactor().toString(),
+                        MBTISatisfactionSumAndCountDto::getSatisfactionSum));
+        Map<String, Long> countsMap = dtos.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getMbtiFactor().toString(),
+                        MBTISatisfactionSumAndCountDto::getSatisfactionCount));
+        return new SumAndCountStatisticsData<>(sumsMap, countsMap);
+    }
+
+    public static Map<String, Long> toMBTIDateMap(List<MBTIDailyAmountSumDto> dtos) {
+        return dtos.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getMbtiFactor() + "::" + dto.getLocalDate(),
+                        MBTIDailyAmountSumDto::getAmountSum));
+    }
+
+    public static <T extends Number> Map<String, T> toMBTIMap(List<MBTIDataDto<T>> dtos) {
+        return dtos.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getMbtiFactor().toString(),
+                        MBTIDataDto::getValue));
+    }
+
+    public static List<GenderEmotionAmountAverageDto> convertToGenderEmotionAmountAverageDto(SumAndCountStatisticsData<Long> sumAndCountStatisticsData) {
+        Map<String, Long> genderEmotionAmountAverage = toLongAverageMap(sumAndCountStatisticsData);
 
         return genderEmotionAmountAverage.entrySet().stream()
                 .map(e -> {
@@ -101,7 +122,6 @@ public class StatisticsCacheUtils {
 
     public static List<GenderDailyAmountSumDto> convertToGenderDailyAmountSumDto(Map<String, Long> sumsMap) {
         verifyEntries(sumsMap);
-
         return sumsMap.entrySet().stream()
                 .map(e -> {
                     verifyKeyName(e.getKey());
@@ -115,6 +135,77 @@ public class StatisticsCacheUtils {
     }
 
     public static List<GenderSatisfactionAverageDto> convertToGenderSatisfactionAverageDto(SumAndCountStatisticsData<Double> sumAndCountStatisticsData) {
+        Map<String, Float> genderSatisfactionAverage = toDoubleAverageMap(sumAndCountStatisticsData);
+
+        return genderSatisfactionAverage.entrySet().stream()
+                .map(e -> GenderSatisfactionAverageDto.builder()
+                        .gender(castGender(e.getKey()))
+                        .satisfactionAverage(e.getValue())
+                        .build())
+                .toList();
+    }
+
+    public static List<MBTIEmotionAmountAverageDto> convertToMBTIEmotionAmountAverageDto(SumAndCountStatisticsData<Long> sumAndCountStatisticsData) {
+        Map<String, Long> mbtiEmotionAmountAverage = toLongAverageMap(sumAndCountStatisticsData);;
+
+        return mbtiEmotionAmountAverage.entrySet().stream()
+                .map(e -> {
+                    verifyKeyName(e.getKey());
+                    String[] key = e.getKey().split("::");
+                    return new MBTIEmotionAmountAverageDto(
+                            castMBTIFactor(key[0]),
+                            castEmotion(key[1]),
+                            e.getValue());
+                }).toList();
+    }
+
+    public static List<MBTIDailyAmountSumDto> convertToMBTIDailyAmountSumDto(Map<String, Long> sumsMap) {
+        verifyEntries(sumsMap);
+        return sumsMap.entrySet().stream()
+                .map(e -> {
+                    verifyKeyName(e.getKey());
+                    String[] key = e.getKey().split("::");
+                    LocalDate date = castLocalDate(key[1]);
+                    return new MBTIDailyAmountSumDto(
+                            castMBTIFactor(key[0]),
+                            date,
+                            e.getValue());
+                }).toList();
+    }
+
+    public static List<MBTISatisfactionAverageDto> convertToMBTISatisfactionAverageDto(SumAndCountStatisticsData<Double> sumAndCountStatisticsData) {
+        Map<String, Float> genderSatisfactionAverage = toDoubleAverageMap(sumAndCountStatisticsData);
+
+        return genderSatisfactionAverage.entrySet().stream()
+                .map(e -> MBTISatisfactionAverageDto.builder()
+                        .mbtiFactor(castMBTIFactor(e.getKey()))
+                        .satisfactionAverage(e.getValue())
+                        .build())
+                .toList();
+    }
+
+    private static Map<String, Long> toLongAverageMap(SumAndCountStatisticsData<Long> sumAndCountStatisticsData) {
+        Map<String, Long> sumsMap = sumAndCountStatisticsData.sumData();
+        Map<String, Long> countsMap = sumAndCountStatisticsData.countData();
+        verifyCacheSumsAndCountsMap(sumsMap, countsMap);
+
+        Map<String, Long> mbtiEmotionAmountAverage = new HashMap<>();
+        sumsMap.forEach((k, sum) -> {
+            if(sum == 0) {
+                mbtiEmotionAmountAverage.put(k, 0L);
+                return;
+            }
+            long count = countsMap.get(k);
+            if(count == 0) {
+                throw new InvalidCacheException("sum is not zero, but count is zero, countAndSums = " + sumAndCountStatisticsData);
+            }
+            long average =  sum / count;
+            mbtiEmotionAmountAverage.put(k, average);
+        });
+        return mbtiEmotionAmountAverage;
+    }
+
+    private static Map<String, Float> toDoubleAverageMap(SumAndCountStatisticsData<Double> sumAndCountStatisticsData) {
         Map<String, Double> sumsMap = sumAndCountStatisticsData.sumData();
         Map<String, Long> countsMap = sumAndCountStatisticsData.countData();
         verifyCacheSumsAndCountsMap(sumsMap, countsMap);
@@ -132,13 +223,7 @@ public class StatisticsCacheUtils {
             float average = (float)(sum / (double) count);
             genderSatisfactionAverage.put(k, average);
         });
-
-        return genderSatisfactionAverage.entrySet().stream()
-                .map(e -> GenderSatisfactionAverageDto.builder()
-                        .gender(castGender(e.getKey()))
-                        .satisfactionAverage(e.getValue())
-                        .build())
-                .toList();
+        return genderSatisfactionAverage;
     }
 
     private static <T extends Number> void verifyCacheSumsAndCountsMap(Map<String, T> sumsMap, Map<String, Long> countsMap) {
@@ -188,6 +273,14 @@ public class StatisticsCacheUtils {
             return valueOf(key);
         } catch (IllegalArgumentException e) {
             throw new InvalidCacheException("Invalid gender format, value = " + key, e);
+        }
+    }
+
+    public static MBTIFactor castMBTIFactor(String key) {
+        try {
+            return MBTIFactor.valueOf(key);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidCacheException("Invalid MBTI format, value = " + key, e);
         }
     }
 

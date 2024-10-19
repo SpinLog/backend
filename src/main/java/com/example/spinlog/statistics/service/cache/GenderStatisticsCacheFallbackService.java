@@ -39,9 +39,10 @@ public class GenderStatisticsCacheFallbackService {
             Period period = statisticsPeriodManager.getStatisticsPeriod();
             LocalDate endDate = period.endDate();
             LocalDate startDate = period.startDate();
-            SumAndCountStatisticsData genderEmotionAmountSumAndCountStatisticsData = genderStatisticsRepositoryFetchService
+            SumAndCountStatisticsData<Long> genderEmotionAmountSumAndCountStatisticsData = genderStatisticsRepositoryFetchService
                     .getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
 
+            // todo zero padding
             genderStatisticsCacheWriteService.putAmountCountsAndSumsByGenderAndEmotion(genderEmotionAmountSumAndCountStatisticsData, registerType);
 
             return convertToGenderEmotionAmountAverageDto(
@@ -78,7 +79,7 @@ public class GenderStatisticsCacheFallbackService {
             Period period = statisticsPeriodManager.getStatisticsPeriod();
             LocalDate endDate = period.endDate();
             LocalDate startDate = period.startDate();
-            SumAndCountStatisticsData genderSatisfactionSumAndCountStatisticsData = genderStatisticsRepositoryFetchService
+            SumAndCountStatisticsData<Double> genderSatisfactionSumAndCountStatisticsData = genderStatisticsRepositoryFetchService
                     .getGenderSatisfactionCountsAndSums(registerType, startDate, endDate);
 
             genderStatisticsCacheWriteService.putSatisfactionCountsAndSumsByGender(genderSatisfactionSumAndCountStatisticsData, registerType);

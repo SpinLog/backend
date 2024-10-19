@@ -1,10 +1,8 @@
 package com.example.spinlog.statistics.repository;
 
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.statistics.dto.repository.MemoDto;
-import com.example.spinlog.statistics.dto.repository.MBTIDailyAmountSumDto;
-import com.example.spinlog.statistics.dto.repository.MBTIEmotionAmountAverageDto;
-import com.example.spinlog.statistics.dto.repository.MBTISatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.*;
+import com.example.spinlog.statistics.dto.repository.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -37,4 +35,18 @@ public interface MBTIStatisticsRepository {
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
+
+    // ---
+
+    List<MBTIEmotionAmountSumAndCountDto> getAmountSumsAndCountsEachMBTIAndEmotionBetweenStartDateAndEndDate(RegisterType registerType, LocalDate startDate, LocalDate endDate);
+
+    List<MBTISatisfactionSumAndCountDto> getSatisfactionSumsAndCountsEachMBTIBetweenStartDateAndEndDate(RegisterType registerType, LocalDate startDate, LocalDate endDate);
+
+    // ---
+
+    List<EmotionAmountSumAndCountDto> getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(Long userId, RegisterType registerType, LocalDate startDate, LocalDate endDate);
+
+    List<DailyAmountSumDto> getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(Long userId, RegisterType registerType, LocalDate startDate, LocalDate endDate);
+
+    List<SatisfactionSumAndCountDto> getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(Long userId, RegisterType registerType, LocalDate startDate, LocalDate endDate);
 }

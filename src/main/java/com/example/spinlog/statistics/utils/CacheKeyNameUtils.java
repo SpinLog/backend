@@ -41,4 +41,24 @@ public class CacheKeyNameUtils {
                             .map(e -> g + "::" + e);
                 }).toList();
     }
+
+    public static String MBTI_EMOTION_AMOUNT_SUM_KEY_NAME(RegisterType registerType) {
+        return "MBTIEmotionStatisticsAmountSum::" + registerType;
+    }
+
+    public static String MBTI_EMOTION_AMOUNT_COUNT_KEY_NAME(RegisterType registerType) {
+        return "MBTIEmotionStatisticsAmountCount::" + registerType;
+    }
+
+    public static String MBTI_DAILY_AMOUNT_SUM_KEY_NAME(RegisterType registerType) {
+        return "MBTIDailyStatisticsAmountSum::" + registerType;
+    }
+
+    public static String MBTI_SATISFACTION_SUM_KEY_NAME(RegisterType registerType) {
+        return "MBTIStatisticsSatisfactionSum::" + registerType;
+    }
+
+    public static String MBTI_SATISFACTION_COUNT_KEY_NAME(RegisterType registerType) {
+        return "MBTIStatisticsSatisfactionCount::" + registerType;
+    }
 }

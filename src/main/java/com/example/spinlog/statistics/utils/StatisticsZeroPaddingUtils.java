@@ -1,7 +1,7 @@
 package com.example.spinlog.statistics.utils;
 
 import com.example.spinlog.article.entity.Emotion;
-import com.example.spinlog.statistics.dto.cache.AllGenderStatisticsCacheData;
+import com.example.spinlog.statistics.dto.cache.AllStatisticsCacheData;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
@@ -123,20 +123,20 @@ public class StatisticsZeroPaddingUtils {
                 Collections.unmodifiableMap(countsMap));
     }
 
-    public static AllGenderStatisticsCacheData zeroPaddingAllStatisticsMap(AllGenderStatisticsCacheData allData, Period period) {
-        return AllGenderStatisticsCacheData.builder()
-                .genderEmotionAmountSpendSumAndCountStatisticsData(
-                        zeroPaddingToGenderEmotionAmountCountsAndSums(allData.genderEmotionAmountSpendSumAndCountStatisticsData()))
-                .genderEmotionAmountSaveSumAndCountStatisticsData(
-                        zeroPaddingToGenderEmotionAmountCountsAndSums(allData.genderEmotionAmountSaveSumAndCountStatisticsData()))
-                .genderDailyAmountSpendSums(
-                        zeroPaddingToGenderDailyAmountSums(allData.genderDailyAmountSpendSums(), period))
-                .genderDailyAmountSaveSums(
-                        zeroPaddingToGenderDailyAmountSums(allData.genderDailyAmountSaveSums(), period))
-                .genderSatisfactionSpendSumAndCountStatisticsData(
-                        zeroPaddingToGenderSatisfactionAmountCountsAndSums(allData.genderSatisfactionSpendSumAndCountStatisticsData()))
-                .genderSatisfactionSaveSumAndCountStatisticsData(
-                        zeroPaddingToGenderSatisfactionAmountCountsAndSums(allData.genderSatisfactionSaveSumAndCountStatisticsData()))
+    public static AllStatisticsCacheData zeroPaddingAllStatisticsMap(AllStatisticsCacheData allData, Period period) {
+        return AllStatisticsCacheData.builder()
+                .emotionAmountSpendSumAndCountStatisticsData(
+                        zeroPaddingToGenderEmotionAmountCountsAndSums(allData.emotionAmountSpendSumAndCountStatisticsData()))
+                .emotionAmountSaveSumAndCountStatisticsData(
+                        zeroPaddingToGenderEmotionAmountCountsAndSums(allData.emotionAmountSaveSumAndCountStatisticsData()))
+                .dailyAmountSpendSums(
+                        zeroPaddingToGenderDailyAmountSums(allData.dailyAmountSpendSums(), period))
+                .dailyAmountSaveSums(
+                        zeroPaddingToGenderDailyAmountSums(allData.dailyAmountSaveSums(), period))
+                .satisfactionSpendSumAndCountStatisticsData(
+                        zeroPaddingToGenderSatisfactionAmountCountsAndSums(allData.satisfactionSpendSumAndCountStatisticsData()))
+                .satisfactionSaveSumAndCountStatisticsData(
+                        zeroPaddingToGenderSatisfactionAmountCountsAndSums(allData.satisfactionSaveSumAndCountStatisticsData()))
                 .build();
     }
 
