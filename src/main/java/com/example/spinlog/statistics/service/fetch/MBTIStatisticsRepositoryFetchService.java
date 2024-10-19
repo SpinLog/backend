@@ -100,6 +100,5 @@ public class MBTIStatisticsRepositoryFetchService {
                 .satisfactionSpendSumsAndCounts(satisfactionSpendSumsAndCounts)
                 .satisfactionSaveSumsAndCounts(satisfactionSaveSumsAndCounts)
                 .build();
-
     }
 }

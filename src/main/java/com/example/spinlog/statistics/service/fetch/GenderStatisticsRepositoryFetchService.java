@@ -47,7 +47,6 @@ public class GenderStatisticsRepositoryFetchService {
                 .build();
     }
 
-    // todo convert 하지 않고 그대로 반환 (재사용)
     public SumAndCountStatisticsData<Long> getGenderEmotionAmountCountsAndSums(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
         List<GenderEmotionAmountAverageDto> amountSums = genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
                 registerType,
