@@ -24,11 +24,11 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class GenderStatisticsCacheSynchronizerTest {
+class StatisticsCacheSynchronizerAfterArticleWriteTest {
     CacheHashRepository cacheHashRepository = spy(MockCacheHashRepository.class);
     StatisticsPeriodManager statisticsPeriodManager = new StatisticsPeriodManager(Clock.systemDefaultZone());
-    GenderStatisticsCacheSynchronizer targetService =
-            new GenderStatisticsCacheSynchronizer(
+    StatisticsCacheSynchronizerAfterArticleWrite targetService =
+            new StatisticsCacheSynchronizerAfterArticleWrite(
                     cacheHashRepository,
                     statisticsPeriodManager);
 
@@ -82,7 +82,7 @@ class GenderStatisticsCacheSynchronizerTest {
                     1L);
 
             // when
-            targetService.updateStatisticsCacheFromNewData(new ArticleCreatedEvent(article, user));
+            targetService.updateStatisticsCacheFromCreatedData(new ArticleCreatedEvent(article, user));
 
             // then
             Object sum = cacheHashRepository.getDataFromHash(
@@ -104,7 +104,7 @@ class GenderStatisticsCacheSynchronizerTest {
                     1000L);
 
             // when
-            targetService.updateStatisticsCacheFromNewData(new ArticleCreatedEvent(article, user));
+            targetService.updateStatisticsCacheFromCreatedData(new ArticleCreatedEvent(article, user));
 
             // then
             Object sum = cacheHashRepository.getDataFromHash(
@@ -126,7 +126,7 @@ class GenderStatisticsCacheSynchronizerTest {
                     1L);
 
             // when
-            targetService.updateStatisticsCacheFromNewData(new ArticleCreatedEvent(article, user));
+            targetService.updateStatisticsCacheFromCreatedData(new ArticleCreatedEvent(article, user));
 
             // then
             Object sum = cacheHashRepository.getDataFromHash(
