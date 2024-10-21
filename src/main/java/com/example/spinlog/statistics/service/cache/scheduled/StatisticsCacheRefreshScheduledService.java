@@ -2,9 +2,12 @@ package com.example.spinlog.statistics.service.cache.scheduled;
 
 import com.example.spinlog.global.cache.CacheHashRepository;
 import com.example.spinlog.statistics.dto.cache.AllStatisticsCacheData;
+import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheWriteService;
+import com.example.spinlog.statistics.service.cache.MBTIStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
+import com.example.spinlog.statistics.service.fetch.MBTIStatisticsRepositoryFetchService;
 import com.example.spinlog.user.entity.Gender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,15 +20,20 @@ import java.util.Arrays;
 import static com.example.spinlog.article.entity.RegisterType.SAVE;
 import static com.example.spinlog.article.entity.RegisterType.SPEND;
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
-import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.GENDER_DAILY_AMOUNT_SUM_KEY_NAME;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class GenderStatisticsCacheRefreshScheduledService {
+public class StatisticsCacheRefreshScheduledService {
     private final CacheHashRepository cacheHashRepository;
+
     private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
     private final GenderStatisticsCacheWriteService genderStatisticsCacheWriteService;
+
+    private final MBTIStatisticsRepositoryFetchService mbtiStatisticsRepositoryFetchService;
+    private final MBTIStatisticsCacheWriteService mbtiStatisticsCacheWriteService;
+
     private final StatisticsPeriodManager statisticsPeriodManager;
 
     // todo prometheus & grafana로 성공 여부 확인
@@ -40,22 +48,30 @@ public class GenderStatisticsCacheRefreshScheduledService {
         LocalDate todayEndDate = todayStartDate.plusDays(1);
         log.info("newData's startDate: {}, endDate: {}", todayStartDate, todayEndDate);
 
-        AllStatisticsCacheData newStatisticsData = genderStatisticsRepositoryFetchService
+        AllStatisticsCacheData newGenderStatisticsData = genderStatisticsRepositoryFetchService
                 .getGenderStatisticsAllData(todayStartDate, todayEndDate);
-        log.info("\nnewStatisticsData: {}\n", newStatisticsData);
+        AllStatisticsCacheData newMBTIStatisticsData = mbtiStatisticsRepositoryFetchService
+                .getMBTIStatisticsAllData(todayStartDate, todayEndDate);
+        log.info("\nnewGenderStatisticsData: {}\n", newGenderStatisticsData);
+        log.info("\nnewMBTIStatisticsData: {}\n", newMBTIStatisticsData);
 
         LocalDate oldStartDate = period.startDate();
         LocalDate oldEndDate = oldStartDate.plusDays(1);
         log.info("expiringData's startDate: {}, endDate: {}", oldStartDate, oldEndDate);
 
-        AllStatisticsCacheData expiringStatisticsData = genderStatisticsRepositoryFetchService
+        AllStatisticsCacheData expiringGenderStatisticsData = genderStatisticsRepositoryFetchService
                 .getGenderStatisticsAllData(oldStartDate, oldEndDate);
-        log.info("\nexpiringStatisticsData: {}\n", expiringStatisticsData);
+        AllStatisticsCacheData expiringMBTIStatisticsData = mbtiStatisticsRepositoryFetchService
+                .getMBTIStatisticsAllData(oldStartDate, oldEndDate);
+        log.info("\nexpiringGenderStatisticsData: {}\n", expiringGenderStatisticsData);
+        log.info("\nexpiringMBTIStatisticsData: {}\n", expiringMBTIStatisticsData);
 
         try {
             // todo lock
-            decrementOldCacheData(expiringStatisticsData);
-            incrementNewCacheData(newStatisticsData);
+            decrementOldGenderCacheData(expiringGenderStatisticsData);
+            decrementOldMBTICacheData(expiringMBTIStatisticsData);
+            incrementNewGenderCacheData(newGenderStatisticsData);
+            incrementNewMBTICacheData(newMBTIStatisticsData);
             deleteExpiringDateCache(oldStartDate);
             zeroPaddingNewDateCache(todayStartDate);
             // todo unlock
@@ -67,13 +83,23 @@ public class GenderStatisticsCacheRefreshScheduledService {
         }
     }
 
-    private void incrementNewCacheData(AllStatisticsCacheData newStatisticsData) {
-        log.info("try to increase all data");
+    private void incrementNewMBTICacheData(AllStatisticsCacheData cacheData) {
+        log.info("try to increase all mbti data");
+        mbtiStatisticsCacheWriteService.incrementAllData(cacheData);
+    }
+
+    private void decrementOldMBTICacheData(AllStatisticsCacheData cacheData) {
+        log.info("try to decrease all mbti data");
+        mbtiStatisticsCacheWriteService.decrementAllData(cacheData);
+    }
+
+    private void incrementNewGenderCacheData(AllStatisticsCacheData newStatisticsData) {
+        log.info("try to increase all gender data");
         genderStatisticsCacheWriteService.incrementAllData(newStatisticsData);
     }
 
-    private void decrementOldCacheData(AllStatisticsCacheData expiringStatisticsData) {
-        log.info("try to decrease all data");
+    private void decrementOldGenderCacheData(AllStatisticsCacheData expiringStatisticsData) {
+        log.info("try to decrease all gender data");
         genderStatisticsCacheWriteService.decrementAllData(expiringStatisticsData);
     }
 
@@ -89,6 +115,17 @@ public class GenderStatisticsCacheRefreshScheduledService {
                         cacheHashRepository.putDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k, 0L);
                     }
                 });
+
+        Arrays.stream(MBTIFactor.values())
+                .map(f -> f + "::" + todayStartDate)
+                .forEach(k -> {
+                    if(cacheHashRepository.getDataFromHash(MBTI_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k) == null) {
+                        cacheHashRepository.putDataInHash(MBTI_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k, 0L);
+                    }
+                    if(cacheHashRepository.getDataFromHash(MBTI_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k) == null) {
+                        cacheHashRepository.putDataInHash(MBTI_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k, 0L);
+                    }
+                });
     }
 
     private void deleteExpiringDateCache(LocalDate oldStartDate) {
@@ -98,6 +135,12 @@ public class GenderStatisticsCacheRefreshScheduledService {
                 .forEach(k -> {
                     cacheHashRepository.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k);
                     cacheHashRepository.deleteHashKey(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k);
+                });
+        Arrays.stream(MBTIFactor.values())
+                .map(f -> f + "::" + oldStartDate)
+                .forEach(k -> {
+                    cacheHashRepository.deleteHashKey(MBTI_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), k);
+                    cacheHashRepository.deleteHashKey(MBTI_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), k);
                 });
     }
 }

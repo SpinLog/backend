@@ -3,9 +3,12 @@ package com.example.spinlog.statistics.service.cache.scheduled;
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheWriteService;
+import com.example.spinlog.statistics.service.cache.MBTIStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
+import com.example.spinlog.statistics.service.fetch.MBTIStatisticsRepositoryFetchService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.util.CacheConfiguration;
 import com.example.spinlog.util.MockCacheHashRepository;
@@ -28,21 +31,29 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("test")
 @Import({CacheConfiguration.class})
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class GenderStatisticsCacheRefreshScheduledServiceTest {
+class StatisticsCacheRefreshScheduledServiceTest {
     GenderStatisticsRepository genderStatisticsRepository = mock(GenderStatisticsRepository.class);
     MockCacheHashRepository cacheService = new MockCacheHashRepository();
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService =
             new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
     GenderStatisticsCacheWriteService genderStatisticsCacheWriteService =
             new GenderStatisticsCacheWriteService(cacheService);
+
+    MBTIStatisticsRepository mbtiStatisticsRepository = mock(MBTIStatisticsRepository.class);
+    MBTIStatisticsRepositoryFetchService mbtiStatisticsRepositoryFetchService =
+            new MBTIStatisticsRepositoryFetchService(mbtiStatisticsRepository);
+    MBTIStatisticsCacheWriteService mbtiStatisticsCacheWriteService =
+             new MBTIStatisticsCacheWriteService(cacheService);
     Clock clock = Clock.systemDefaultZone();
     StatisticsPeriodManager statisticsPeriodManager = spy(new StatisticsPeriodManager(clock));
 
-    GenderStatisticsCacheRefreshScheduledService targetService =
-            new GenderStatisticsCacheRefreshScheduledService(
+    StatisticsCacheRefreshScheduledService targetService =
+            new StatisticsCacheRefreshScheduledService(
                     cacheService,
                     genderStatisticsRepositoryFetchService,
                     genderStatisticsCacheWriteService,
+                    mbtiStatisticsRepositoryFetchService,
+                    mbtiStatisticsCacheWriteService,
                     statisticsPeriodManager);
 
     @AfterEach

@@ -88,4 +88,21 @@ public class MBTIStatisticsCacheWriteService {
         cacheHashRepository.incrementAllDataInHash(
                 MBTI_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.satisfactionSaveSumAndCountStatisticsData().sumData());
     }
+
+    public void replaceAmountCountsAndSumsByMBTIAndEmotion(SumAndCountStatisticsData<Long> repositoryData, RegisterType registerType) {
+        cacheHashRepository.deleteData(MBTI_EMOTION_AMOUNT_COUNT_KEY_NAME(registerType));
+        cacheHashRepository.deleteData(MBTI_EMOTION_AMOUNT_SUM_KEY_NAME(registerType));
+        putAmountCountsAndSumsByMBTIAndEmotion(repositoryData, registerType);
+    }
+
+    public void replaceAmountSumsByMBTIAndDate(Map<String, Long> repositoryData, RegisterType registerType) {
+        cacheHashRepository.deleteData(MBTI_DAILY_AMOUNT_SUM_KEY_NAME(registerType));
+        putAmountSumsByMBTIAndDate(repositoryData, registerType);
+    }
+
+    public void replaceSatisfactionCountsAndSumsByMBTI(SumAndCountStatisticsData<Double> repositoryData, RegisterType registerType) {
+        cacheHashRepository.deleteData(MBTI_SATISFACTION_COUNT_KEY_NAME(registerType));
+        cacheHashRepository.deleteData(MBTI_SATISFACTION_SUM_KEY_NAME(registerType));
+        putSatisfactionCountsAndSumsByMBTI(repositoryData, registerType);
+    }
 }

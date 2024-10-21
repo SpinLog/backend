@@ -2,10 +2,14 @@ package com.example.spinlog.statistics.service.cache.scheduled;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
+import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheWriteService;
+import com.example.spinlog.statistics.service.cache.MBTIStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
+import com.example.spinlog.statistics.service.fetch.MBTIStatisticsCacheFetchService;
+import com.example.spinlog.statistics.service.fetch.MBTIStatisticsRepositoryFetchService;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
@@ -21,17 +25,25 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class GenderStatisticsCacheVerifyScheduledServiceTest {
+class StatisticsCacheVerifyScheduledServiceTest {
     GenderStatisticsCacheFetchService genderStatisticsCacheFetchService = mock(GenderStatisticsCacheFetchService.class);
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService = mock(GenderStatisticsRepositoryFetchService.class);
     GenderStatisticsCacheWriteService genderStatisticsCacheWriteService = mock(GenderStatisticsCacheWriteService.class);
 
+
+    MBTIStatisticsCacheFetchService mbtiStatisticsCacheFetchService = mock(MBTIStatisticsCacheFetchService.class);
+    MBTIStatisticsRepositoryFetchService mbtiStatisticsRepositoryFetchService = mock(MBTIStatisticsRepositoryFetchService.class);
+    MBTIStatisticsCacheWriteService mbtiStatisticsCacheWriteService = mock(MBTIStatisticsCacheWriteService.class);
+
     StatisticsPeriodManager statisticsPeriodManager = new StatisticsPeriodManager(Clock.systemDefaultZone());
 
-    GenderStatisticsCacheVerifyScheduledService targetService = new GenderStatisticsCacheVerifyScheduledService(
+    StatisticsCacheVerifyScheduledService targetService = new StatisticsCacheVerifyScheduledService(
             genderStatisticsCacheFetchService,
             genderStatisticsRepositoryFetchService,
             genderStatisticsCacheWriteService,
+            mbtiStatisticsCacheFetchService,
+            mbtiStatisticsRepositoryFetchService,
+            mbtiStatisticsCacheWriteService,
             statisticsPeriodManager);
 
     @Nested
