@@ -5,6 +5,7 @@ import com.example.spinlog.statistics.dto.cache.AllStatisticsCacheData;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.user.entity.Gender;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -64,8 +65,7 @@ public class StatisticsZeroPaddingUtils {
                 .toList();
     }
 
-    public static SumAndCountStatisticsData<Long> zeroPaddingToGenderEmotionAmountCountsAndSums(SumAndCountStatisticsData<Long> sumAndCountStatisticsData) {
-        List<String> keys = getGenderEmotionKeys();
+    public static SumAndCountStatisticsData<Long> zeroPaddingToEmotionAmountCountsAndSums(SumAndCountStatisticsData<Long> sumAndCountStatisticsData, List<String> keys) {
         verifyKeys(sumAndCountStatisticsData, keys);
 
         Map<String, Long> sumsMap = new HashMap<>();
@@ -87,8 +87,7 @@ public class StatisticsZeroPaddingUtils {
                 Collections.unmodifiableMap(countsMap));
     }
 
-    public static Map<String, Long> zeroPaddingToGenderDailyAmountSums(Map<String, Long> sums, Period period) {
-        List<String> keys = getGenderDailyKeys(period);
+    public static Map<String, Long> zeroPaddingToGenderDailyAmountSums(Map<String, Long> sums, List<String> keys) {
 
         verifyKeys(sums, keys);
         Map<String, Long> sumsMap = new HashMap<>();
@@ -100,8 +99,7 @@ public class StatisticsZeroPaddingUtils {
         return Collections.unmodifiableMap(sumsMap);
     }
 
-    public static SumAndCountStatisticsData<Double> zeroPaddingToGenderSatisfactionAmountCountsAndSums(SumAndCountStatisticsData<Double> sumAndCountStatisticsData) {
-        List<String> keys = getGenderKeys();
+    public static SumAndCountStatisticsData<Double> zeroPaddingToGenderSatisfactionAmountCountsAndSums(SumAndCountStatisticsData<Double> sumAndCountStatisticsData, List<String> keys) {
         verifyKeys(sumAndCountStatisticsData, keys);
 
         Map<String, Double> sumsMap = new HashMap<>();
@@ -123,24 +121,24 @@ public class StatisticsZeroPaddingUtils {
                 Collections.unmodifiableMap(countsMap));
     }
 
-    public static AllStatisticsCacheData zeroPaddingAllStatisticsMap(AllStatisticsCacheData allData, Period period) {
+    public static AllStatisticsCacheData zeroPaddingAllGenderStatisticsMap(AllStatisticsCacheData allData, Period period) {
         return AllStatisticsCacheData.builder()
                 .emotionAmountSpendSumAndCountStatisticsData(
-                        zeroPaddingToGenderEmotionAmountCountsAndSums(allData.emotionAmountSpendSumAndCountStatisticsData()))
+                        zeroPaddingToEmotionAmountCountsAndSums(allData.emotionAmountSpendSumAndCountStatisticsData(), getGenderEmotionKeys()))
                 .emotionAmountSaveSumAndCountStatisticsData(
-                        zeroPaddingToGenderEmotionAmountCountsAndSums(allData.emotionAmountSaveSumAndCountStatisticsData()))
+                        zeroPaddingToEmotionAmountCountsAndSums(allData.emotionAmountSaveSumAndCountStatisticsData(), getGenderEmotionKeys()))
                 .dailyAmountSpendSums(
-                        zeroPaddingToGenderDailyAmountSums(allData.dailyAmountSpendSums(), period))
+                        zeroPaddingToGenderDailyAmountSums(allData.dailyAmountSpendSums(), getGenderDailyKeys(period)))
                 .dailyAmountSaveSums(
-                        zeroPaddingToGenderDailyAmountSums(allData.dailyAmountSaveSums(), period))
+                        zeroPaddingToGenderDailyAmountSums(allData.dailyAmountSaveSums(), getGenderDailyKeys(period)))
                 .satisfactionSpendSumAndCountStatisticsData(
-                        zeroPaddingToGenderSatisfactionAmountCountsAndSums(allData.satisfactionSpendSumAndCountStatisticsData()))
+                        zeroPaddingToGenderSatisfactionAmountCountsAndSums(allData.satisfactionSpendSumAndCountStatisticsData(), getGenderKeys()))
                 .satisfactionSaveSumAndCountStatisticsData(
-                        zeroPaddingToGenderSatisfactionAmountCountsAndSums(allData.satisfactionSaveSumAndCountStatisticsData()))
+                        zeroPaddingToGenderSatisfactionAmountCountsAndSums(allData.satisfactionSaveSumAndCountStatisticsData(), getGenderKeys()))
                 .build();
     }
 
-    private static List<String> getGenderEmotionKeys() {
+    public static List<String> getGenderEmotionKeys() {
         return Arrays.stream(Gender.values())
                 .filter(g -> !g.equals(Gender.NONE))
                 .flatMap(g ->
@@ -149,7 +147,7 @@ public class StatisticsZeroPaddingUtils {
                 .toList();
     }
 
-    private static List<String> getGenderDailyKeys(Period period) {
+    public static List<String> getGenderDailyKeys(Period period) {
         LocalDate startDate = period.startDate();
         LocalDate endDate = period.endDate();
         List<String> keys = new ArrayList<>();
@@ -163,10 +161,37 @@ public class StatisticsZeroPaddingUtils {
         return keys;
     }
 
-    private static List<String> getGenderKeys() {
+    public static List<String> getGenderKeys() {
         return Arrays.stream(Gender.values())
                 .filter(g -> !g.equals(Gender.NONE))
                 .map(Gender::name)
+                .toList();
+    }
+
+    public static List<String> getMBTIEmotionKeys() {
+        return Arrays.stream(MBTIFactor.values())
+                .flatMap(f ->
+                        Arrays.stream(Emotion.values())
+                                .map(e -> f + "::" + e))
+                .toList();
+    }
+
+    public static List<String> getMBTIDailyKeys(Period period) {
+        LocalDate startDate = period.startDate();
+        LocalDate endDate = period.endDate();
+        List<String> keys = new ArrayList<>();
+        List<MBTIFactor> factors = Arrays.stream(MBTIFactor.values())
+                .toList();
+        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
+            String dateString = date.toString();
+            factors.forEach(f -> keys.add(f + "::" + dateString));
+        }
+        return keys;
+    }
+
+    public static List<String> getMBTIKeys() {
+        return Arrays.stream(MBTIFactor.values())
+                .map(MBTIFactor::name)
                 .toList();
     }
 
@@ -193,5 +218,22 @@ public class StatisticsZeroPaddingUtils {
                 }
             }
         }
+    }
+
+    public static AllStatisticsCacheData zeroPaddingAllMBTIStatisticsMap(AllStatisticsCacheData allData, Period period) {
+        return AllStatisticsCacheData.builder()
+                .emotionAmountSpendSumAndCountStatisticsData(
+                        zeroPaddingToEmotionAmountCountsAndSums(allData.emotionAmountSpendSumAndCountStatisticsData(), getMBTIEmotionKeys()))
+                .emotionAmountSaveSumAndCountStatisticsData(
+                        zeroPaddingToEmotionAmountCountsAndSums(allData.emotionAmountSaveSumAndCountStatisticsData(), getMBTIEmotionKeys()))
+                .dailyAmountSpendSums(
+                        zeroPaddingToGenderDailyAmountSums(allData.dailyAmountSpendSums(), getMBTIDailyKeys(period)))
+                .dailyAmountSaveSums(
+                        zeroPaddingToGenderDailyAmountSums(allData.dailyAmountSaveSums(), getMBTIDailyKeys(period)))
+                .satisfactionSpendSumAndCountStatisticsData(
+                        zeroPaddingToGenderSatisfactionAmountCountsAndSums(allData.satisfactionSpendSumAndCountStatisticsData(), getMBTIKeys()))
+                .satisfactionSaveSumAndCountStatisticsData(
+                        zeroPaddingToGenderSatisfactionAmountCountsAndSums(allData.satisfactionSaveSumAndCountStatisticsData(), getMBTIKeys()))
+                .build();
     }
 }

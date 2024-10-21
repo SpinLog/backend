@@ -38,15 +38,33 @@ public interface MBTIStatisticsRepository {
 
     // ---
 
-    List<MBTIEmotionAmountSumAndCountDto> getAmountSumsAndCountsEachMBTIAndEmotionBetweenStartDateAndEndDate(RegisterType registerType, LocalDate startDate, LocalDate endDate);
+    List<MBTIEmotionAmountSumAndCountDto> getAmountSumsAndCountsEachMBTIAndEmotionBetweenStartDateAndEndDate(
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
 
-    List<MBTISatisfactionSumAndCountDto> getSatisfactionSumsAndCountsEachMBTIBetweenStartDateAndEndDate(RegisterType registerType, LocalDate startDate, LocalDate endDate);
+    List<MBTISatisfactionSumAndCountDto> getSatisfactionSumsAndCountsEachMBTIBetweenStartDateAndEndDate(
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
 
     // ---
 
-    List<EmotionAmountSumAndCountDto> getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(Long userId, RegisterType registerType, LocalDate startDate, LocalDate endDate);
+    List<EmotionAmountSumAndCountDto> getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
 
-    List<DailyAmountSumDto> getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(Long userId, RegisterType registerType, LocalDate startDate, LocalDate endDate);
+    List<DailyAmountSumDto> getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
 
-    List<SatisfactionSumAndCountDto> getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(Long userId, RegisterType registerType, LocalDate startDate, LocalDate endDate);
+    List<SatisfactionSumAndCountDto> getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
 }

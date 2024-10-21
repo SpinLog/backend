@@ -64,7 +64,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             SumAndCountStatisticsData<Long> cacheData = new SumAndCountStatisticsData<>(
                     Map.of("MALE::SAD", 1L, "MALE::PROUD", 2L),
                     Map.of("MALE::SAD", 1L, "MALE::PROUD", 2L));
-            cacheData = zeroPaddingToGenderEmotionAmountCountsAndSums(cacheData);
+            cacheData = zeroPaddingToEmotionAmountCountsAndSums(cacheData, getGenderEmotionKeys());
             when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
                     .thenReturn(cacheData);
             when(genderStatisticsRepositoryFetchService.getGenderEmotionAmountCountsAndSums(any(), any(), any()))
@@ -87,7 +87,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             SumAndCountStatisticsData<Long> cacheData = new SumAndCountStatisticsData<>(
                     Map.of("MALE::SAD", 1L, "MALE::PROUD", 2L),
                     Map.of("MALE::SAD", 1L, "MALE::PROUD", 2L));
-            cacheData = zeroPaddingToGenderEmotionAmountCountsAndSums(cacheData);
+            cacheData = zeroPaddingToEmotionAmountCountsAndSums(cacheData, getGenderEmotionKeys());
             when(genderStatisticsCacheFetchService.getAmountAveragesEachGenderAndEmotion(any()))
                     .thenReturn(cacheData);
             SumAndCountStatisticsData<Long> repositoryData = new SumAndCountStatisticsData<>(
@@ -134,7 +134,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
             Period period = statisticsPeriodManager.getStatisticsPeriod();
 
             Map<String, Long> cacheData = Map.of("MALE::2024-10-05", 1L, "MALE::2024-10-04", 2L);
-            cacheData = zeroPaddingToGenderDailyAmountSums(cacheData, period);
+            cacheData = zeroPaddingToGenderDailyAmountSums(cacheData, getGenderDailyKeys(period));
             when(genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(any()))
                     .thenReturn(cacheData);
             when(genderStatisticsRepositoryFetchService.getGenderDateAmountSums(any(), any(), any()))
@@ -154,7 +154,7 @@ class GenderStatisticsCacheVerifyScheduledServiceTest {
 
             Period period = statisticsPeriodManager.getStatisticsPeriod();
             Map<String, Long> cacheData = Map.of("MALE::2024-10-05", 1L, "MALE::2024-10-04", 2L);
-            cacheData = zeroPaddingToGenderDailyAmountSums(cacheData, period);
+            cacheData = zeroPaddingToGenderDailyAmountSums(cacheData, getGenderDailyKeys(period));
             when(genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(any()))
                     .thenReturn(cacheData);
             Map<String, Long> repositoryData = Map.of("MALE::2024-10-05", 1L, "MALE::2024-10-04", 200L);

@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
+import static com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils.*;
 import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
@@ -31,8 +32,7 @@ class StatisticsZeroPaddingUtilsTest {
             SumAndCountStatisticsData<Long> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(sumsMap, countsMap);
 
             // when
-            sumAndCountStatisticsData = StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderEmotionAmountCountsAndSums(sumAndCountStatisticsData);
+            sumAndCountStatisticsData = zeroPaddingToEmotionAmountCountsAndSums(sumAndCountStatisticsData, getGenderEmotionKeys());
 
             // then
             List<String> genderEmotionKeys = getGenderEmotionKeys();
@@ -60,18 +60,8 @@ class StatisticsZeroPaddingUtilsTest {
             SumAndCountStatisticsData<Long> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(sumsMap, countsMap);
 
             // when // then
-            assertThatThrownBy(() -> StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderEmotionAmountCountsAndSums(sumAndCountStatisticsData))
+            assertThatThrownBy(() -> zeroPaddingToEmotionAmountCountsAndSums(sumAndCountStatisticsData, getGenderEmotionKeys()))
                     .isInstanceOf(IllegalArgumentException.class);
-        }
-
-        private List<String> getGenderEmotionKeys() {
-            return Arrays.stream(Gender.values())
-                    .filter(g -> !g.equals(Gender.NONE))
-                    .flatMap(g ->
-                            Arrays.stream(Emotion.values())
-                                    .map(e -> g + "::" + e))
-                    .toList();
         }
     }
 
@@ -87,8 +77,7 @@ class StatisticsZeroPaddingUtilsTest {
                     LocalDate.of(2021, 1, 3));
 
             // when
-            sums = StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderDailyAmountSums(sums, period);
+            sums = zeroPaddingToGenderDailyAmountSums(sums, getGenderDailyKeys(period));
 
             // then
             List<String> genderDailyAmountKeys = getGenderDailyKeys(period);
@@ -112,23 +101,8 @@ class StatisticsZeroPaddingUtilsTest {
                     LocalDate.of(2021, 1, 3));
 
             // when // then
-            assertThatThrownBy(() -> StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderDailyAmountSums(sums, period))
+            assertThatThrownBy(() -> zeroPaddingToGenderDailyAmountSums(sums, getGenderDailyKeys(period)))
                     .isInstanceOf(IllegalArgumentException.class);
-        }
-
-        private List<String> getGenderDailyKeys(Period period) {
-            LocalDate startDate = period.startDate();
-            LocalDate endDate = period.endDate();
-            List<Gender> genders = Arrays.stream(Gender.values())
-                    .filter(g -> !g.equals(Gender.NONE))
-                    .toList();
-            List<String> list = new ArrayList<>();
-            for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
-                list.add("MALE::" + date);
-                list.add("FEMALE::" + date);
-            }
-            return list;
         }
 
     }
@@ -145,8 +119,7 @@ class StatisticsZeroPaddingUtilsTest {
             SumAndCountStatisticsData<Double> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(sumsMap, countsMap);
 
             // when
-            sumAndCountStatisticsData = StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderSatisfactionAmountCountsAndSums(sumAndCountStatisticsData);
+            sumAndCountStatisticsData = zeroPaddingToGenderSatisfactionAmountCountsAndSums(sumAndCountStatisticsData, getGenderKeys());
 
             // then
             List<String> keys = getGenderKeys();
@@ -174,17 +147,8 @@ class StatisticsZeroPaddingUtilsTest {
             SumAndCountStatisticsData<Double> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(sumsMap, countsMap);
 
             // when // then
-            assertThatThrownBy(() -> StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderSatisfactionAmountCountsAndSums(sumAndCountStatisticsData))
+            assertThatThrownBy(() -> zeroPaddingToGenderSatisfactionAmountCountsAndSums(sumAndCountStatisticsData, getGenderKeys()))
                     .isInstanceOf(IllegalArgumentException.class);
-        }
-
-        private List<String> getGenderKeys() {
-            List<String> keys = Arrays.stream(Gender.values())
-                    .filter(g -> !g.equals(Gender.NONE))
-                    .map(Gender::name)
-                    .toList();
-            return keys;
         }
     }
 }
