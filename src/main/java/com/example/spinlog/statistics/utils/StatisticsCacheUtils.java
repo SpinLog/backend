@@ -1,8 +1,7 @@
 package com.example.spinlog.statistics.utils;
 
 import com.example.spinlog.article.entity.Emotion;
-import com.example.spinlog.statistics.dto.MBTIEmotionAmountSumAndCountDto;
-import com.example.spinlog.statistics.dto.MBTISatisfactionSumAndCountDto;
+import com.example.spinlog.statistics.dto.*;
 import com.example.spinlog.statistics.dto.repository.*;
 import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.exception.InvalidCacheException;
@@ -67,6 +66,19 @@ public class StatisticsCacheUtils {
                         GenderDataDto::getValue));
     }
 
+    public static List<MBTIEmotionAmountSumAndCountDto> toMBTIEmotionAmountDtoList(List<EmotionAmountSumAndCountDto> dtos, MBTIFactor mbtiFactor) {
+        if(dtos == null) {
+            return null;
+        }
+        return dtos.stream()
+                .map(dto -> new MBTIEmotionAmountSumAndCountDto(
+                        mbtiFactor,
+                        dto.getEmotion(),
+                        dto.getAmountSum(),
+                        dto.getAmountCount()))
+                .toList();
+    }
+
     public static SumAndCountStatisticsData<Long> toAmountSumAndCountStatisticsData(List<MBTIEmotionAmountSumAndCountDto> dtos) {
         Map<String, Long> sumsMap = dtos.stream()
                 .collect(Collectors.toMap(
@@ -79,6 +91,15 @@ public class StatisticsCacheUtils {
         return new SumAndCountStatisticsData<>(sumsMap, countsMap);
     }
 
+    public static List<MBTISatisfactionSumAndCountDto> toMBTISatisfactionDtoList(List<SatisfactionSumAndCountDto> dtos, MBTIFactor mbtiFactor) {
+        return dtos.stream()
+                .map(dto -> new MBTISatisfactionSumAndCountDto(
+                        mbtiFactor,
+                        dto.getSatisfactionSum(),
+                        dto.getSatisfactionCount()))
+                .toList();
+    }
+
     public static SumAndCountStatisticsData<Double> toSatisfactionSumAndCountStatisticsData(List<MBTISatisfactionSumAndCountDto> dtos) {
         Map<String, Double> sumsMap = dtos.stream()
                 .collect(Collectors.toMap(
@@ -89,6 +110,15 @@ public class StatisticsCacheUtils {
                         dto -> dto.getMbtiFactor().toString(),
                         MBTISatisfactionSumAndCountDto::getSatisfactionCount));
         return new SumAndCountStatisticsData<>(sumsMap, countsMap);
+    }
+
+    public static List<MBTIDailyAmountSumDto> toMBTIDailyAmountDtoList(List<DailyAmountSumDto> dtos, MBTIFactor mbtiFactor) {
+        return dtos.stream()
+                .map(dto -> new MBTIDailyAmountSumDto(
+                        mbtiFactor,
+                        dto.getLocalDate(),
+                        dto.getAmountSum()))
+                .toList();
     }
 
     public static Map<String, Long> toMBTIDateMap(List<MBTIDailyAmountSumDto> dtos) {

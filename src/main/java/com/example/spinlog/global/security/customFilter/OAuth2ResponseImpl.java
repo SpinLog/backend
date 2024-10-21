@@ -9,8 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class OAuth2ResponseImpl implements OAuth2Response {
+    @Builder.Default
     private String provider = "google";
+    @Builder.Default
     private String providerId = "randomId";
+    @Builder.Default
     private String email = "hhh@kkk";
 
     @Override
