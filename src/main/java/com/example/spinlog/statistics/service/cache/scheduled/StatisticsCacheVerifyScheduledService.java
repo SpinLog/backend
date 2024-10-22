@@ -23,7 +23,7 @@ import static com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class StatisticsCacheVerifyScheduledService {
+public class StatisticsCacheVerifyScheduledService { // todo VerifyService refactoring
     private final GenderStatisticsCacheFetchService genderStatisticsCacheFetchService;
     private final GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService;
     private final GenderStatisticsCacheWriteService genderStatisticsCacheWriteService;
@@ -58,7 +58,7 @@ public class StatisticsCacheVerifyScheduledService {
         updateMBTISatisfactionAverageCacheIfCacheMiss(RegisterType.SAVE, period);
     }
 
-    private void updateMBTISatisfactionAverageCacheIfCacheMiss(RegisterType registerType, Period period) {
+    public void updateMBTISatisfactionAverageCacheIfCacheMiss(RegisterType registerType, Period period) {
         LocalDate endDate = period.endDate();
         LocalDate startDate = period.startDate();
         SumAndCountStatisticsData<Double> cacheData;
@@ -90,7 +90,7 @@ public class StatisticsCacheVerifyScheduledService {
                     + ") MBTISatisfactionAverage Cache Data and Repository Data are same.");
     }
 
-    private void updateMBTIDailyAmountSumCacheIfCacheMiss(RegisterType registerType, Period period) {
+    public void updateMBTIDailyAmountSumCacheIfCacheMiss(RegisterType registerType, Period period) {
         LocalDate endDate = period.endDate();
         LocalDate startDate = period.startDate();
         Map<String, Long> cacheData;
@@ -120,38 +120,6 @@ public class StatisticsCacheVerifyScheduledService {
         else
             log.info("RegisterType(" + registerType
                     + ") MBTIDailyAmountSum Cache Data and Repository Data are same.");
-    }
-
-    public void updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType registerType, Period period) {
-        LocalDate endDate = period.endDate();
-        LocalDate startDate = period.startDate();
-        SumAndCountStatisticsData<Long> cacheData;
-        try{
-            cacheData = genderStatisticsCacheFetchService
-                    .getAmountAveragesEachGenderAndEmotion(registerType);
-        } catch (Exception e) {
-            log.warn("RegisterType(" + registerType
-                    + ") Error occurred while fetching gender cache data. Cache will be updated.", e);
-            SumAndCountStatisticsData<Long> repositoryData = genderStatisticsRepositoryFetchService
-                    .getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
-            repositoryData = zeroPaddingToEmotionAmountCountsAndSums(repositoryData, getGenderEmotionKeys());
-            genderStatisticsCacheWriteService.replaceAmountCountsAndSumsByGenderAndEmotion(repositoryData, registerType);
-            return;
-        }
-
-        SumAndCountStatisticsData<Long> repositoryData = genderStatisticsRepositoryFetchService
-                .getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
-        repositoryData = zeroPaddingToEmotionAmountCountsAndSums(repositoryData, getGenderEmotionKeys());
-
-        if (areNotEqual(cacheData, repositoryData)) {
-            log.warn("RegisterType(" + registerType
-                    + ") GenderEmotionAmountAverage Cache Data and Repository Data are not same. Cache will be updated.\ncacheDate = {}\nrepositoryData = {}\n",
-                    cacheData, repositoryData);
-            genderStatisticsCacheWriteService.replaceAmountCountsAndSumsByGenderAndEmotion(repositoryData, registerType);
-        }
-        else
-            log.info("RegisterType(" + registerType
-                    + ") GenderEmotionAmountAverage Cache Data and Repository Data are same.");
     }
 
     public void updateMBTIEmotionAmountAverageCacheIfCacheMiss(RegisterType registerType, Period period) {
@@ -184,6 +152,38 @@ public class StatisticsCacheVerifyScheduledService {
         else
             log.info("RegisterType(" + registerType
                     + ") MBTIEmotionAmountAverage Cache Data and Repository Data are same.");
+    }
+
+    public void updateGenderEmotionAmountAverageCacheIfCacheMiss(RegisterType registerType, Period period) {
+        LocalDate endDate = period.endDate();
+        LocalDate startDate = period.startDate();
+        SumAndCountStatisticsData<Long> cacheData;
+        try{
+            cacheData = genderStatisticsCacheFetchService
+                    .getAmountAveragesEachGenderAndEmotion(registerType);
+        } catch (Exception e) {
+            log.warn("RegisterType(" + registerType
+                    + ") Error occurred while fetching gender cache data. Cache will be updated.", e);
+            SumAndCountStatisticsData<Long> repositoryData = genderStatisticsRepositoryFetchService
+                    .getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
+            repositoryData = zeroPaddingToEmotionAmountCountsAndSums(repositoryData, getGenderEmotionKeys());
+            genderStatisticsCacheWriteService.replaceAmountCountsAndSumsByGenderAndEmotion(repositoryData, registerType);
+            return;
+        }
+
+        SumAndCountStatisticsData<Long> repositoryData = genderStatisticsRepositoryFetchService
+                .getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
+        repositoryData = zeroPaddingToEmotionAmountCountsAndSums(repositoryData, getGenderEmotionKeys());
+
+        if (areNotEqual(cacheData, repositoryData)) {
+            log.warn("RegisterType(" + registerType
+                    + ") GenderEmotionAmountAverage Cache Data and Repository Data are not same. Cache will be updated.\ncacheDate = {}\nrepositoryData = {}\n",
+                    cacheData, repositoryData);
+            genderStatisticsCacheWriteService.replaceAmountCountsAndSumsByGenderAndEmotion(repositoryData, registerType);
+        }
+        else
+            log.info("RegisterType(" + registerType
+                    + ") GenderEmotionAmountAverage Cache Data and Repository Data are same.");
     }
 
     public void updateGenderDailyAmountSumCacheIfCacheMiss(RegisterType registerType, Period period) {

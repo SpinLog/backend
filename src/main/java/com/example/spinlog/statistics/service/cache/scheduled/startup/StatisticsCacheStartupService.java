@@ -84,7 +84,7 @@ class StatisticsCacheStartupService {
                 MBTI_SATISFACTION_COUNT_KEY_NAME(SAVE),
                 allData.satisfactionSaveSumAndCountStatisticsData().countData());
 
-        log.info("Finish initializing MBTI statistics cache\ncacheDate = {}\n", List.of());
+        log.info("Finish initializing MBTI statistics cache\ncacheData = {}\n", allData);
     }
 
     private void initStatisticsCache(LocalDate startDate, LocalDate endDate, Period period) {
@@ -124,6 +124,6 @@ class StatisticsCacheStartupService {
                 GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE),
                 allData.satisfactionSaveSumAndCountStatisticsData().countData());
 
-        log.info("Finish initializing gender statistics cache\ncacheDate = {}\n", allData);
+        log.info("Finish initializing gender statistics cache\ncacheData = {}\n", allData);
     }
 }
