@@ -1,6 +1,7 @@
 package com.example.spinlog.statistics.dto.response;
 
 import com.example.spinlog.article.entity.Emotion;
+import com.example.spinlog.statistics.dto.repository.MBTIDailyAmountSumDto;
 import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.dto.repository.MBTIEmotionAmountAverageDto;
 import com.example.spinlog.user.entity.Mbti;
@@ -8,14 +9,38 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
+import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.roundForApiResponse;
 
 @Getter
 @Builder
 public class MBTIEmotionAmountAverageResponse {
     private Mbti mbti;
     private List<MBTIEmotionAmountAverage> mbtiEmotionAmountAverages;
+
+    public static MBTIEmotionAmountAverageResponse of(Mbti mbti, List<MBTIEmotionAmountAverageDto> dtosWithZeroPadding) {
+        List<MBTIEmotionAmountAverage> list = dtosWithZeroPadding.stream()
+                .map(e ->
+                        new MBTIEmotionAmountAverageDto(
+                                e.getMbtiFactor(),
+                                e.getEmotion(),
+                                roundForApiResponse(e.getAmountAverage())))
+                .collect(
+                        groupingBy(MBTIEmotionAmountAverageDto::getMbtiFactor))
+                .entrySet().stream()
+                .map((e) ->
+                        MBTIEmotionAmountAverage.of(e.getKey(), e.getValue()))
+                .sorted(Comparator.comparing(MBTIEmotionAmountAverage::getMbtiFactor))
+                .toList();
+        return MBTIEmotionAmountAverageResponse.builder()
+                .mbti(mbti)
+                .mbtiEmotionAmountAverages(list)
+                .build();
+    }
 
     @Getter
     @Builder

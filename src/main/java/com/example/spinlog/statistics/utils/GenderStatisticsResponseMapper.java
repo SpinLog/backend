@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static java.util.stream.Collectors.groupingBy;
+import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.roundForApiResponse;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GenderStatisticsResponseMapper {
@@ -26,10 +27,6 @@ public class GenderStatisticsResponseMapper {
                         GenderEmotionAmountAverageResponse.of(e.getKey(), e.getValue()))
                 .sorted(Comparator.comparing(GenderEmotionAmountAverageResponse::getGender))
                 .toList();
-    }
-
-    private static Long roundForApiResponse(Long amountAverage) {
-        return (amountAverage/1000)*1000;
     }
 
     public static List<GenderDailyAmountSumResponse> toGenderDailyAmountSumResponse(List<GenderDailyAmountSumDto> dtosWithZeroPadding) {
@@ -51,10 +48,5 @@ public class GenderStatisticsResponseMapper {
                                 .satisfactionAverage(roundForApiResponse(d.getSatisfactionAverage()))
                                 .build())
                 .toList();
-    }
-
-    private static Float roundForApiResponse(Float satisfactionAverage) {
-        String s = String.format("%.1f", satisfactionAverage);
-        return Float.valueOf(s);
     }
 }

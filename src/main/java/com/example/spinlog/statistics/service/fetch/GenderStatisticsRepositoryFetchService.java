@@ -1,7 +1,7 @@
 package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.statistics.dto.cache.AllGenderStatisticsCacheData;
+import com.example.spinlog.statistics.dto.cache.AllStatisticsCacheData;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.statistics.dto.repository.AllGenderStatisticsRepositoryData;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
@@ -27,7 +27,7 @@ import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.*;
 public class GenderStatisticsRepositoryFetchService {
     private final GenderStatisticsRepository genderStatisticsRepository;
 
-    public AllGenderStatisticsCacheData getGenderStatisticsAllData(LocalDate startDate, LocalDate endDate) {
+    public AllStatisticsCacheData getGenderStatisticsAllData(LocalDate startDate, LocalDate endDate) {
         SumAndCountStatisticsData<Long> genderEmotionAmountSpendSumAndCountStatisticsData = getGenderEmotionAmountCountsAndSums(SPEND, startDate, endDate);
         SumAndCountStatisticsData<Long> genderEmotionAmountSaveSumAndCountStatisticsData = getGenderEmotionAmountCountsAndSums(SAVE, startDate, endDate);
 
@@ -37,17 +37,16 @@ public class GenderStatisticsRepositoryFetchService {
         SumAndCountStatisticsData<Double> genderSatisfactionSpendSumAndCountStatisticsData = getGenderSatisfactionCountsAndSums(SPEND, startDate, endDate);
         SumAndCountStatisticsData<Double> genderSatisfactionSaveSumAndCountStatisticsData = getGenderSatisfactionCountsAndSums(SAVE, startDate, endDate);
 
-        return AllGenderStatisticsCacheData.builder()
-                .genderEmotionAmountSpendSumAndCountStatisticsData(genderEmotionAmountSpendSumAndCountStatisticsData)
-                .genderEmotionAmountSaveSumAndCountStatisticsData(genderEmotionAmountSaveSumAndCountStatisticsData)
-                .genderDailyAmountSpendSums(genderDailyAmountSpendSums)
-                .genderDailyAmountSaveSums(genderDailyAmountSaveSums)
-                .genderSatisfactionSpendSumAndCountStatisticsData(genderSatisfactionSpendSumAndCountStatisticsData)
-                .genderSatisfactionSaveSumAndCountStatisticsData(genderSatisfactionSaveSumAndCountStatisticsData)
+        return AllStatisticsCacheData.builder()
+                .emotionAmountSpendSumAndCountStatisticsData(genderEmotionAmountSpendSumAndCountStatisticsData)
+                .emotionAmountSaveSumAndCountStatisticsData(genderEmotionAmountSaveSumAndCountStatisticsData)
+                .dailyAmountSpendSums(genderDailyAmountSpendSums)
+                .dailyAmountSaveSums(genderDailyAmountSaveSums)
+                .satisfactionSpendSumAndCountStatisticsData(genderSatisfactionSpendSumAndCountStatisticsData)
+                .satisfactionSaveSumAndCountStatisticsData(genderSatisfactionSaveSumAndCountStatisticsData)
                 .build();
     }
 
-    // todo convert 하지 않고 그대로 반환 (재사용)
     public SumAndCountStatisticsData<Long> getGenderEmotionAmountCountsAndSums(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
         List<GenderEmotionAmountAverageDto> amountSums = genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
                 registerType,
@@ -88,7 +87,7 @@ public class GenderStatisticsRepositoryFetchService {
         return new SumAndCountStatisticsData<>(satisfactionSumsMap, satisfactionCountsMap);
     }
 
-    public AllGenderStatisticsRepositoryData getGenderStatisticsAllDataByUserId(Long userId, LocalDate startDate, LocalDate endDate) {
+    public AllGenderStatisticsRepositoryData getGenderStatisticsAllDataByUserId(Long userId, LocalDate startDate, LocalDate endDate) { // todo : rename
         List<GenderEmotionAmountAverageDto> genderEmotionAmountSpendSums = genderStatisticsRepository
                 .getAmountSumsEachEmotionByUserIdBetweenStartDateAndEndDate(
                         userId, SPEND, startDate, endDate);

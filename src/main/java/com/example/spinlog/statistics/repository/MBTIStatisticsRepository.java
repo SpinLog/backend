@@ -1,10 +1,8 @@
 package com.example.spinlog.statistics.repository;
 
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.statistics.dto.repository.MemoDto;
-import com.example.spinlog.statistics.dto.repository.MBTIDailyAmountSumDto;
-import com.example.spinlog.statistics.dto.repository.MBTIEmotionAmountAverageDto;
-import com.example.spinlog.statistics.dto.repository.MBTISatisfactionAverageDto;
+import com.example.spinlog.statistics.dto.*;
+import com.example.spinlog.statistics.dto.repository.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -34,6 +32,38 @@ public interface MBTIStatisticsRepository {
 
     // mbti별 만족도 평균 그래프
     List<MBTISatisfactionAverageDto> getSatisfactionAveragesEachMBTIBetweenStartDateAndEndDate(
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    // ---
+
+    List<MBTIEmotionAmountSumAndCountDto> getAmountSumsAndCountsEachMBTIAndEmotionBetweenStartDateAndEndDate(
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    List<MBTISatisfactionSumAndCountDto> getSatisfactionSumsAndCountsEachMBTIBetweenStartDateAndEndDate(
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    // ---
+
+    List<EmotionAmountSumAndCountDto> getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    List<DailyAmountSumDto> getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
+            @Param("registerType") RegisterType registerType,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    List<SatisfactionSumAndCountDto> getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
+            @Param("userId") Long userId,
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);

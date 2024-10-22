@@ -2,7 +2,7 @@ package com.example.spinlog.statistics.service.cache;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheHashRepository;
-import com.example.spinlog.statistics.dto.cache.AllGenderStatisticsCacheData;
+import com.example.spinlog.statistics.dto.cache.AllStatisticsCacheData;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.util.MockCacheHashRepository;
 import org.junit.jupiter.api.Test;
@@ -70,16 +70,16 @@ public class GenderStatisticsCacheWriteServiceTest {
     @Test
     void decrementAllData() {
         // given
-        AllGenderStatisticsCacheData statisticsAllData = AllGenderStatisticsCacheData.builder()
-                .genderEmotionAmountSaveSumAndCountStatisticsData(
+        AllStatisticsCacheData statisticsAllData = AllStatisticsCacheData.builder()
+                .emotionAmountSaveSumAndCountStatisticsData(
                         new SumAndCountStatisticsData<>(Map.of(), Map.of()))
-                .genderEmotionAmountSpendSumAndCountStatisticsData(
+                .emotionAmountSpendSumAndCountStatisticsData(
                         new SumAndCountStatisticsData<>(Map.of(), Map.of()))
-                .genderDailyAmountSaveSums(Map.of())
-                .genderDailyAmountSpendSums(Map.of())
-                .genderSatisfactionSaveSumAndCountStatisticsData(
+                .dailyAmountSaveSums(Map.of())
+                .dailyAmountSpendSums(Map.of())
+                .satisfactionSaveSumAndCountStatisticsData(
                         new SumAndCountStatisticsData<>(Map.of(), Map.of()))
-                .genderSatisfactionSpendSumAndCountStatisticsData(
+                .satisfactionSpendSumAndCountStatisticsData(
                         new SumAndCountStatisticsData<>(Map.of(), Map.of()))
                 .build();
 
@@ -87,32 +87,32 @@ public class GenderStatisticsCacheWriteServiceTest {
         genderStatisticsCacheWriteService.decrementAllData(statisticsAllData);
 
         // then
-        verify(cacheHashRepository).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendSumAndCountStatisticsData().countData());
-        verify(cacheHashRepository).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendSumAndCountStatisticsData().sumData());
-        verify(cacheHashRepository).decrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderDailyAmountSpendSums());
-        verify(cacheHashRepository).decrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendSumAndCountStatisticsData().countData());
-        verify(cacheHashRepository).decrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendSumAndCountStatisticsData().sumData());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), statisticsAllData.emotionAmountSpendSumAndCountStatisticsData().countData());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.emotionAmountSpendSumAndCountStatisticsData().sumData());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.dailyAmountSpendSums());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), statisticsAllData.satisfactionSpendSumAndCountStatisticsData().countData());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), statisticsAllData.satisfactionSpendSumAndCountStatisticsData().sumData());
 
-        verify(cacheHashRepository).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveSumAndCountStatisticsData().countData());
-        verify(cacheHashRepository).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveSumAndCountStatisticsData().sumData());
-        verify(cacheHashRepository).decrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderDailyAmountSaveSums());
-        verify(cacheHashRepository).decrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveSumAndCountStatisticsData().countData());
-        verify(cacheHashRepository).decrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveSumAndCountStatisticsData().sumData());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), statisticsAllData.emotionAmountSaveSumAndCountStatisticsData().countData());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.emotionAmountSaveSumAndCountStatisticsData().sumData());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.dailyAmountSaveSums());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.satisfactionSaveSumAndCountStatisticsData().countData());
+        verify(cacheHashRepository).decrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.satisfactionSaveSumAndCountStatisticsData().sumData());
     }
 
     @Test
     void incrementAllData() {
         // given
-        AllGenderStatisticsCacheData statisticsAllData = AllGenderStatisticsCacheData.builder()
-                .genderEmotionAmountSaveSumAndCountStatisticsData(
+        AllStatisticsCacheData statisticsAllData = AllStatisticsCacheData.builder()
+                .emotionAmountSaveSumAndCountStatisticsData(
                         new SumAndCountStatisticsData<>(Map.of(), Map.of()))
-                .genderEmotionAmountSpendSumAndCountStatisticsData(
+                .emotionAmountSpendSumAndCountStatisticsData(
                         new SumAndCountStatisticsData<>(Map.of(), Map.of()))
-                .genderDailyAmountSaveSums(Map.of())
-                .genderDailyAmountSpendSums(Map.of())
-                .genderSatisfactionSaveSumAndCountStatisticsData(
+                .dailyAmountSaveSums(Map.of())
+                .dailyAmountSpendSums(Map.of())
+                .satisfactionSaveSumAndCountStatisticsData(
                         new SumAndCountStatisticsData<>(Map.of(), Map.of()))
-                .genderSatisfactionSpendSumAndCountStatisticsData(
+                .satisfactionSpendSumAndCountStatisticsData(
                         new SumAndCountStatisticsData<>(Map.of(), Map.of()))
                 .build();
 
@@ -120,17 +120,17 @@ public class GenderStatisticsCacheWriteServiceTest {
         genderStatisticsCacheWriteService.incrementAllData(statisticsAllData);
 
         // then
-        verify(cacheHashRepository).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendSumAndCountStatisticsData().countData());
-        verify(cacheHashRepository).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendSumAndCountStatisticsData().sumData());
-        verify(cacheHashRepository).incrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderDailyAmountSpendSums());
-        verify(cacheHashRepository).incrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendSumAndCountStatisticsData().countData());
-        verify(cacheHashRepository).incrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendSumAndCountStatisticsData().sumData());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), statisticsAllData.emotionAmountSpendSumAndCountStatisticsData().countData());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.emotionAmountSpendSumAndCountStatisticsData().sumData());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.dailyAmountSpendSums());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), statisticsAllData.satisfactionSpendSumAndCountStatisticsData().countData());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), statisticsAllData.satisfactionSpendSumAndCountStatisticsData().sumData());
 
-        verify(cacheHashRepository).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveSumAndCountStatisticsData().countData());
-        verify(cacheHashRepository).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveSumAndCountStatisticsData().sumData());
-        verify(cacheHashRepository).incrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderDailyAmountSaveSums());
-        verify(cacheHashRepository).incrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveSumAndCountStatisticsData().countData());
-        verify(cacheHashRepository).incrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveSumAndCountStatisticsData().sumData());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), statisticsAllData.emotionAmountSaveSumAndCountStatisticsData().countData());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.emotionAmountSaveSumAndCountStatisticsData().sumData());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.dailyAmountSaveSums());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.satisfactionSaveSumAndCountStatisticsData().countData());
+        verify(cacheHashRepository).incrementAllDataInHash(GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.satisfactionSaveSumAndCountStatisticsData().sumData());
     }
 
     @Test

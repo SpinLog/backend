@@ -2,13 +2,11 @@ package com.example.spinlog.statistics.dto.repository;
 
 import com.example.spinlog.statistics.entity.MBTIFactor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
 @Builder
-@EqualsAndHashCode
-public class MBTISatisfactionAverageDto {
+public class MBTIDataDto<T> {
     private MBTIFactor mbtiFactor;
-    private Float satisfactionAverage;
+    private T value;
 }

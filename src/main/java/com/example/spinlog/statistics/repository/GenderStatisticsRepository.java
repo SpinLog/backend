@@ -43,6 +43,7 @@ public interface GenderStatisticsRepository {
     // ---
 
     // todo 별도 클래스로 분리
+    // todo sum, count 를 한번에 가져오기
     List<GenderEmotionAmountAverageDto> getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,

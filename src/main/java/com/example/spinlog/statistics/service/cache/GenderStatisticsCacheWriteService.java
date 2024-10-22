@@ -2,7 +2,7 @@ package com.example.spinlog.statistics.service.cache;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheHashRepository;
-import com.example.spinlog.statistics.dto.cache.AllGenderStatisticsCacheData;
+import com.example.spinlog.statistics.dto.cache.AllStatisticsCacheData;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,52 +40,52 @@ public class GenderStatisticsCacheWriteService {
                 GENDER_SATISFACTION_SUM_KEY_NAME(registerType), satisfactionSumAndCountStatisticsData.sumData());
     }
 
-    public void decrementAllData(AllGenderStatisticsCacheData statisticsAllData) {
+    public void decrementAllData(AllStatisticsCacheData statisticsAllData) {
         cacheHashRepository.decrementAllDataInHash(
-                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendSumAndCountStatisticsData().countData());
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), statisticsAllData.emotionAmountSpendSumAndCountStatisticsData().countData());
         cacheHashRepository.decrementAllDataInHash(
-                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendSumAndCountStatisticsData().sumData());
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.emotionAmountSpendSumAndCountStatisticsData().sumData());
         cacheHashRepository.decrementAllDataInHash(
-                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderDailyAmountSpendSums());
+                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.dailyAmountSpendSums());
         cacheHashRepository.decrementAllDataInHash(
-                GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendSumAndCountStatisticsData().countData());
+                GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), statisticsAllData.satisfactionSpendSumAndCountStatisticsData().countData());
         cacheHashRepository.decrementAllDataInHash(
-                GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendSumAndCountStatisticsData().sumData());
+                GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), statisticsAllData.satisfactionSpendSumAndCountStatisticsData().sumData());
 
         cacheHashRepository.decrementAllDataInHash(
-                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveSumAndCountStatisticsData().countData());
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), statisticsAllData.emotionAmountSaveSumAndCountStatisticsData().countData());
         cacheHashRepository.decrementAllDataInHash(
-                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveSumAndCountStatisticsData().sumData());
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.emotionAmountSaveSumAndCountStatisticsData().sumData());
         cacheHashRepository.decrementAllDataInHash(
-                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderDailyAmountSaveSums());
+                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.dailyAmountSaveSums());
         cacheHashRepository.decrementAllDataInHash(
-                GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveSumAndCountStatisticsData().countData());
+                GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.satisfactionSaveSumAndCountStatisticsData().countData());
         cacheHashRepository.decrementAllDataInHash(
-                GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveSumAndCountStatisticsData().sumData());
+                GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.satisfactionSaveSumAndCountStatisticsData().sumData());
     }
 
-    public void incrementAllData(AllGenderStatisticsCacheData statisticsAllData) {
+    public void incrementAllData(AllStatisticsCacheData statisticsAllData) {
         cacheHashRepository.incrementAllDataInHash(
-                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendSumAndCountStatisticsData().countData());
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SPEND), statisticsAllData.emotionAmountSpendSumAndCountStatisticsData().countData());
         cacheHashRepository.incrementAllDataInHash(
-                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderEmotionAmountSpendSumAndCountStatisticsData().sumData());
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.emotionAmountSpendSumAndCountStatisticsData().sumData());
         cacheHashRepository.incrementAllDataInHash(
-                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.genderDailyAmountSpendSums());
+                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SPEND), statisticsAllData.dailyAmountSpendSums());
         cacheHashRepository.incrementAllDataInHash(
-                GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendSumAndCountStatisticsData().countData());
+                GENDER_SATISFACTION_COUNT_KEY_NAME(SPEND), statisticsAllData.satisfactionSpendSumAndCountStatisticsData().countData());
         cacheHashRepository.incrementAllDataInHash(
-                GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), statisticsAllData.genderSatisfactionSpendSumAndCountStatisticsData().sumData());
+                GENDER_SATISFACTION_SUM_KEY_NAME(SPEND), statisticsAllData.satisfactionSpendSumAndCountStatisticsData().sumData());
 
         cacheHashRepository.incrementAllDataInHash(
-                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveSumAndCountStatisticsData().countData());
+                GENDER_EMOTION_AMOUNT_COUNT_KEY_NAME(SAVE), statisticsAllData.emotionAmountSaveSumAndCountStatisticsData().countData());
         cacheHashRepository.incrementAllDataInHash(
-                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderEmotionAmountSaveSumAndCountStatisticsData().sumData());
+                GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.emotionAmountSaveSumAndCountStatisticsData().sumData());
         cacheHashRepository.incrementAllDataInHash(
-                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.genderDailyAmountSaveSums());
+                GENDER_DAILY_AMOUNT_SUM_KEY_NAME(SAVE), statisticsAllData.dailyAmountSaveSums());
         cacheHashRepository.incrementAllDataInHash(
-                GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveSumAndCountStatisticsData().countData());
+                GENDER_SATISFACTION_COUNT_KEY_NAME(SAVE), statisticsAllData.satisfactionSaveSumAndCountStatisticsData().countData());
         cacheHashRepository.incrementAllDataInHash(
-                GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.genderSatisfactionSaveSumAndCountStatisticsData().sumData());
+                GENDER_SATISFACTION_SUM_KEY_NAME(SAVE), statisticsAllData.satisfactionSaveSumAndCountStatisticsData().sumData());
     }
 
     public void replaceAmountCountsAndSumsByGenderAndEmotion(SumAndCountStatisticsData<Long> amountSumAndCountStatisticsData, RegisterType registerType) {
