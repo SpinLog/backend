@@ -5,44 +5,44 @@
     <select id="getAmountAveragesEachMBTIAndEmotionBetweenStartDateAndEndDate" resultType="MBTIEmotionAmountAverageDto">
         select u.ei as mbtiFactor, a.emotion, round(avg(a.amount), -3) as amountAverage
         from articles a join users_mbti_view u on(a.user_id = u.user_id)
-        where a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         group by mbtiFactor, a.emotion
         union all
         select u.ns as mbtiFactor, a.emotion, round(avg(a.amount), -3) as amountAverage
         from articles a join users_mbti_view u on(a.user_id = u.user_id)
-        where a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         group by mbtiFactor, a.emotion
         union all
         select u.tf as mbtiFactor, a.emotion, round(avg(a.amount), -3) as amountAverage
         from articles a join users_mbti_view u on(a.user_id = u.user_id)
-        where a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         group by mbtiFactor, a.emotion
         union all
         select u.pj as mbtiFactor, a.emotion, round(avg(a.amount), -3) as amountAverage
         from articles a join users_mbti_view u on(a.user_id = u.user_id)
-        where a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         group by mbtiFactor, a.emotion
     </select>
 
     <select id="getAmountSumsEachMBTIAndDayBetweenStartDateAndEndDate" resultType="MBTIDailyAmountSumDto">
         select u.ei as mbtiFactor, date(a.spend_date) as localDate, sum(a.amount) as amountSum
         from articles a join users_mbti_view u on(a.user_id = u.user_id)
-        where a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         group by mbtiFactor, localDate
         union all
         select u.ns as mbtiFactor, date(a.spend_date) as localDate, sum(a.amount) as amountSum
         from articles a join users_mbti_view u on(a.user_id = u.user_id)
-        where a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         group by mbtiFactor, localDate
         union all
         select u.tf as mbtiFactor, date(a.spend_date) as localDate, sum(a.amount) as amountSum
         from articles a join users_mbti_view u on(a.user_id = u.user_id)
-        where a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         group by mbtiFactor, localDate
         union all
         select u.pj as mbtiFactor, date(a.spend_date) as localDate, sum(a.amount) as amountSum
         from articles a join users_mbti_view u on(a.user_id = u.user_id)
-        where a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         group by mbtiFactor, localDate
     </select>
 
@@ -52,7 +52,7 @@
         <if test=' !"NONE".equals(mbti) '>
             join users u on a.user_id=u.user_id
         </if>
-        where a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         <if test=' !"NONE".equals(mbti) '>
             and u.mbti = #{mbti}
         </if>
@@ -61,22 +61,101 @@
     <select id="getSatisfactionAveragesEachMBTIBetweenStartDateAndEndDate" resultType="MBTISatisfactionAverageDto">
         select u.ei as mbtiFactor, round(avg(a.satisfaction), 1) as satisfactionAverage
         from articles a join users_mbti_view u on(a.user_id = u.user_id)
-        where a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         group by mbtiFactor
         union all
         select u.ns as mbtiFactor, round(avg(a.satisfaction), 1) as satisfactionAverage
         from articles a join users_mbti_view u on(a.user_id = u.user_id)
-        where a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         group by mbtiFactor
         union all
         select u.tf as mbtiFactor, round(avg(a.satisfaction), 1) as satisfactionAverage
         from articles a join users_mbti_view u on(a.user_id = u.user_id)
-        where a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         group by mbtiFactor
         union all
         select u.pj as mbtiFactor, round(avg(a.satisfaction), 1) as satisfactionAverage
         from articles a join users_mbti_view u on(a.user_id = u.user_id)
-        where a.register_type = #{registerType} and a.spend_date between #{startDate} and #{endDate}
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         group by mbtiFactor
     </select>
+
+    <!--  -->
+
+    <select id="getAmountSumsAndCountsEachMBTIAndEmotionBetweenStartDateAndEndDate" resultType="MBTIEmotionAmountSumAndCountDto">
+        select u.ei as mbtiFactor, a.emotion, sum(a.amount) as amountSum, count(a.amount) as amountCount
+        from articles a join users_mbti_view u on(a.user_id = u.user_id)
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
+        group by mbtiFactor, a.emotion
+        union all
+        select u.ns as mbtiFactor, a.emotion, sum(a.amount) as amountSum, count(a.amount) as amountCount
+        from articles a join users_mbti_view u on(a.user_id = u.user_id)
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
+        group by mbtiFactor, a.emotion
+        union all
+        select u.tf as mbtiFactor, a.emotion, sum(a.amount) as amountSum, count(a.amount) as amountCount
+        from articles a join users_mbti_view u on(a.user_id = u.user_id)
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
+        group by mbtiFactor, a.emotion
+        union all
+        select u.pj as mbtiFactor, a.emotion, sum(a.amount) as amountSum, count(a.amount) as amountCount
+        from articles a join users_mbti_view u on(a.user_id = u.user_id)
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
+        group by mbtiFactor, a.emotion
+    </select>
+
+    <select id="getSatisfactionSumsAndCountsEachMBTIBetweenStartDateAndEndDate" resultType="MBTISatisfactionSumAndCountDto">
+        select u.ei as mbtiFactor, sum(a.satisfaction) as satisfactionSum, count(a.satisfaction) as satisfactionCount
+        from articles a join users_mbti_view u on(a.user_id = u.user_id)
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
+        group by mbtiFactor
+        union all
+        select u.ns as mbtiFactor, sum(a.satisfaction) as satisfactionSum, count(a.satisfaction) as satisfactionCount
+        from articles a join users_mbti_view u on(a.user_id = u.user_id)
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
+        group by mbtiFactor
+        union all
+        select u.tf as mbtiFactor, sum(a.satisfaction) as satisfactionSum, count(a.satisfaction) as satisfactionCount
+        from articles a join users_mbti_view u on(a.user_id = u.user_id)
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
+        group by mbtiFactor
+        union all
+        select u.pj as mbtiFactor, sum(a.satisfaction) as satisfactionSum, count(a.satisfaction) as satisfactionCount
+        from articles a join users_mbti_view u on(a.user_id = u.user_id)
+        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
+        group by mbtiFactor
+    </select>
+
+    <!--  -->
+
+    <select id="getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate" resultType="EmotionAmountSumAndCountDto">
+        select a.emotion, sum(a.amount) as amountSum, count(a.amount) as amountCount
+        from articles a
+        where a.user_id = #{userId}
+          and a.register_type = #{registerType}
+          and a.spend_date <![CDATA[>=]]> #{startDate}
+          and a.spend_date <![CDATA[<]]> #{endDate}
+        group by a.emotion
+    </select>
+
+    <select id="getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate" resultType="DailyAmountSumDto">
+        select date(a.spend_date) as localDate, sum(a.amount) as amountSum
+        from articles a
+        where a.user_id = #{userId}
+          and a.register_type = #{registerType}
+          and a.spend_date <![CDATA[>=]]> #{startDate}
+          and a.spend_date <![CDATA[<]]> #{endDate}
+        group by localDate
+    </select>
+
+
+    <select id="getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate" resultType="SatisfactionSumAndCountDto">
+        select sum(a.satisfaction) as satisfactionSum, count(a.satisfaction) as satisfactionCount
+        from articles a
+        where a.user_id = #{userId}
+          and a.register_type = #{registerType}
+          and a.spend_date <![CDATA[>=]]> #{startDate}
+          and a.spend_date <![CDATA[<]]> #{endDate}
+    </select>
+
 </mapper>

@@ -3,14 +3,19 @@ package com.example.spinlog.statistics.service.cache.scheduled.startup;
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheHashRepository;
+import com.example.spinlog.statistics.dto.MBTIEmotionAmountSumAndCountDto;
+import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
+import com.example.spinlog.statistics.service.fetch.MBTIStatisticsRepositoryFetchService;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.util.MockCacheHashRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Clock;
 import java.util.List;
@@ -24,23 +29,27 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class GenderStatisticsCacheStartupServiceTest {
+@ActiveProfiles("test")
+class StatisticsCacheStartupServiceTest {
     GenderStatisticsRepository genderStatisticsRepository = mock(GenderStatisticsRepository.class);
+    MBTIStatisticsRepository mbtiStatisticsRepository = mock(MBTIStatisticsRepository.class);
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService =
             new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
+    MBTIStatisticsRepositoryFetchService mbtiStatisticsRepositoryFetchService =
+            new MBTIStatisticsRepositoryFetchService(mbtiStatisticsRepository);
     CacheHashRepository cacheHashRepository = new MockCacheHashRepository();
 
     // todo set fixed clock and test
     StatisticsPeriodManager statisticsPeriodManager = new StatisticsPeriodManager(Clock.systemDefaultZone());
 
-    GenderStatisticsCacheStartupService genderStatisticsStartupService =
-            new GenderStatisticsCacheStartupService(cacheHashRepository, genderStatisticsRepositoryFetchService, statisticsPeriodManager);
+    StatisticsCacheStartupService targetService =
+            new StatisticsCacheStartupService(cacheHashRepository, genderStatisticsRepositoryFetchService, mbtiStatisticsRepositoryFetchService, statisticsPeriodManager);
 
 
 
     @Test
-    @DisplayName("레포지토리로부터 통계 데이터를 받아 캐시에 저장한다.")
-    void startup_test() throws Exception {
+    @DisplayName("레포지토리로부터 성별 통계 데이터를 받아 캐시에 저장한다.")
+    void startup_gender_test() throws Exception {
         // given
         List<GenderEmotionAmountAverageDto> returned = List.of(
                 new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.PROUD, 1L),
@@ -61,7 +70,7 @@ class GenderStatisticsCacheStartupServiceTest {
                 .thenReturn(counts);
 
         // when
-        genderStatisticsStartupService.initGenderStatisticsCache();
+        targetService.initStatisticsCache();
 
         // then
         List<String> keys = List.of("MALE::PROUD", "MALE::SAD", "FEMALE::PROUD", "FEMALE::SAD");
@@ -82,6 +91,42 @@ class GenderStatisticsCacheStartupServiceTest {
             assertThat(genderEmotionAmountCounts.get(key)).isInstanceOf(Long.class)
                     .isEqualTo(1L);
         }
+    }
+
+    @Test
+    @DisplayName("레포지토리로부터 MBTI 통계 데이터를 받아 캐시에 저장한다.")
+    void startup_mbti_test() throws Exception {
+        // given
+        when(mbtiStatisticsRepository.getAmountSumsAndCountsEachMBTIAndEmotionBetweenStartDateAndEndDate(eq(RegisterType.SPEND), any(), any()))
+                .thenReturn(List.of(
+                        new MBTIEmotionAmountSumAndCountDto(MBTIFactor.I, Emotion.PROUD, 500L, 5L)
+                ));
+        when(mbtiStatisticsRepository.getAmountSumsAndCountsEachMBTIAndEmotionBetweenStartDateAndEndDate(eq(RegisterType.SAVE), any(), any()))
+                .thenReturn(List.of(
+                        new MBTIEmotionAmountSumAndCountDto(MBTIFactor.I, Emotion.PROUD, 1000L, 10L)
+                ));
+
+        // when
+        targetService.initStatisticsCache();
+
+        // then
+        Map<String, Object> mbtiEmotionAmountSums = cacheHashRepository.getHashEntries(
+                MBTI_EMOTION_AMOUNT_SUM_KEY_NAME(RegisterType.SPEND));
+        assertThat(mbtiEmotionAmountSums.get("I::PROUD")).isEqualTo(500L);
+
+        Map<String, Object> mbtiEmotionAmountCounts = cacheHashRepository.getHashEntries(
+                MBTI_EMOTION_AMOUNT_COUNT_KEY_NAME(RegisterType.SPEND));
+        assertThat(mbtiEmotionAmountCounts.get("I::PROUD")).isEqualTo(5L);
+
+        mbtiEmotionAmountSums = cacheHashRepository.getHashEntries(
+                MBTI_EMOTION_AMOUNT_SUM_KEY_NAME(RegisterType.SAVE));
+        assertThat(mbtiEmotionAmountSums.get("I::PROUD")).isEqualTo(1000L);
+
+        mbtiEmotionAmountCounts = cacheHashRepository.getHashEntries(
+                MBTI_EMOTION_AMOUNT_COUNT_KEY_NAME(RegisterType.SAVE));
+        assertThat(mbtiEmotionAmountCounts.get("I::PROUD")).isEqualTo(10L);
+
+
     }
 
     @Test
@@ -107,7 +152,7 @@ class GenderStatisticsCacheStartupServiceTest {
                 .thenReturn(counts);
 
         // when
-        genderStatisticsStartupService.initGenderStatisticsCache();
+        targetService.initStatisticsCache();
 
         // then
         List<String> keys = List.of("MALE::PROUD", "MALE::SAD", "FEMALE::PROUD", "FEMALE::SAD");

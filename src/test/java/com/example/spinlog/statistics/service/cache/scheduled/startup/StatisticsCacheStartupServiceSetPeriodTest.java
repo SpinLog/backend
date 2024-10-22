@@ -2,20 +2,30 @@ package com.example.spinlog.statistics.service.cache.scheduled.startup;
 
 import com.example.spinlog.global.cache.CacheHashRepository;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
+import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
+import com.example.spinlog.statistics.service.fetch.MBTIStatisticsRepositoryFetchService;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.*;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-class GenderStatisticsCacheStartupServiceSetPeriodTest {
+@ActiveProfiles("test")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+class StatisticsCacheStartupServiceSetPeriodTest {
     GenderStatisticsRepository genderStatisticsRepository = mock(GenderStatisticsRepository.class);
+    MBTIStatisticsRepository mbtiStatisticsRepository = mock(MBTIStatisticsRepository.class);
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService =
             new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
+    MBTIStatisticsRepositoryFetchService mbtiStatisticsRepositoryFetchService =
+            new MBTIStatisticsRepositoryFetchService(mbtiStatisticsRepository);
     CacheHashRepository cacheHashRepository = mock(CacheHashRepository.class);
 
     @ParameterizedTest
@@ -25,14 +35,15 @@ class GenderStatisticsCacheStartupServiceSetPeriodTest {
         Clock clock = getFixedClock(localTime);
         StatisticsPeriodManager statisticsPeriodManager = new StatisticsPeriodManager(clock);
 
-        GenderStatisticsCacheStartupService genderStatisticsStartupService =
-                new GenderStatisticsCacheStartupService(
+        StatisticsCacheStartupService genderStatisticsStartupService =
+                new StatisticsCacheStartupService(
                         cacheHashRepository,
                         genderStatisticsRepositoryFetchService,
+                        mbtiStatisticsRepositoryFetchService,
                         statisticsPeriodManager);
 
         // when
-        genderStatisticsStartupService.initGenderStatisticsCache();
+        genderStatisticsStartupService.initStatisticsCache();
 
         // then
         StatisticsPeriodManager.Period period = statisticsPeriodManager.getStatisticsPeriod();
@@ -49,14 +60,15 @@ class GenderStatisticsCacheStartupServiceSetPeriodTest {
         Clock clock = getFixedClock(localTime);
         StatisticsPeriodManager statisticsPeriodManager = new StatisticsPeriodManager(clock);
 
-        GenderStatisticsCacheStartupService genderStatisticsStartupService =
-                new GenderStatisticsCacheStartupService(
+        StatisticsCacheStartupService genderStatisticsStartupService =
+                new StatisticsCacheStartupService(
                         cacheHashRepository,
                         genderStatisticsRepositoryFetchService,
+                        mbtiStatisticsRepositoryFetchService,
                         statisticsPeriodManager);
 
         // when
-        genderStatisticsStartupService.initGenderStatisticsCache();
+        genderStatisticsStartupService.initStatisticsCache();
 
         // then
         StatisticsPeriodManager.Period period = statisticsPeriodManager.getStatisticsPeriod();

@@ -1,9 +1,6 @@
 package com.example.spinlog.utils;
 
-import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
-import com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils;
-import com.example.spinlog.user.entity.Gender;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
@@ -14,6 +11,8 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
+import static com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils.*;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
@@ -24,15 +23,14 @@ class StatisticsZeroPaddingUtilsTest {
         @Test
         void GenderEmotionAmountCountsAndSums에_대해_zero_padding을_수행한다() throws Exception {
             // given
-            Map<String, Object> sumsMap = new HashMap<>();
+            Map<String, Long> sumsMap = new HashMap<>();
             sumsMap.put("MALE::SAD", 10L);
-            Map<String, Object> countsMap = new HashMap<>();
+            Map<String, Long> countsMap = new HashMap<>();
             countsMap.put("MALE::SAD", 1L);
-            SumAndCountStatisticsData sumAndCountStatisticsData = new SumAndCountStatisticsData(sumsMap, countsMap);
+            SumAndCountStatisticsData<Long> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(sumsMap, countsMap);
 
             // when
-            sumAndCountStatisticsData = StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderEmotionAmountCountsAndSums(sumAndCountStatisticsData);
+            sumAndCountStatisticsData = zeroPaddingToEmotionAmountCountsAndSums(sumAndCountStatisticsData, getGenderEmotionKeys());
 
             // then
             List<String> genderEmotionKeys = getGenderEmotionKeys();
@@ -53,25 +51,15 @@ class StatisticsZeroPaddingUtilsTest {
         @Test
         void 유효하지_않은_키가_있다면_실패한다() throws Exception {
             // given
-            Map<String, Object> sumsMap = new HashMap<>();
+            Map<String, Long> sumsMap = new HashMap<>();
             sumsMap.put("MAL::SAD", 10L);
-            Map<String, Object> countsMap = new HashMap<>();
+            Map<String, Long> countsMap = new HashMap<>();
             countsMap.put("MALE::SADD", 1L);
-            SumAndCountStatisticsData sumAndCountStatisticsData = new SumAndCountStatisticsData(sumsMap, countsMap);
+            SumAndCountStatisticsData<Long> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(sumsMap, countsMap);
 
             // when // then
-            assertThatThrownBy(() -> StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderEmotionAmountCountsAndSums(sumAndCountStatisticsData))
+            assertThatThrownBy(() -> zeroPaddingToEmotionAmountCountsAndSums(sumAndCountStatisticsData, getGenderEmotionKeys()))
                     .isInstanceOf(IllegalArgumentException.class);
-        }
-
-        private List<String> getGenderEmotionKeys() {
-            return Arrays.stream(Gender.values())
-                    .filter(g -> !g.equals(Gender.NONE))
-                    .flatMap(g ->
-                            Arrays.stream(Emotion.values())
-                                    .map(e -> g + "::" + e))
-                    .toList();
         }
     }
 
@@ -87,8 +75,7 @@ class StatisticsZeroPaddingUtilsTest {
                     LocalDate.of(2021, 1, 3));
 
             // when
-            sums = StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderDailyAmountSums(sums, period);
+            sums = zeroPaddingToAmountSums(sums, getGenderDailyKeys(period));
 
             // then
             List<String> genderDailyAmountKeys = getGenderDailyKeys(period);
@@ -112,23 +99,8 @@ class StatisticsZeroPaddingUtilsTest {
                     LocalDate.of(2021, 1, 3));
 
             // when // then
-            assertThatThrownBy(() -> StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderDailyAmountSums(sums, period))
+            assertThatThrownBy(() -> zeroPaddingToAmountSums(sums, getGenderDailyKeys(period)))
                     .isInstanceOf(IllegalArgumentException.class);
-        }
-
-        private List<String> getGenderDailyKeys(Period period) {
-            LocalDate startDate = period.startDate();
-            LocalDate endDate = period.endDate();
-            List<Gender> genders = Arrays.stream(Gender.values())
-                    .filter(g -> !g.equals(Gender.NONE))
-                    .toList();
-            List<String> list = new ArrayList<>();
-            for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
-                list.add("MALE::" + date);
-                list.add("FEMALE::" + date);
-            }
-            return list;
         }
 
     }
@@ -138,15 +110,14 @@ class StatisticsZeroPaddingUtilsTest {
         @Test
         void GenderSatisfactionAmountCountsAndSums에_대해_zero_padding을_수행한다() throws Exception {
             // given
-            Map<String, Object> sumsMap = new HashMap<>();
+            Map<String, Double> sumsMap = new HashMap<>();
             sumsMap.put("MALE", 10.0);
-            Map<String, Object> countsMap = new HashMap<>();
+            Map<String, Long> countsMap = new HashMap<>();
             countsMap.put("MALE", 2L);
-            SumAndCountStatisticsData sumAndCountStatisticsData = new SumAndCountStatisticsData(sumsMap, countsMap);
+            SumAndCountStatisticsData<Double> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(sumsMap, countsMap);
 
             // when
-            sumAndCountStatisticsData = StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderSatisfactionAmountCountsAndSums(sumAndCountStatisticsData);
+            sumAndCountStatisticsData = zeroPaddingToSatisfactionAmountCountsAndSums(sumAndCountStatisticsData, getGenderKeys());
 
             // then
             List<String> keys = getGenderKeys();
@@ -167,24 +138,15 @@ class StatisticsZeroPaddingUtilsTest {
         @Test
         void 유효하지_않은_키가_있다면_실패한다() throws Exception {
             // given
-            Map<String, Object> sumsMap = new HashMap<>();
+            Map<String, Double> sumsMap = new HashMap<>();
             sumsMap.put("MALEE", 10.0);
-            Map<String, Object> countsMap = new HashMap<>();
+            Map<String, Long> countsMap = new HashMap<>();
             countsMap.put("MALE", 2L);
-            SumAndCountStatisticsData sumAndCountStatisticsData = new SumAndCountStatisticsData(sumsMap, countsMap);
+            SumAndCountStatisticsData<Double> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(sumsMap, countsMap);
 
             // when // then
-            assertThatThrownBy(() -> StatisticsZeroPaddingUtils
-                    .zeroPaddingToGenderSatisfactionAmountCountsAndSums(sumAndCountStatisticsData))
+            assertThatThrownBy(() -> zeroPaddingToSatisfactionAmountCountsAndSums(sumAndCountStatisticsData, getGenderKeys()))
                     .isInstanceOf(IllegalArgumentException.class);
-        }
-
-        private List<String> getGenderKeys() {
-            List<String> keys = Arrays.stream(Gender.values())
-                    .filter(g -> !g.equals(Gender.NONE))
-                    .map(Gender::name)
-                    .toList();
-            return keys;
         }
     }
 }

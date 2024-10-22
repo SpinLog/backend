@@ -39,6 +39,10 @@ public class MockCacheHashRepository implements CacheHashRepository {
     @Override
     public void decrementDataInHash(String key, String hashKey, long delta) {
         Object dataFromHash = getDataFromHash(key, hashKey);
+        if(dataFromHash == null) {
+            putDataInHash(key, hashKey, -delta);
+            return;
+        }
 
         if(!(dataFromHash instanceof Long)) {
             throw new InvalidCacheException("Data is not Long type");
@@ -67,6 +71,10 @@ public class MockCacheHashRepository implements CacheHashRepository {
     @Override
     public void decrementDataInHash(String key, String hashKey, double delta) {
         Object dataFromHash = getDataFromHash(key, hashKey);
+        if(dataFromHash == null) {
+            putDataInHash(key, hashKey, -delta);
+            return;
+        }
         if(!(dataFromHash instanceof Double)) {
             throw new InvalidCacheException("Data is not Double type");
         }

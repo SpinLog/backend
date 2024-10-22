@@ -121,7 +121,7 @@ class MBTIStatisticsRepositoryTest {
                                     .user(filteredUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay().plusSeconds(1L))
+                                    .spendDate(endDate.atStartOfDay())
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -140,7 +140,7 @@ class MBTIStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -184,7 +184,7 @@ class MBTIStatisticsRepositoryTest {
                                     .user(filteredUser)
                                     .registerType(filteredRegisterType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -203,7 +203,7 @@ class MBTIStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(survivedRegisterType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -246,7 +246,7 @@ class MBTIStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(2000)
                                     .build()
                                     .createArticle()),
@@ -255,7 +255,7 @@ class MBTIStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(3000)
                                     .build()
                                     .createArticle()));
@@ -304,7 +304,7 @@ class MBTIStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(2200)
                                     .build()
                                     .createArticle()),
@@ -313,7 +313,7 @@ class MBTIStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(3300)
                                     .build()
                                     .createArticle()));
@@ -359,7 +359,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(filteredUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay().plusSeconds(1L))
+                                    .spendDate(endDate.atStartOfDay())
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -376,7 +376,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -416,7 +416,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(filteredUser)
                                     .registerType(filteredRegisterType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -433,7 +433,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(survivedRegisterType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -466,7 +466,7 @@ class MBTIStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(1000)
                                     .build()
                                     .createArticle()),
@@ -475,7 +475,7 @@ class MBTIStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(2000)
                                     .build()
                                     .createArticle()),
@@ -484,7 +484,7 @@ class MBTIStatisticsRepositoryTest {
                                     .user(survivedUser)
                                     .registerType(registerType)
                                     .emotion(emotion)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(3000)
                                     .build()
                                     .createArticle()));
@@ -528,7 +528,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(filteredResiterType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .content(filteredContent)
                                     .build()
                                     .createArticle()));
@@ -545,7 +545,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(survivedRegisterType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .content(survivedContent)
                                     .build()
                                     .createArticle()));
@@ -585,7 +585,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(filteredUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay().plusSeconds(1L))
+                                    .spendDate(endDate.atStartOfDay())
                                     .content(filteredContent)
                                     .build()
                                     .createArticle()));
@@ -602,7 +602,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .content(survivedContent)
                                     .build()
                                     .createArticle()));
@@ -642,7 +642,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(filteredUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .content(filteredContent)
                                     .build()
                                     .createArticle()));
@@ -659,7 +659,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .content(survivedContent)
                                     .build()
                                     .createArticle()));
@@ -699,7 +699,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(filteredUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .content(filteredContent)
                                     .build()
                                     .createArticle()));
@@ -716,7 +716,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .content(survivedContent)
                                     .build()
                                     .createArticle()));
@@ -764,7 +764,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(filteredUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay().plusSeconds(1L))
+                                    .spendDate(endDate.atStartOfDay())
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -781,7 +781,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -821,7 +821,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(filteredUser)
                                     .registerType(filteredRegisterType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -838,7 +838,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(survivedRegisterType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .amount(1000)
                                     .build()
                                     .createArticle()));
@@ -870,7 +870,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .satisfaction(3.0f)
                                     .build()
                                     .createArticle()),
@@ -878,7 +878,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .satisfaction(4.0f)
                                     .build()
                                     .createArticle()));
@@ -914,7 +914,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .satisfaction(3.04f)
                                     .build()
                                     .createArticle()),
@@ -922,7 +922,7 @@ class MBTIStatisticsRepositoryTest {
                             ArticleFactory.builder()
                                     .user(survivedUser)
                                     .registerType(registerType)
-                                    .spendDate(endDate.atStartOfDay())
+                                    .spendDate(endDate.atStartOfDay().minusSeconds(1L))
                                     .satisfaction(4.08f)
                                     .build()
                                     .createArticle()));

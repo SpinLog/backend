@@ -13,6 +13,7 @@ import com.example.spinlog.statistics.dto.wordanalysis.WordFrequency;
 import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
 import com.example.spinlog.statistics.loginService.AuthenticatedUserService;
+import com.example.spinlog.statistics.service.cache.MBTIStatisticsCacheFallbackService;
 import com.example.spinlog.statistics.service.wordanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Mbti;
 import org.assertj.core.groups.Tuple;
@@ -42,6 +43,8 @@ class MBTIStatisticsServiceTest {
     @Mock
     MBTIStatisticsRepository mbtiStatisticsRepository;
     @Mock
+    MBTIStatisticsCacheFallbackService mbtiStatisticsCacheFallbackService;
+    @Mock
     AuthenticatedUserService authenticatedUserService;
 
     @InjectMocks
@@ -53,14 +56,14 @@ class MBTIStatisticsServiceTest {
         void MBTI별_감정별_금액_평균_데이터를_조회한_뒤_MBTI_별로_grouping해서_로그인_한_유저의_MBTI와_함께_반환한다() throws Exception {
             // given
             List<MBTIEmotionAmountAverageDto> returned = List.of(
-                    new MBTIEmotionAmountAverageDto(MBTIFactor.I, Emotion.PROUD, 1L),
-                    new MBTIEmotionAmountAverageDto(MBTIFactor.I, Emotion.SAD, 2L),
-                    new MBTIEmotionAmountAverageDto(MBTIFactor.E, Emotion.PROUD, 3L),
-                    new MBTIEmotionAmountAverageDto(MBTIFactor.E, Emotion.SAD, 4L)
+                    new MBTIEmotionAmountAverageDto(MBTIFactor.I, Emotion.PROUD, 1000L),
+                    new MBTIEmotionAmountAverageDto(MBTIFactor.I, Emotion.SAD, 2000L),
+                    new MBTIEmotionAmountAverageDto(MBTIFactor.E, Emotion.PROUD, 3000L),
+                    new MBTIEmotionAmountAverageDto(MBTIFactor.E, Emotion.SAD, 4000L)
             );
             List<Boolean> visited = new ArrayList<>(returned.size());
 
-            when(mbtiStatisticsRepository.getAmountAveragesEachMBTIAndEmotionBetweenStartDateAndEndDate(any(), any(), any()))
+            when(mbtiStatisticsCacheFallbackService.getAmountAveragesEachMBTIAndEmotion(any()))
                     .thenReturn(returned);
             when(authenticatedUserService.getUserMBTI())
                     .thenReturn(Mbti.ISTJ);
@@ -105,7 +108,7 @@ class MBTIStatisticsServiceTest {
             );
             List<Boolean> visited = new ArrayList<>(returned.size());
 
-            when(mbtiStatisticsRepository.getAmountAveragesEachMBTIAndEmotionBetweenStartDateAndEndDate(any(), any(), any()))
+            when(mbtiStatisticsCacheFallbackService.getAmountAveragesEachMBTIAndEmotion(any()))
                     .thenReturn(returned);
 
             // when
@@ -124,6 +127,32 @@ class MBTIStatisticsServiceTest {
                             list.stream()
                                     .map(MBTIEmotionAmountAverageResponse.EmotionAmountAverage::getEmotion)
                                     .allMatch(Arrays.asList(Emotion.values())::contains));
+        }
+
+        @Test
+        void 데이터를_천의_자리에서_반올림하여_반환한다() throws Exception {
+            // given
+            List<MBTIEmotionAmountAverageDto> returned = List.of(
+                    new MBTIEmotionAmountAverageDto(MBTIFactor.I, Emotion.PROUD, 1500L),
+                    new MBTIEmotionAmountAverageDto(MBTIFactor.I, Emotion.SAD, 2400L),
+                    new MBTIEmotionAmountAverageDto(MBTIFactor.E, Emotion.PROUD, 3700L),
+                    new MBTIEmotionAmountAverageDto(MBTIFactor.E, Emotion.SAD, 4500L)
+            );
+
+            when(mbtiStatisticsCacheFallbackService.getAmountAveragesEachMBTIAndEmotion(any()))
+                    .thenReturn(returned);
+
+            // when
+            MBTIEmotionAmountAverageResponse response =
+                    statisticsService.getAmountAveragesEachMBTIAndEmotionLast30Days(null);
+
+            // then
+            List<MBTIEmotionAmountAverageResponse.MBTIEmotionAmountAverage> responseList = response.getMbtiEmotionAmountAverages();
+            for(var r: responseList){
+                assertThat(r.getEmotionAmountAverages())
+                        .extracting(MBTIEmotionAmountAverageResponse.EmotionAmountAverage::getAmountAverage)
+                        .allMatch(a -> a % 1000 == 0);
+            }
         }
 
         private static List<MBTIEmotionAmountAverageResponse.MBTIEmotionAmountAverage> filterNonZeroAndNonEmptyAverages(
@@ -169,7 +198,7 @@ class MBTIStatisticsServiceTest {
                     new MBTIDailyAmountSumDto(MBTIFactor.E, LocalDate.now().minusDays(2L), 3L),
                     new MBTIDailyAmountSumDto(MBTIFactor.E, LocalDate.now().minusDays(1L), 4L)
             );
-            when(mbtiStatisticsRepository.getAmountSumsEachMBTIAndDayBetweenStartDateAndEndDate(any(), any(), any()))
+            when(mbtiStatisticsCacheFallbackService.getAmountSumsEachMBTIAndDay(any()))
                     .thenReturn(returned);
             when(authenticatedUserService.getUserMBTI())
                     .thenReturn(Mbti.ISTJ);
@@ -212,7 +241,7 @@ class MBTIStatisticsServiceTest {
                     new MBTIDailyAmountSumDto(MBTIFactor.E, LocalDate.now().minusDays(2L), 3L),
                     new MBTIDailyAmountSumDto(MBTIFactor.E, LocalDate.now().minusDays(1L), 4L)
             );
-            when(mbtiStatisticsRepository.getAmountSumsEachMBTIAndDayBetweenStartDateAndEndDate(any(), any(), any()))
+            when(mbtiStatisticsCacheFallbackService.getAmountSumsEachMBTIAndDay(any()))
                     .thenReturn(returned);
             when(authenticatedUserService.getUserMBTI())
                     .thenReturn(Mbti.ISTJ);
@@ -396,9 +425,7 @@ class MBTIStatisticsServiceTest {
                             .satisfactionAverage(1.0f)
                             .build()
             );
-            when(mbtiStatisticsRepository
-                    .getSatisfactionAveragesEachMBTIBetweenStartDateAndEndDate(
-                            any(),any(),any()))
+            when(mbtiStatisticsCacheFallbackService.getSatisfactionAveragesEachMBTI(any()))
                     .thenReturn(returned);
             when(authenticatedUserService.getUserMBTI())
                     .thenReturn(Mbti.ISTJ);
@@ -411,6 +438,36 @@ class MBTIStatisticsServiceTest {
             // then
             assertThat(response.getMbti()).isEqualTo(Mbti.ISTJ);
             assertThat(response.getMbtiSatisfactionAverages()).isEqualTo(returned);
+        }
+
+        @Test
+        void 데이터를_소수_첫째_자리에서_반올림하여_반환한다() throws Exception {
+            // given
+            List<MBTISatisfactionAverageDto> returned = List.of(
+                    MBTISatisfactionAverageDto.builder()
+                            .mbtiFactor(MBTIFactor.I)
+                            .satisfactionAverage(1.56f)
+                            .build(),
+                    MBTISatisfactionAverageDto.builder()
+                            .mbtiFactor(MBTIFactor.E)
+                            .satisfactionAverage(2.14f)
+                            .build()
+            );
+            when(mbtiStatisticsCacheFallbackService.getSatisfactionAveragesEachMBTI(any()))
+                    .thenReturn(returned);
+            when(authenticatedUserService.getUserMBTI())
+                    .thenReturn(Mbti.ISTJ);
+
+
+            // when
+            MBTISatisfactionAverageResponse response = statisticsService
+                    .getSatisfactionAveragesEachMBTILast30Days(null);
+
+            // then
+            List<MBTISatisfactionAverageDto> result = response.getMbtiSatisfactionAverages();
+            assertThat(result)
+                    .extracting(MBTISatisfactionAverageDto::getSatisfactionAverage)
+                    .containsExactlyInAnyOrder(1.6f, 2.1f);
         }
 
     }
