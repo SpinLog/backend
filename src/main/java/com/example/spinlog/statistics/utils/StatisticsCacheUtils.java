@@ -321,4 +321,13 @@ public class StatisticsCacheUtils {
             throw new InvalidCacheException("Invalid emotion format, value = " + key, e);
         }
     }
+
+    public static Long roundForApiResponse(Long amountAverage) {
+        return (amountAverage/1000)*1000;
+    }
+
+    public static Float roundForApiResponse(Float satisfactionAverage) {
+        String s = String.format("%.1f", satisfactionAverage);
+        return Float.valueOf(s);
+    }
 }

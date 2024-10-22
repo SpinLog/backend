@@ -41,14 +41,14 @@ public class GenderStatisticsService {
     public List<GenderEmotionAmountAverageResponse> getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType registerType){
         List<GenderEmotionAmountAverageDto> dtos = genderStatisticsCacheFallbackService.
                 getAmountAveragesEachGenderAndEmotion(registerType);
-        List<GenderEmotionAmountAverageDto> dtosWithZeroPadding = addZeroAverageForMissingGenderEmotionPairs(dtos);
+        List<GenderEmotionAmountAverageDto> dtosWithZeroPadding = zeroPaddingGenderEmotionAmountAverageDtoList(dtos);
         return toGenderEmotionAmountAverageResponse(dtosWithZeroPadding);
     }
 
     public List<GenderDailyAmountSumResponse> getAmountSumsEachGenderAndDayLast30Days(RegisterType registerType) {
         List<GenderDailyAmountSumDto> dtos = genderStatisticsCacheFallbackService
                 .getAmountSumsEachGenderAndDay(registerType);
-        List<GenderDailyAmountSumDto> dtosWithZeroPadding = addZeroAverageForMissingGenderLocalDatePairs(dtos);
+        List<GenderDailyAmountSumDto> dtosWithZeroPadding = zeroPaddingToGenderDailyAmountSumDtoList(dtos);
         return toGenderDailyAmountSumResponse(dtosWithZeroPadding);
     }
 

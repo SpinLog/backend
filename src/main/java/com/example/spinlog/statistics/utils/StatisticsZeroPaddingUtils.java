@@ -5,6 +5,9 @@ import com.example.spinlog.statistics.dto.cache.AllStatisticsCacheData;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.dto.repository.MBTIDailyAmountSumDto;
+import com.example.spinlog.statistics.dto.repository.MBTIEmotionAmountAverageDto;
+import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.user.entity.Gender;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -21,7 +24,7 @@ import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StatisticsZeroPaddingUtils {
 
-    public static List<GenderEmotionAmountAverageDto> addZeroAverageForMissingGenderEmotionPairs(List<GenderEmotionAmountAverageDto> dtos) {
+    public static List<GenderEmotionAmountAverageDto> zeroPaddingGenderEmotionAmountAverageDtoList(List<GenderEmotionAmountAverageDto> dtos) {
         Stream<GenderEmotionAmountAverageDto> zeroStream = Arrays.stream(Emotion.values())
                 .flatMap(e ->
                         Arrays.stream(Gender.values())
@@ -40,7 +43,7 @@ public class StatisticsZeroPaddingUtils {
                 .toList();
     }
 
-    public static List<GenderDailyAmountSumDto> addZeroAverageForMissingGenderLocalDatePairs(List<GenderDailyAmountSumDto> dtos) {
+    public static List<GenderDailyAmountSumDto> zeroPaddingToGenderDailyAmountSumDtoList(List<GenderDailyAmountSumDto> dtos) {
         Stream<LocalDate> localDateRanges = IntStream.rangeClosed(1, PERIOD_CRITERIA)
                 .mapToObj(i -> LocalDate.now().minusDays(i));
         Stream<GenderDailyAmountSumDto> zeroStream = localDateRanges
@@ -62,6 +65,48 @@ public class StatisticsZeroPaddingUtils {
                                         !d.getLocalDate().equals(LocalDate.now())),
                         zeroStream)
                 .sorted(byGenderAndLocalDate)
+                .toList();
+    }
+
+    public static List<MBTIEmotionAmountAverageDto> zeroPaddingToMBTIEmotionAmountAverageDtoList(List<MBTIEmotionAmountAverageDto> dtos) {
+        Stream<MBTIEmotionAmountAverageDto> zeroStream = Arrays.stream(Emotion.values())
+                .flatMap(e ->
+                        Arrays.stream(MBTIFactor.values())
+                                .map(f -> new MBTIEmotionAmountAverageDto(f, e, 0L)))
+                .filter(zeroDto -> dtos.stream()
+                        .noneMatch(dto -> dto.getMbtiFactor() == zeroDto.getMbtiFactor()
+                                && dto.getEmotion() == zeroDto.getEmotion()));
+
+        Comparator<MBTIEmotionAmountAverageDto> byMbtiFactorAndEmotion = Comparator
+                .comparing(MBTIEmotionAmountAverageDto::getMbtiFactor)
+                .thenComparing(MBTIEmotionAmountAverageDto::getEmotion);
+
+        return Stream.concat(dtos.stream(), zeroStream)
+                .sorted(byMbtiFactorAndEmotion)
+                .toList();
+    }
+
+    public static List<MBTIDailyAmountSumDto> zeroPaddingToMBTIDailyAmountSumDtoList(List<MBTIDailyAmountSumDto> dtos) {
+        Stream<LocalDate> localDateRanges = IntStream.rangeClosed(1, PERIOD_CRITERIA)
+                .mapToObj(i -> LocalDate.now().minusDays(i));
+        Stream<MBTIDailyAmountSumDto> zeroStream = localDateRanges
+                .flatMap(d ->
+                        Arrays.stream(MBTIFactor.values())
+                                .map(f -> new MBTIDailyAmountSumDto(f, d, 0L)))
+                .filter(zeroDto -> dtos.stream()
+                        .noneMatch(dto -> dto.getMbtiFactor() == zeroDto.getMbtiFactor()
+                                && dto.getLocalDate().equals(zeroDto.getLocalDate())));
+
+        Comparator<MBTIDailyAmountSumDto> byMbtiFactorAndLocalDate = Comparator
+                .comparing(MBTIDailyAmountSumDto::getMbtiFactor)
+                .thenComparing(MBTIDailyAmountSumDto::getLocalDate);
+
+        return Stream.concat(
+                        dtos.stream()
+                                .filter(d ->
+                                        !d.getLocalDate().equals(LocalDate.now())),
+                        zeroStream)
+                .sorted(byMbtiFactorAndLocalDate)
                 .toList();
     }
 
