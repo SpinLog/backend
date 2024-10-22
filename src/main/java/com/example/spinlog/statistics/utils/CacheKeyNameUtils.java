@@ -2,10 +2,14 @@ package com.example.spinlog.statistics.utils;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
+import com.example.spinlog.statistics.entity.MBTIFactor;
+import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.user.entity.Gender;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,15 +35,61 @@ public class CacheKeyNameUtils {
         return "GenderStatisticsSatisfactionCount::" + registerType;
     }
 
-    public static List<String> getGenderEmotionHashKeyNames(){
-        Emotion[] emotions = Emotion.values();
-        Gender[] genders = Gender.values();
-        return Arrays.stream(genders)
+    public static List<String> getGenderEmotionKeys() {
+        return Arrays.stream(Gender.values())
                 .filter(g -> !g.equals(Gender.NONE))
-                .flatMap(g -> {
-                    return Arrays.stream(emotions)
-                            .map(e -> g + "::" + e);
-                }).toList();
+                .flatMap(g ->
+                        Arrays.stream(Emotion.values())
+                                .map(e -> g + "::" + e))
+                .toList();
+    }
+
+    public static List<String> getGenderDailyKeys(StatisticsPeriodManager.Period period) {
+        LocalDate startDate = period.startDate();
+        LocalDate endDate = period.endDate();
+        List<String> keys = new ArrayList<>();
+        List<Gender> genders = Arrays.stream(Gender.values())
+                .filter(g -> !g.equals(Gender.NONE))
+                .toList();
+        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
+            String dateString = date.toString();
+            genders.forEach(g -> keys.add(g + "::" + dateString));
+        }
+        return keys;
+    }
+
+    public static List<String> getGenderKeys() {
+        return Arrays.stream(Gender.values())
+                .filter(g -> !g.equals(Gender.NONE))
+                .map(Gender::name)
+                .toList();
+    }
+
+    public static List<String> getMBTIEmotionKeys() {
+        return Arrays.stream(MBTIFactor.values())
+                .flatMap(f ->
+                        Arrays.stream(Emotion.values())
+                                .map(e -> f + "::" + e))
+                .toList();
+    }
+
+    public static List<String> getMBTIDailyKeys(StatisticsPeriodManager.Period period) {
+        LocalDate startDate = period.startDate();
+        LocalDate endDate = period.endDate();
+        List<String> keys = new ArrayList<>();
+        List<MBTIFactor> factors = Arrays.stream(MBTIFactor.values())
+                .toList();
+        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
+            String dateString = date.toString();
+            factors.forEach(f -> keys.add(f + "::" + dateString));
+        }
+        return keys;
+    }
+
+    public static List<String> getMBTIKeys() {
+        return Arrays.stream(MBTIFactor.values())
+                .map(MBTIFactor::name)
+                .toList();
     }
 
     public static String MBTI_EMOTION_AMOUNT_SUM_KEY_NAME(RegisterType registerType) {

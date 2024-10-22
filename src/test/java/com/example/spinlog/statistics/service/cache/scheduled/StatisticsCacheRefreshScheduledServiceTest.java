@@ -11,7 +11,6 @@ import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheWriteSe
 import com.example.spinlog.statistics.service.cache.MBTIStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.statistics.service.fetch.MBTIStatisticsRepositoryFetchService;
-import com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils;
 import com.example.spinlog.user.entity.Gender;
 import com.example.spinlog.util.CacheConfiguration;
 import com.example.spinlog.util.MockCacheHashRepository;
@@ -23,7 +22,6 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import static com.example.spinlog.article.entity.RegisterType.*;
 import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
@@ -86,7 +84,7 @@ class StatisticsCacheRefreshScheduledServiceTest {
     @Test
     void 레포지토리로부터_받은_31일_전의_데이터로_성별_캐시의_데이터를_감소시킨다() throws Exception {
         // given
-        List<String> keys = StatisticsZeroPaddingUtils.getGenderEmotionKeys();
+        List<String> keys = getGenderEmotionKeys();
         keys.forEach(key -> {
             cacheService.putDataInHash(
                     GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
@@ -116,7 +114,7 @@ class StatisticsCacheRefreshScheduledServiceTest {
     @Test
     void 레포지토리로부터_받은_31일_전의_데이터로_MBTI_캐시의_데이터를_감소시킨다() throws Exception {
         // given
-        List<String> keys = StatisticsZeroPaddingUtils.getMBTIEmotionKeys();
+        List<String> keys = getMBTIEmotionKeys();
         keys.forEach(key -> {
             cacheService.putDataInHash(
                     MBTI_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
@@ -151,7 +149,7 @@ class StatisticsCacheRefreshScheduledServiceTest {
     @Test
     void 레포지토리로부터_받은_오늘의_데이터로_성별_캐시의_데이터를_증가시킨다() throws Exception {
         // given
-        List<String> keys = getGenderEmotionHashKeyNames();
+        List<String> keys = getGenderEmotionKeys();
         keys.forEach(key -> {
             cacheService.putDataInHash(
                     GENDER_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
@@ -181,7 +179,7 @@ class StatisticsCacheRefreshScheduledServiceTest {
     @Test
     void 레포지토리로부터_받은_오늘의_데이터로_MBTI_캐시의_데이터를_증가시킨다() throws Exception {
         // given
-        List<String> keys = StatisticsZeroPaddingUtils.getMBTIEmotionKeys();
+        List<String> keys = getMBTIEmotionKeys();
         keys.forEach(key -> {
             cacheService.putDataInHash(
                     MBTI_EMOTION_AMOUNT_SUM_KEY_NAME(SPEND),
@@ -216,7 +214,7 @@ class StatisticsCacheRefreshScheduledServiceTest {
     @Test
     void GenderDailyAmountSum_캐시의_31일_전_필드를_삭제한다() throws Exception {
         // given
-        List<String> keys = StatisticsZeroPaddingUtils.getGenderDailyKeys(
+        List<String> keys = getGenderDailyKeys(
                 statisticsPeriodManager.getStatisticsPeriod());
         keys.forEach(key -> {
             cacheService.putDataInHash(
@@ -251,7 +249,7 @@ class StatisticsCacheRefreshScheduledServiceTest {
     @Test
     void MBTIDailyAmountSum_캐시의_31일_전_필드를_삭제한다() throws Exception {
         // given
-        List<String> keys = StatisticsZeroPaddingUtils.getMBTIDailyKeys(
+        List<String> keys = getMBTIDailyKeys(
                 statisticsPeriodManager.getStatisticsPeriod());
         keys.forEach(key -> {
             cacheService.putDataInHash(

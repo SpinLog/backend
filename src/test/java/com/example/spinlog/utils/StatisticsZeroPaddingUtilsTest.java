@@ -1,9 +1,6 @@
 package com.example.spinlog.utils;
 
-import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
-import com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils;
-import com.example.spinlog.user.entity.Gender;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
@@ -15,6 +12,7 @@ import java.util.*;
 
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils.*;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
@@ -77,7 +75,7 @@ class StatisticsZeroPaddingUtilsTest {
                     LocalDate.of(2021, 1, 3));
 
             // when
-            sums = zeroPaddingToGenderDailyAmountSums(sums, getGenderDailyKeys(period));
+            sums = zeroPaddingToAmountSums(sums, getGenderDailyKeys(period));
 
             // then
             List<String> genderDailyAmountKeys = getGenderDailyKeys(period);
@@ -101,7 +99,7 @@ class StatisticsZeroPaddingUtilsTest {
                     LocalDate.of(2021, 1, 3));
 
             // when // then
-            assertThatThrownBy(() -> zeroPaddingToGenderDailyAmountSums(sums, getGenderDailyKeys(period)))
+            assertThatThrownBy(() -> zeroPaddingToAmountSums(sums, getGenderDailyKeys(period)))
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
@@ -119,7 +117,7 @@ class StatisticsZeroPaddingUtilsTest {
             SumAndCountStatisticsData<Double> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(sumsMap, countsMap);
 
             // when
-            sumAndCountStatisticsData = zeroPaddingToGenderSatisfactionAmountCountsAndSums(sumAndCountStatisticsData, getGenderKeys());
+            sumAndCountStatisticsData = zeroPaddingToSatisfactionAmountCountsAndSums(sumAndCountStatisticsData, getGenderKeys());
 
             // then
             List<String> keys = getGenderKeys();
@@ -147,7 +145,7 @@ class StatisticsZeroPaddingUtilsTest {
             SumAndCountStatisticsData<Double> sumAndCountStatisticsData = new SumAndCountStatisticsData<>(sumsMap, countsMap);
 
             // when // then
-            assertThatThrownBy(() -> zeroPaddingToGenderSatisfactionAmountCountsAndSums(sumAndCountStatisticsData, getGenderKeys()))
+            assertThatThrownBy(() -> zeroPaddingToSatisfactionAmountCountsAndSums(sumAndCountStatisticsData, getGenderKeys()))
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }

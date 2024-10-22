@@ -15,12 +15,12 @@ public record AllStatisticsCacheData(
     @Override
     public String toString() {
         return "AllGenderStatisticsCacheData{" +
-                "\ngenderEmotionAmountSpendSumsAndCounts=" + emotionAmountSpendSumAndCountStatisticsData +
-                "\n\ngenderEmotionAmountSaveSumsAndCounts=" + emotionAmountSaveSumAndCountStatisticsData +
+                "\nemotionAmountSpendSumsAndCounts=" + emotionAmountSpendSumAndCountStatisticsData +
+                "\n\nemotionAmountSaveSumsAndCounts=" + emotionAmountSaveSumAndCountStatisticsData +
                 "\n\ndailyAmountSpendSums=" + dailyAmountSpendSums +
                 "\n\ndailyAmountSaveSums=" + dailyAmountSaveSums +
-                "\n\ngenderSatisfactionSpendSumsAndCounts=" + satisfactionSpendSumAndCountStatisticsData +
-                "\n\ngenderSatisfactionSaveSumsAndCounts=" + satisfactionSaveSumAndCountStatisticsData +
+                "\n\nsatisfactionSpendSumsAndCounts=" + satisfactionSpendSumAndCountStatisticsData +
+                "\n\nsatisfactionSaveSumsAndCounts=" + satisfactionSaveSumAndCountStatisticsData +
                 "\n}";
     }
 }

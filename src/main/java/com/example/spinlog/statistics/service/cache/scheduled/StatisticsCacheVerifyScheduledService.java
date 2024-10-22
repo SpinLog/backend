@@ -19,6 +19,7 @@ import java.util.Map;
 
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils.*;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -70,14 +71,14 @@ public class StatisticsCacheVerifyScheduledService { // todo VerifyService refac
                     + ") Error occurred while fetching mbti cache data. Cache will be updated.", e);
             SumAndCountStatisticsData<Double> repositoryData = mbtiStatisticsRepositoryFetchService
                     .getMBTISatisfactionCountsAndSums(registerType, startDate, endDate);
-            repositoryData = zeroPaddingToGenderSatisfactionAmountCountsAndSums(repositoryData, getMBTIKeys());
+            repositoryData = zeroPaddingToSatisfactionAmountCountsAndSums(repositoryData, getMBTIKeys());
             mbtiStatisticsCacheWriteService.replaceSatisfactionCountsAndSumsByMBTI(repositoryData, registerType);
             return;
         }
 
         SumAndCountStatisticsData<Double> repositoryData = mbtiStatisticsRepositoryFetchService
                 .getMBTISatisfactionCountsAndSums(registerType, startDate, endDate);
-        repositoryData = zeroPaddingToGenderSatisfactionAmountCountsAndSums(repositoryData, getMBTIKeys());
+        repositoryData = zeroPaddingToSatisfactionAmountCountsAndSums(repositoryData, getMBTIKeys());
 
         if (areNotApproximatelyEqual(cacheData, repositoryData)) {
             log.warn("RegisterType(" + registerType
@@ -102,14 +103,14 @@ public class StatisticsCacheVerifyScheduledService { // todo VerifyService refac
                     + ") Error occurred while fetching mbti cache data. Cache will be updated.", e);
             Map<String, Long> repositoryData = mbtiStatisticsRepositoryFetchService
                     .getMBTIDateAmountSums(registerType, startDate, endDate);
-            repositoryData = zeroPaddingToGenderDailyAmountSums(repositoryData, getMBTIDailyKeys(period));
+            repositoryData = zeroPaddingToAmountSums(repositoryData, getMBTIDailyKeys(period));
             mbtiStatisticsCacheWriteService.replaceAmountSumsByMBTIAndDate(repositoryData, registerType);
             return;
         }
 
         Map<String, Long> repositoryData = mbtiStatisticsRepositoryFetchService
                 .getMBTIDateAmountSums(registerType, startDate, endDate);
-        repositoryData = zeroPaddingToGenderDailyAmountSums(repositoryData, getMBTIDailyKeys(period));
+        repositoryData = zeroPaddingToAmountSums(repositoryData, getMBTIDailyKeys(period));
 
         if (areNotEqual(cacheData, repositoryData)) {
             log.warn("RegisterType(" + registerType
@@ -198,14 +199,14 @@ public class StatisticsCacheVerifyScheduledService { // todo VerifyService refac
                     + ") Error occurred while fetching gender cache data. Cache will be updated.", e);
             Map<String, Long> repositoryData = genderStatisticsRepositoryFetchService
                     .getGenderDateAmountSums(registerType, startDate, endDate);
-            repositoryData = zeroPaddingToGenderDailyAmountSums(repositoryData, getGenderDailyKeys(period));
+            repositoryData = zeroPaddingToAmountSums(repositoryData, getGenderDailyKeys(period));
             genderStatisticsCacheWriteService.replaceAmountSumsByGenderAndDate(repositoryData, registerType);
             return;
         }
 
         Map<String, Long> repositoryData = genderStatisticsRepositoryFetchService
                 .getGenderDateAmountSums(registerType, startDate, endDate);
-        repositoryData = zeroPaddingToGenderDailyAmountSums(repositoryData, getGenderDailyKeys(period));
+        repositoryData = zeroPaddingToAmountSums(repositoryData, getGenderDailyKeys(period));
 
         if (areNotEqual(cacheData, repositoryData)) {
             log.warn("RegisterType(" + registerType
@@ -231,14 +232,14 @@ public class StatisticsCacheVerifyScheduledService { // todo VerifyService refac
                     + ") Error occurred while fetching gender cache data. Cache will be updated.", e);
             SumAndCountStatisticsData<Double> repositoryData = genderStatisticsRepositoryFetchService
                     .getGenderSatisfactionCountsAndSums(registerType, startDate, endDate);
-            repositoryData = zeroPaddingToGenderSatisfactionAmountCountsAndSums(repositoryData, getGenderKeys());
+            repositoryData = zeroPaddingToSatisfactionAmountCountsAndSums(repositoryData, getGenderKeys());
             genderStatisticsCacheWriteService.replaceSatisfactionCountsAndSumsByGender(repositoryData, registerType);
             return;
         }
 
         SumAndCountStatisticsData<Double> repositoryData = genderStatisticsRepositoryFetchService
                 .getGenderSatisfactionCountsAndSums(registerType, startDate, endDate);
-        repositoryData = zeroPaddingToGenderSatisfactionAmountCountsAndSums(repositoryData, getGenderKeys());
+        repositoryData = zeroPaddingToSatisfactionAmountCountsAndSums(repositoryData, getGenderKeys());
 
         if (areNotApproximatelyEqual(cacheData, repositoryData)) {
             log.warn("RegisterType(" + registerType

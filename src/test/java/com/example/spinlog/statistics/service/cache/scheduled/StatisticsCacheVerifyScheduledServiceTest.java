@@ -2,7 +2,6 @@ package com.example.spinlog.statistics.service.cache.scheduled;
 
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
-import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.cache.MBTIStatisticsCacheWriteService;
@@ -21,6 +20,7 @@ import java.util.Map;
 
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
 import static com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils.*;
+import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -146,7 +146,7 @@ class StatisticsCacheVerifyScheduledServiceTest {
             Period period = statisticsPeriodManager.getStatisticsPeriod();
 
             Map<String, Long> cacheData = Map.of("MALE::2024-10-05", 1L, "MALE::2024-10-04", 2L);
-            cacheData = zeroPaddingToGenderDailyAmountSums(cacheData, getGenderDailyKeys(period));
+            cacheData = zeroPaddingToAmountSums(cacheData, getGenderDailyKeys(period));
             when(genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(any()))
                     .thenReturn(cacheData);
             when(genderStatisticsRepositoryFetchService.getGenderDateAmountSums(any(), any(), any()))
@@ -166,7 +166,7 @@ class StatisticsCacheVerifyScheduledServiceTest {
 
             Period period = statisticsPeriodManager.getStatisticsPeriod();
             Map<String, Long> cacheData = Map.of("MALE::2024-10-05", 1L, "MALE::2024-10-04", 2L);
-            cacheData = zeroPaddingToGenderDailyAmountSums(cacheData, getGenderDailyKeys(period));
+            cacheData = zeroPaddingToAmountSums(cacheData, getGenderDailyKeys(period));
             when(genderStatisticsCacheFetchService.getAmountSumsEachGenderAndDay(any()))
                     .thenReturn(cacheData);
             Map<String, Long> repositoryData = Map.of("MALE::2024-10-05", 1L, "MALE::2024-10-04", 200L);
@@ -369,7 +369,7 @@ class StatisticsCacheVerifyScheduledServiceTest {
             Period period = statisticsPeriodManager.getStatisticsPeriod();
 
             Map<String, Long> cacheData = Map.of("I::2024-10-05", 1L, "I::2024-10-04", 2L);
-            cacheData = zeroPaddingToGenderDailyAmountSums(cacheData, getMBTIDailyKeys(period));
+            cacheData = zeroPaddingToAmountSums(cacheData, getMBTIDailyKeys(period));
             when(mbtiStatisticsCacheFetchService.getAmountSumsEachMBTIAndDay(any()))
                     .thenReturn(cacheData);
             when(mbtiStatisticsRepositoryFetchService.getMBTIDateAmountSums(any(), any(), any()))
@@ -389,7 +389,7 @@ class StatisticsCacheVerifyScheduledServiceTest {
 
             Period period = statisticsPeriodManager.getStatisticsPeriod();
             Map<String, Long> cacheData = Map.of("I::2024-10-05", 1L, "I::2024-10-04", 20L);
-            cacheData = zeroPaddingToGenderDailyAmountSums(cacheData, getMBTIDailyKeys(period));
+            cacheData = zeroPaddingToAmountSums(cacheData, getMBTIDailyKeys(period));
             when(mbtiStatisticsCacheFetchService.getAmountSumsEachMBTIAndDay(any()))
                     .thenReturn(cacheData);
             Map<String, Long> repositoryData = Map.of("I::2024-10-05", 1L, "I::2024-10-04", 2L);
@@ -432,7 +432,7 @@ class StatisticsCacheVerifyScheduledServiceTest {
             SumAndCountStatisticsData<Double> cacheData = new SumAndCountStatisticsData<>(
                     Map.of("I", 1.0, "E", 2.0),
                     Map.of("I", 1L, "E", 2L));
-            cacheData = zeroPaddingToGenderSatisfactionAmountCountsAndSums(cacheData, getMBTIKeys());
+            cacheData = zeroPaddingToSatisfactionAmountCountsAndSums(cacheData, getMBTIKeys());
             when(mbtiStatisticsCacheFetchService.getSatisfactionAveragesEachMBTI(any()))
                     .thenReturn(cacheData);
             when(mbtiStatisticsRepositoryFetchService.getMBTISatisfactionCountsAndSums(any(), any(), any()))
