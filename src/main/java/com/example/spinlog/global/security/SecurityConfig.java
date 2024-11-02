@@ -125,6 +125,7 @@ public class SecurityConfig {
         configuration.setAllowCredentials(true);
         configuration.setAllowedOriginPatterns(Arrays.asList(
                 "https://frontend-chi-sage-83.vercel.app",
+                "http://localhost:4173",
                 "http://localhost:5173",
                 "https://spinlog.swygbro.com"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));

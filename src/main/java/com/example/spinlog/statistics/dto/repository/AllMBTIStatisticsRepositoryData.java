@@ -11,7 +11,7 @@ import java.util.List;
 
 import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.*;
 
-@Builder // todo : rename
+@Builder
 public record AllMBTIStatisticsRepositoryData (
     List<EmotionAmountSumAndCountDto> emotionAmountSpendSumsAndCounts,
     List<EmotionAmountSumAndCountDto> emotionAmountSaveSumsAndCounts,
