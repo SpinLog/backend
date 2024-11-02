@@ -15,7 +15,7 @@ import static com.example.spinlog.article.entity.RegisterType.*;
 import static com.example.spinlog.statistics.utils.CacheKeyNameUtils.*;
 
 @Component
-@Transactional(readOnly = true) // todo 범위 좁히기
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
 public class GenderStatisticsCacheSetupService {
