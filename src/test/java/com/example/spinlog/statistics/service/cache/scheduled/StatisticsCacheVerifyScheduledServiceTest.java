@@ -9,13 +9,13 @@ import com.example.spinlog.statistics.service.fetch.GenderStatisticsCacheFetchSe
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.statistics.service.fetch.MBTIStatisticsCacheFetchService;
 import com.example.spinlog.statistics.service.fetch.MBTIStatisticsRepositoryFetchService;
+import com.example.spinlog.utils.ClockUtils;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.Clock;
 import java.util.Map;
 
 import static com.example.spinlog.statistics.service.StatisticsPeriodManager.*;
@@ -35,7 +35,8 @@ class StatisticsCacheVerifyScheduledServiceTest {
     MBTIStatisticsRepositoryFetchService mbtiStatisticsRepositoryFetchService = mock(MBTIStatisticsRepositoryFetchService.class);
     MBTIStatisticsCacheWriteService mbtiStatisticsCacheWriteService = mock(MBTIStatisticsCacheWriteService.class);
 
-    StatisticsPeriodManager statisticsPeriodManager = new StatisticsPeriodManager(Clock.systemDefaultZone());
+    StatisticsPeriodManager statisticsPeriodManager = new StatisticsPeriodManager(
+            ClockUtils.getFixedClock("2024-10-11"));
 
     StatisticsCacheVerifyScheduledService targetService = new StatisticsCacheVerifyScheduledService(
             genderStatisticsCacheFetchService,
