@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
-
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
 

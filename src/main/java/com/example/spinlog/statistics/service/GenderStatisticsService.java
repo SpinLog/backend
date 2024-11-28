@@ -10,6 +10,7 @@ import com.example.spinlog.statistics.dto.response.*;
 import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheFallbackService;
 import com.example.spinlog.statistics.service.wordanalysis.WordExtractionService;
 import com.example.spinlog.user.entity.Gender;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,17 +27,12 @@ import static java.util.stream.Collectors.groupingBy;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true) // todo 범위 좁히기
 public class GenderStatisticsService {
     private final GenderStatisticsRepository genderStatisticsRepository;
     private final GenderStatisticsCacheFallbackService genderStatisticsCacheFallbackService;
     private final WordExtractionService wordExtractionService;
-
-    public GenderStatisticsService(GenderStatisticsRepository genderStatisticsRepository, GenderStatisticsCacheFallbackService genderStatisticsCacheFallbackService, WordExtractionService wordExtractionService) {
-        this.genderStatisticsRepository = genderStatisticsRepository;
-        this.genderStatisticsCacheFallbackService = genderStatisticsCacheFallbackService;
-        this.wordExtractionService = wordExtractionService;
-    }
 
     public List<GenderEmotionAmountAverageResponse> getAmountAveragesEachGenderAndEmotionLast30Days(RegisterType registerType){
         List<GenderEmotionAmountAverageDto> dtos = genderStatisticsCacheFallbackService.
