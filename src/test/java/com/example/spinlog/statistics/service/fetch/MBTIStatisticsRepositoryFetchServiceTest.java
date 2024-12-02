@@ -11,7 +11,7 @@ import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.statistics.dto.repository.MBTIDailyAmountSumDto;
-import com.example.spinlog.statistics.dto.repository.AllMBTIStatisticsRepositoryData;
+import com.example.spinlog.statistics.dto.repository.AllStatisticsRepositoryData;
 import com.example.spinlog.article.entity.RegisterType;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -114,7 +114,7 @@ class MBTIStatisticsRepositoryFetchServiceTest {
         when(mbtiStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(satisfactionSpendSumsAndCounts);
         when(mbtiStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(satisfactionSaveSumsAndCounts);
 
-        AllMBTIStatisticsRepositoryData result = mbtiStatisticsRepositoryFetchService.getAllMBTIStatisticsRepositoryDataByUserId(userId, startDate, endDate);
+        AllStatisticsRepositoryData result = mbtiStatisticsRepositoryFetchService.getAllMBTIStatisticsRepositoryDataByUserId(userId, startDate, endDate);
 
 
         assertThat(result).isNotNull();

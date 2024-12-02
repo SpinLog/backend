@@ -4,7 +4,7 @@ import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.statistics.dto.*;
 import com.example.spinlog.statistics.dto.cache.AllStatisticsCacheData;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
-import com.example.spinlog.statistics.dto.repository.AllMBTIStatisticsRepositoryData;
+import com.example.spinlog.statistics.dto.repository.AllStatisticsRepositoryData;
 import com.example.spinlog.statistics.dto.repository.MBTIDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
 import lombok.RequiredArgsConstructor;
@@ -70,7 +70,7 @@ public class MBTIStatisticsRepositoryFetchService {
         return toMBTISatisfactionSumAndCountStatisticsData(satisfactionSumsAndCounts);
     }
 
-    public AllMBTIStatisticsRepositoryData getAllMBTIStatisticsRepositoryDataByUserId(Long userId, LocalDate startDate, LocalDate endDate) {
+    public AllStatisticsRepositoryData getAllMBTIStatisticsRepositoryDataByUserId(Long userId, LocalDate startDate, LocalDate endDate) {
         List<EmotionAmountSumAndCountDto> emotionAmountSpendSumsAndCounts = mbtiStatisticsRepository
                 .getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
                         userId, SPEND, startDate, endDate);
@@ -92,7 +92,7 @@ public class MBTIStatisticsRepositoryFetchService {
                 .getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
                         userId, SAVE, startDate, endDate);
 
-        return AllMBTIStatisticsRepositoryData.builder()
+        return AllStatisticsRepositoryData.builder()
                 .emotionAmountSpendSumsAndCounts(emotionAmountSpendSumsAndCounts)
                 .emotionAmountSaveSumsAndCounts(emotionAmountSaveSumsAndCounts)
                 .dailyAmountSpendSums(dailyAmountSpendSums)

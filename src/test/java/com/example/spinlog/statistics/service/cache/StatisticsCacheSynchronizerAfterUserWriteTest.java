@@ -7,7 +7,6 @@ import com.example.spinlog.statistics.dto.DailyAmountSumDto;
 import com.example.spinlog.statistics.dto.EmotionAmountSumAndCountDto;
 import com.example.spinlog.statistics.dto.SatisfactionSumAndCountDto;
 import com.example.spinlog.statistics.dto.repository.*;
-import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.statistics.service.fetch.MBTIStatisticsRepositoryFetchService;
@@ -209,8 +208,8 @@ class StatisticsCacheSynchronizerAfterUserWriteTest {
         verify(mbtiStatisticsRepositoryFetchService, never()).getAllMBTIStatisticsRepositoryDataByUserId(any(), any(), any());
     }
 
-    private AllMBTIStatisticsRepositoryData getAllMBTIStatisticsRepositoryData() {
-        return AllMBTIStatisticsRepositoryData.builder()
+    private AllStatisticsRepositoryData getAllMBTIStatisticsRepositoryData() {
+        return AllStatisticsRepositoryData.builder()
                 .emotionAmountSpendSumsAndCounts(List.of(
                         new EmotionAmountSumAndCountDto(Emotion.PROUD, 50L, 5L)))
                 .emotionAmountSaveSumsAndCounts(List.of())

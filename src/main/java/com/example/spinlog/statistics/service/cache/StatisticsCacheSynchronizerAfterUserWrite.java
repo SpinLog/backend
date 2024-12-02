@@ -3,7 +3,7 @@ package com.example.spinlog.statistics.service.cache;
 import com.example.spinlog.statistics.dto.cache.AllStatisticsCacheData;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.statistics.dto.repository.AllGenderStatisticsRepositoryData;
-import com.example.spinlog.statistics.dto.repository.AllMBTIStatisticsRepositoryData;
+import com.example.spinlog.statistics.dto.repository.AllStatisticsRepositoryData;
 import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
@@ -49,7 +49,7 @@ public class StatisticsCacheSynchronizerAfterUserWrite {
         }
 
         if(isMBTIChanged(originalUser, updatedUser)) {
-            AllMBTIStatisticsRepositoryData repositoryResult = mbtiStatisticsRepositoryFetchService
+            AllStatisticsRepositoryData repositoryResult = mbtiStatisticsRepositoryFetchService
                     .getAllMBTIStatisticsRepositoryDataByUserId(updatedUser.getId(), startDate, endDate);
 
             updateMBTIStatisticsCacheForPreviousMBTI(repositoryResult, originalUser);
@@ -105,14 +105,14 @@ public class StatisticsCacheSynchronizerAfterUserWrite {
         genderStatisticsCacheWriteService.incrementAllData(statisticsAllData);
     }
 
-    private void updateMBTIStatisticsCacheForPreviousMBTI(AllMBTIStatisticsRepositoryData repositoryResult, User originalUser) {
+    private void updateMBTIStatisticsCacheForPreviousMBTI(AllStatisticsRepositoryData repositoryResult, User originalUser) {
         for(char mbtiFactor: originalUser.getMbti().toString().toCharArray()){
             AllStatisticsCacheData mbtiReversedData = repositoryResult.toCacheDate(MBTIFactor.valueOf(String.valueOf(mbtiFactor)));
             mbtiStatisticsCacheWriteService.decrementAllData(mbtiReversedData);
         }
     }
 
-    private void updateMBTIStatisticsCacheForChangedMBTI(AllMBTIStatisticsRepositoryData repositoryResult, User updatedUser) {
+    private void updateMBTIStatisticsCacheForChangedMBTI(AllStatisticsRepositoryData repositoryResult, User updatedUser) {
         for(char mbtiFactor: updatedUser.getMbti().toString().toCharArray()){
             AllStatisticsCacheData mbtiReversedData = repositoryResult.toCacheDate(MBTIFactor.valueOf(String.valueOf(mbtiFactor)));
             mbtiStatisticsCacheWriteService.incrementAllData(mbtiReversedData);

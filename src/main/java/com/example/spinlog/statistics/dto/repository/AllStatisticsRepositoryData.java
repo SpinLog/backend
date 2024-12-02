@@ -12,7 +12,7 @@ import java.util.List;
 import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.*;
 
 @Builder
-public record AllMBTIStatisticsRepositoryData (
+public record AllStatisticsRepositoryData(
     List<EmotionAmountSumAndCountDto> emotionAmountSpendSumsAndCounts,
     List<EmotionAmountSumAndCountDto> emotionAmountSaveSumsAndCounts,
     List<DailyAmountSumDto> dailyAmountSpendSums,
