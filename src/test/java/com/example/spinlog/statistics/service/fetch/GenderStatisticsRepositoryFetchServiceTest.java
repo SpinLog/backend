@@ -6,6 +6,8 @@ import static org.mockito.Mockito.*;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
+import com.example.spinlog.statistics.dto.GenderEmotionAmountSumAndCountDto;
+import com.example.spinlog.statistics.dto.GenderSatisfactionSumAndCountDto;
 import com.example.spinlog.statistics.dto.repository.AllGenderStatisticsRepositoryData;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
@@ -38,10 +40,9 @@ class GenderStatisticsRepositoryFetchServiceTest {
         LocalDate startDate = LocalDate.now().minusDays(10);
         LocalDate endDate = LocalDate.now();
         RegisterType registerType = SPEND;
-        List<GenderEmotionAmountAverageDto> amountSums = List.of(new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 100L));
-        List<GenderEmotionAmountAverageDto> amountCounts = List.of(new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 10L));
-        when(genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(registerType, startDate, endDate)).thenReturn(amountSums);
-        when(genderStatisticsRepository.getAmountCountsEachGenderAndEmotionBetweenStartDateAndEndDate(registerType, startDate, endDate)).thenReturn(amountCounts);
+        List<GenderEmotionAmountSumAndCountDto> amountSums = List.of(new GenderEmotionAmountSumAndCountDto(Gender.MALE, Emotion.SAD, 100L, 10L));
+        when(genderStatisticsRepository.getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate(registerType, startDate, endDate))
+                .thenReturn(amountSums);
 
         // when
         SumAndCountStatisticsData<Long> result = targetService.getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
@@ -78,14 +79,9 @@ class GenderStatisticsRepositoryFetchServiceTest {
         LocalDate endDate = LocalDate.now();
         RegisterType registerType = SPEND;
 
-        List<GenderDataDto<Double>> satisfactionSums = List.of(
-                GenderDataDto.<Double>builder()
-                        .gender(Gender.MALE).value(4.5).build());
-        List<GenderDataDto<Long>> satisfactionCounts = List.of(
-                GenderDataDto.<Long>builder()
-                        .gender(Gender.MALE).value(20L).build());
-        when(genderStatisticsRepository.getSatisfactionSumsEachGenderBetweenStartDateAndEndDate(registerType, startDate, endDate)).thenReturn(satisfactionSums);
-        when(genderStatisticsRepository.getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(registerType, startDate, endDate)).thenReturn(satisfactionCounts);
+        List<GenderSatisfactionSumAndCountDto> satisfactionSumsAndCounts = List.of(
+                new GenderSatisfactionSumAndCountDto(Gender.MALE, 4.5, 20L));
+        when(genderStatisticsRepository.getSatisfactionSumsAndCountsEachGenderBetweenStartDateAndEndDate(registerType, startDate, endDate)).thenReturn(satisfactionSumsAndCounts);
 
         // when
         SumAndCountStatisticsData<Double> result = targetService.getGenderSatisfactionCountsAndSums(registerType, startDate, endDate);

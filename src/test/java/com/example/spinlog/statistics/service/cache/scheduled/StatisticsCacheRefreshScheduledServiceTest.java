@@ -1,6 +1,7 @@
 package com.example.spinlog.statistics.service.cache.scheduled;
 
 import com.example.spinlog.article.entity.Emotion;
+import com.example.spinlog.statistics.dto.GenderEmotionAmountSumAndCountDto;
 import com.example.spinlog.statistics.dto.MBTIEmotionAmountSumAndCountDto;
 import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
@@ -98,10 +99,10 @@ class StatisticsCacheRefreshScheduledServiceTest {
 
         LocalDate oldStartDate = LocalDate.now(clock).minusDays(PERIOD_CRITERIA);
         LocalDate oldEndDate = oldStartDate.plusDays(1);
-        when(genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
+        when(genderStatisticsRepository.getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
                 eq(SPEND), eq(oldStartDate), eq(oldEndDate)))
                 .thenReturn(List.of(
-                        new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 500L)));
+                        new GenderEmotionAmountSumAndCountDto(Gender.MALE, Emotion.SAD, 500L, 1L)));
 
         // when
         targetService.refreshGenderStatisticsCache();
@@ -163,10 +164,10 @@ class StatisticsCacheRefreshScheduledServiceTest {
 
         LocalDate todayStartDate = LocalDate.now(clock);
         LocalDate todayEndDate = todayStartDate.plusDays(1);
-        when(genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
+        when(genderStatisticsRepository.getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
                 eq(SPEND), eq(todayStartDate), eq(todayEndDate)))
                 .thenReturn(List.of(
-                        new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 500L)));
+                        new GenderEmotionAmountSumAndCountDto(Gender.MALE, Emotion.SAD, 500L, 1L)));
 
         // when
         targetService.refreshGenderStatisticsCache();
@@ -350,15 +351,11 @@ class StatisticsCacheRefreshScheduledServiceTest {
 
     private void verifyRequestAllStatisticsDataFromRepository(LocalDate startDate, LocalDate endDate) {
         // any() -> SPEND, SAVE
-        verify(genderStatisticsRepository, times(2)).getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
-                any(), eq(startDate), eq(endDate));
-        verify(genderStatisticsRepository, times(2)).getAmountCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
+        verify(genderStatisticsRepository, times(2)).getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
                 any(), eq(startDate), eq(endDate));
         verify(genderStatisticsRepository, times(2)).getAmountSumsEachGenderAndDayBetweenStartDateAndEndDate(
                 any(), eq(startDate), eq(endDate));
-        verify(genderStatisticsRepository, times(2)).getSatisfactionSumsEachGenderBetweenStartDateAndEndDate(
-                any(), eq(startDate), eq(endDate));
-        verify(genderStatisticsRepository, times(2)).getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(
+        verify(genderStatisticsRepository, times(2)).getSatisfactionSumsAndCountsEachGenderBetweenStartDateAndEndDate(
                 any(), eq(startDate), eq(endDate));
 
         verify(mbtiStatisticsRepository, times(2)).getAmountSumsAndCountsEachMBTIAndEmotionBetweenStartDateAndEndDate(

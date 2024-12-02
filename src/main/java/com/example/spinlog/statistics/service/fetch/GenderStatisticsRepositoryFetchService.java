@@ -1,6 +1,8 @@
 package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
+import com.example.spinlog.statistics.dto.GenderEmotionAmountSumAndCountDto;
+import com.example.spinlog.statistics.dto.GenderSatisfactionSumAndCountDto;
 import com.example.spinlog.statistics.dto.cache.AllStatisticsCacheData;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.statistics.dto.repository.AllGenderStatisticsRepositoryData;
@@ -48,19 +50,12 @@ public class GenderStatisticsRepositoryFetchService {
     }
 
     public SumAndCountStatisticsData<Long> getGenderEmotionAmountCountsAndSums(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
-        List<GenderEmotionAmountAverageDto> amountSums = genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
-                registerType,
-                startDate,
-                endDate);
-        List<GenderEmotionAmountAverageDto> amountCounts = genderStatisticsRepository.getAmountCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
+        List<GenderEmotionAmountSumAndCountDto> amountSumAndCount = genderStatisticsRepository.getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
                 registerType,
                 startDate,
                 endDate);
 
-        Map<String, Long> amountSumsMap = toGenderEmotionMap(amountSums);
-        Map<String, Long> amountCountsMap = toGenderEmotionMap(amountCounts);
-
-        return new SumAndCountStatisticsData<>(amountSumsMap, amountCountsMap);
+        return toGenderEmotionAmountSumAndCountStatisticsData(amountSumAndCount);
     }
 
     public Map<String, Long> getGenderDateAmountSums(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
@@ -72,19 +67,12 @@ public class GenderStatisticsRepositoryFetchService {
     }
 
     public SumAndCountStatisticsData<Double> getGenderSatisfactionCountsAndSums(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
-        List<GenderDataDto<Double>> satisfactionSums = genderStatisticsRepository.getSatisfactionSumsEachGenderBetweenStartDateAndEndDate(
-                registerType,
-                startDate,
-                endDate);
-        List<GenderDataDto<Long>> satisfactionCounts = genderStatisticsRepository.getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(
+        List<GenderSatisfactionSumAndCountDto> satisfactionSumsAndCounts = genderStatisticsRepository.getSatisfactionSumsAndCountsEachGenderBetweenStartDateAndEndDate(
                 registerType,
                 startDate,
                 endDate);
 
-        Map<String, Double> satisfactionSumsMap = toGenderMap(satisfactionSums);
-        Map<String, Long> satisfactionCountsMap = toGenderMap(satisfactionCounts);
-
-        return new SumAndCountStatisticsData<>(satisfactionSumsMap, satisfactionCountsMap);
+        return toGenderSatisfactionSumAndCountStatisticsData(satisfactionSumsAndCounts);
     }
 
     public AllGenderStatisticsRepositoryData getGenderStatisticsAllDataByUserId(Long userId, LocalDate startDate, LocalDate endDate) { // todo : rename

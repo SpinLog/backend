@@ -34,7 +34,7 @@ public class StatisticsRepositoryQueryByUserIdTest {
     @Autowired
     MBTIStatisticsRepository mbtiStatisticsRepository;
     @Autowired
-    GenderStatisticsRepository genderStatisticsRepository;
+    GenderStatisticsRepository genderStatisticsRepository; // ByUserId 쿼리 중복 제거
     @Autowired
     private ArticleRepository articleRepository;
     @Autowired

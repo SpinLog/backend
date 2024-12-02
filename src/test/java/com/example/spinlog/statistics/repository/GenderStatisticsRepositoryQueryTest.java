@@ -3,6 +3,8 @@ package com.example.spinlog.statistics.repository;
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.article.repository.ArticleRepository;
+import com.example.spinlog.statistics.dto.GenderEmotionAmountSumAndCountDto;
+import com.example.spinlog.statistics.dto.GenderSatisfactionSumAndCountDto;
 import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.dto.repository.GenderDataDto;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
@@ -146,38 +148,38 @@ class GenderStatisticsRepositoryQueryTest {
     }
 
     @Nested
-    class getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate_성별_감정별_금액_합을_반환하는_메서드 {
+    class getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate_성별_감정별_금액_합과_개수를_반환하는_메서드 {
         @Test
         void 성별로_그룹핑한다() throws Exception {
             // when
-            List<GenderEmotionAmountAverageDto> dtos =
-                    genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
+            List<GenderEmotionAmountSumAndCountDto> dtos =
+                    genderStatisticsRepository.getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
                             RegisterType.SPEND, startDate, endDate);
 
             // then
             checkContainsOnly(
-                    dtos, (dto) -> dto.stream().map(GenderEmotionAmountAverageDto::getGender).toList(),
+                    dtos, (dto) -> dto.stream().map(GenderEmotionAmountSumAndCountDto::getGender).toList(),
                     Gender.MALE, Gender.FEMALE);
         }
         
         @Test
         void 감정별로_그룹핑한다() throws Exception {
             // when
-            List<GenderEmotionAmountAverageDto> dtos =
-                    genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
+            List<GenderEmotionAmountSumAndCountDto> dtos =
+                    genderStatisticsRepository.getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
                             RegisterType.SPEND, startDate, endDate);
             
             // then
             checkContainsOnly(
-                    dtos, (dto) -> dto.stream().map(GenderEmotionAmountAverageDto::getEmotion).toList(),
+                    dtos, (dto) -> dto.stream().map(GenderEmotionAmountSumAndCountDto::getEmotion).toList(),
                     Emotion.PROUD, Emotion.SAD);
         }
 
         @Test
         void 필터링_이후_각_amount_의_합을_반환한다() throws Exception {
             // when
-            List<GenderEmotionAmountAverageDto> dtos =
-                    genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
+            List<GenderEmotionAmountSumAndCountDto> dtos =
+                    genderStatisticsRepository.getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
                             RegisterType.SPEND, startDate, endDate);
 
             // then
@@ -192,46 +194,17 @@ class GenderStatisticsRepositoryQueryTest {
                                 .filter(d ->
                                         d.getGender().equals(genders.get(index)) &&
                                                 d.getEmotion().equals(emotions.get(index)))
-                                .map(GenderEmotionAmountAverageDto::getAmountAverage)
+                                .map(GenderEmotionAmountSumAndCountDto::getAmountSum)
                                 .findFirst().orElseThrow(),
                         amountSums.get(index));
             }
-        }
-    }
-
-    @Nested
-    class getAmountCountsEachGenderAndEmotionBetweenStartDateAndEndDate_성별_감정별_금액_개수를_반환하는_메서드 {
-        @Test
-        void 성별로_그룹핑한다() throws Exception {
-            // when
-            List<GenderEmotionAmountAverageDto> dtos =
-                    genderStatisticsRepository.getAmountCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
-                            RegisterType.SPEND, startDate, endDate);
-
-            // then
-            checkContainsOnly(
-                    dtos, (dto) -> dto.stream().map(GenderEmotionAmountAverageDto::getGender).toList(),
-                    Gender.MALE, Gender.FEMALE);
-        }
-
-        @Test
-        void 감정별로_그룹핑한다() throws Exception {
-            // when
-            List<GenderEmotionAmountAverageDto> dtos =
-                    genderStatisticsRepository.getAmountCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
-                            RegisterType.SPEND, startDate, endDate);
-
-            // then
-            checkContainsOnly(
-                    dtos, (dto) -> dto.stream().map(GenderEmotionAmountAverageDto::getEmotion).toList(),
-                    Emotion.PROUD, Emotion.SAD);
         }
 
         @Test
         void 필터링_이후_각_amount_의_개수를_반환한다() throws Exception {
             // when
-            List<GenderEmotionAmountAverageDto> dtos =
-                    genderStatisticsRepository.getAmountCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
+            List<GenderEmotionAmountSumAndCountDto> dtos =
+                    genderStatisticsRepository.getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
                             RegisterType.SPEND, startDate, endDate);
 
             // then
@@ -246,7 +219,7 @@ class GenderStatisticsRepositoryQueryTest {
                                 .filter(d ->
                                         d.getGender().equals(genders.get(index)) &&
                                                 d.getEmotion().equals(emotions.get(index)))
-                                .map(GenderEmotionAmountAverageDto::getAmountAverage)
+                                .map(GenderEmotionAmountSumAndCountDto::getAmountCount)
                                 .findFirst().orElseThrow(),
                         amountSums.get(index));
             }
@@ -309,25 +282,25 @@ class GenderStatisticsRepositoryQueryTest {
     }
 
     @Nested
-    class getSatisfactionSumsEachGenderBetweenStartDateAndEndDate_성별_만족도_합을_반환하는_메서드 {
+    class getSatisfactionSumsAndCountsEachGenderBetweenStartDateAndEndDate_성별_만족도_합과_개수를_반환하는_메서드 {
         @Test
         void 성별로_그룹핑한다() throws Exception {
             // when
-            List<GenderDataDto<Double>> dtos =
-                    genderStatisticsRepository.getSatisfactionSumsEachGenderBetweenStartDateAndEndDate(
+            List<GenderSatisfactionSumAndCountDto> dtos =
+                    genderStatisticsRepository.getSatisfactionSumsAndCountsEachGenderBetweenStartDateAndEndDate(
                             RegisterType.SPEND, startDate, endDate);
 
             // then
             checkContainsOnly(
-                    dtos, (dto) -> dto.stream().map(GenderDataDto::getGender).toList(),
+                    dtos, (dto) -> dto.stream().map(GenderSatisfactionSumAndCountDto::getGender).toList(),
                     Gender.MALE, Gender.FEMALE);
         }
 
         @Test
         void 필터링_이후_각_satisfaction_의_합를_반환한다() throws Exception {
             // when
-            List<GenderDataDto<Double>> dtos =
-                    genderStatisticsRepository.getSatisfactionSumsEachGenderBetweenStartDateAndEndDate(
+            List<GenderSatisfactionSumAndCountDto> dtos =
+                    genderStatisticsRepository.getSatisfactionSumsAndCountsEachGenderBetweenStartDateAndEndDate(
                             RegisterType.SPEND, startDate, endDate);
 
             // then
@@ -340,33 +313,17 @@ class GenderStatisticsRepositoryQueryTest {
                         (dto) -> dto.stream()
                                 .filter(d ->
                                         d.getGender().equals(genders.get(index)))
-                                .map(GenderDataDto::getValue)
+                                .map(GenderSatisfactionSumAndCountDto::getSatisfactionSum)
                                 .findFirst().orElseThrow(),
                         satisfactionSums.get(index));
             }
-        }
-    }
-
-    @Nested
-    class getSatisfactionCountsEachGenderBetweenStartDateAndEndDate_성별_만족도_개수를_반환하는_메서드 {
-        @Test
-        void 성별로_그룹핑한다() throws Exception {
-            // when
-            List<GenderDataDto<Long>> dtos =
-                    genderStatisticsRepository.getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(
-                            RegisterType.SPEND, startDate, endDate);
-
-            // then
-            checkContainsOnly(
-                    dtos, (dto) -> dto.stream().map(GenderDataDto::getGender).toList(),
-                    Gender.MALE, Gender.FEMALE);
         }
 
         @Test
         void 필터링_이후_각_satisfaction_의_개수를_반환한다() throws Exception {
             // when
-            List<GenderDataDto<Long>> dtos =
-                    genderStatisticsRepository.getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(
+            List<GenderSatisfactionSumAndCountDto> dtos =
+                    genderStatisticsRepository.getSatisfactionSumsAndCountsEachGenderBetweenStartDateAndEndDate(
                             RegisterType.SPEND, startDate, endDate);
 
             // then
@@ -379,7 +336,7 @@ class GenderStatisticsRepositoryQueryTest {
                         (dto) -> dto.stream()
                                 .filter(d ->
                                         d.getGender().equals(genders.get(index)))
-                                .map(GenderDataDto::getValue)
+                                .map(GenderSatisfactionSumAndCountDto::getSatisfactionCount)
                                 .findFirst().orElseThrow(),
                         satisfactionCounts.get(index));
             }

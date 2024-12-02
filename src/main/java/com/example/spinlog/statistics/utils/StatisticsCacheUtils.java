@@ -31,6 +31,30 @@ public class StatisticsCacheUtils {
                         GenderEmotionAmountAverageDto::getAmountAverage));
     }
 
+    public static SumAndCountStatisticsData<Long> toGenderEmotionAmountSumAndCountStatisticsData(List<GenderEmotionAmountSumAndCountDto> amountSumAndCount) {
+        Map<String, Long> sumsMap = amountSumAndCount.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getGender() + "::" + dto.getEmotion(),
+                        GenderEmotionAmountSumAndCountDto::getAmountSum));
+        Map<String, Long> countsMap = amountSumAndCount.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getGender() + "::" + dto.getEmotion(),
+                        GenderEmotionAmountSumAndCountDto::getAmountCount));
+        return new SumAndCountStatisticsData<>(sumsMap, countsMap);
+    }
+
+    public static SumAndCountStatisticsData<Double> toGenderSatisfactionSumAndCountStatisticsData(List<GenderSatisfactionSumAndCountDto> satisfactionSumsAndCounts) {
+        Map<String, Double> sumsMap = satisfactionSumsAndCounts.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getGender().toString(),
+                        GenderSatisfactionSumAndCountDto::getSatisfactionSum));
+        Map<String, Long> countsMap = satisfactionSumsAndCounts.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getGender().toString(),
+                        GenderSatisfactionSumAndCountDto::getSatisfactionCount));
+        return new SumAndCountStatisticsData<>(sumsMap, countsMap);
+    }
+
     public static Map<String, Long> toGenderDateMap(List<GenderDailyAmountSumDto> dtos){
         return dtos.stream()
                 .collect(Collectors.toMap(

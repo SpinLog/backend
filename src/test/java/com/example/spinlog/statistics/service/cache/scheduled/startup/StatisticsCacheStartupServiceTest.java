@@ -3,6 +3,7 @@ package com.example.spinlog.statistics.service.cache.scheduled.startup;
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
 import com.example.spinlog.global.cache.CacheHashRepository;
+import com.example.spinlog.statistics.dto.GenderEmotionAmountSumAndCountDto;
 import com.example.spinlog.statistics.dto.MBTIEmotionAmountSumAndCountDto;
 import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
@@ -51,23 +52,17 @@ class StatisticsCacheStartupServiceTest {
     @DisplayName("레포지토리로부터 성별 통계 데이터를 받아 캐시에 저장한다.")
     void startup_gender_test() throws Exception {
         // given
-        List<GenderEmotionAmountAverageDto> returned = List.of(
-                new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.PROUD, 1L),
-                new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 2L),
-                new GenderEmotionAmountAverageDto(Gender.FEMALE, Emotion.PROUD, 3L),
-                new GenderEmotionAmountAverageDto(Gender.FEMALE, Emotion.SAD, 4L)
-        );
-        List<GenderEmotionAmountAverageDto> counts = List.of(
-                new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.PROUD, 1L),
-                new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 1L),
-                new GenderEmotionAmountAverageDto(Gender.FEMALE, Emotion.PROUD, 1L),
-                new GenderEmotionAmountAverageDto(Gender.FEMALE, Emotion.SAD, 1L)
+        List<GenderEmotionAmountSumAndCountDto> returned = List.of(
+                new GenderEmotionAmountSumAndCountDto(Gender.MALE, Emotion.PROUD, 1L, 1L),
+                new GenderEmotionAmountSumAndCountDto(Gender.MALE, Emotion.SAD, 2L, 1L),
+                new GenderEmotionAmountSumAndCountDto(Gender.FEMALE, Emotion.PROUD, 3L, 1L),
+                new GenderEmotionAmountSumAndCountDto(Gender.FEMALE, Emotion.SAD, 4L, 1L)
         );
 
-        when(genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(eq(RegisterType.SPEND), any() , any()))
-                .thenReturn(returned);
-        when(genderStatisticsRepository.getAmountCountsEachGenderAndEmotionBetweenStartDateAndEndDate(eq(RegisterType.SPEND), any() , any()))
-                .thenReturn(counts);
+        List<GenderEmotionAmountSumAndCountDto> dtos = genderStatisticsRepository
+                .getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate(eq(RegisterType.SPEND), any(), any());
+
+        when(dtos).thenReturn(returned);
 
         // when
         targetService.initStatisticsCache();
@@ -133,23 +128,15 @@ class StatisticsCacheStartupServiceTest {
     @DisplayName("레포지토리로부터 통계 데이터를 받아 캐시에 제로 패딩을 한 후 저장한다.")
     void startup_test_zero_padding() throws Exception {
         // given
-        List<GenderEmotionAmountAverageDto> returned = List.of(
-                new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.PROUD, 1L),
-                new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 2L),
-                new GenderEmotionAmountAverageDto(Gender.FEMALE, Emotion.PROUD, 3L),
-                new GenderEmotionAmountAverageDto(Gender.FEMALE, Emotion.SAD, 4L)
-        );
-        List<GenderEmotionAmountAverageDto> counts = List.of(
-                new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.PROUD, 1L),
-                new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 1L),
-                new GenderEmotionAmountAverageDto(Gender.FEMALE, Emotion.PROUD, 1L),
-                new GenderEmotionAmountAverageDto(Gender.FEMALE, Emotion.SAD, 1L)
+        List<GenderEmotionAmountSumAndCountDto> returned = List.of(
+                new GenderEmotionAmountSumAndCountDto(Gender.MALE, Emotion.PROUD, 1L, 1L),
+                new GenderEmotionAmountSumAndCountDto(Gender.MALE, Emotion.SAD, 2L, 1L),
+                new GenderEmotionAmountSumAndCountDto(Gender.FEMALE, Emotion.PROUD, 3L, 1L),
+                new GenderEmotionAmountSumAndCountDto(Gender.FEMALE, Emotion.SAD, 4L, 1L)
         );
 
-        when(genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(eq(RegisterType.SPEND), any() , any()))
+        when(genderStatisticsRepository.getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate(eq(RegisterType.SPEND), any() , any()))
                 .thenReturn(returned);
-        when(genderStatisticsRepository.getAmountCountsEachGenderAndEmotionBetweenStartDateAndEndDate(eq(RegisterType.SPEND), any() , any()))
-                .thenReturn(counts);
 
         // when
         targetService.initStatisticsCache();

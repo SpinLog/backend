@@ -1,6 +1,8 @@
 package com.example.spinlog.statistics.repository;
 
 import com.example.spinlog.article.entity.RegisterType;
+import com.example.spinlog.statistics.dto.GenderEmotionAmountSumAndCountDto;
+import com.example.spinlog.statistics.dto.GenderSatisfactionSumAndCountDto;
 import com.example.spinlog.statistics.dto.repository.GenderDataDto;
 import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
@@ -44,22 +46,12 @@ public interface GenderStatisticsRepository {
 
     // todo 별도 클래스로 분리
     // todo sum, count 를 한번에 가져오기
-    List<GenderEmotionAmountAverageDto> getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(
+    List<GenderEmotionAmountSumAndCountDto> getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
 
-    List<GenderEmotionAmountAverageDto> getAmountCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
-            @Param("registerType") RegisterType registerType,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
-
-    List<GenderDataDto<Double>> getSatisfactionSumsEachGenderBetweenStartDateAndEndDate(
-            @Param("registerType") RegisterType registerType,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
-
-    List<GenderDataDto<Long>> getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(
+    List<GenderSatisfactionSumAndCountDto> getSatisfactionSumsAndCountsEachGenderBetweenStartDateAndEndDate(
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
