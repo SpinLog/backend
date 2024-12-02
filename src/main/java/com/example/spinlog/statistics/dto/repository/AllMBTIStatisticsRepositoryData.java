@@ -22,17 +22,17 @@ public record AllMBTIStatisticsRepositoryData (
     public AllStatisticsCacheData toCacheDate(MBTIFactor mbtiFactor){
         return AllStatisticsCacheData.builder()
                 .emotionAmountSpendSumAndCountStatisticsData(
-                        toAmountSumAndCountStatisticsData(toMBTIEmotionAmountDtoList(emotionAmountSpendSumsAndCounts, mbtiFactor)))
+                        toMBTIEmotionAmountSumAndCountStatisticsData(toMBTIEmotionAmountDtoList(emotionAmountSpendSumsAndCounts, mbtiFactor)))
                 .emotionAmountSaveSumAndCountStatisticsData(
-                        toAmountSumAndCountStatisticsData(toMBTIEmotionAmountDtoList(emotionAmountSaveSumsAndCounts, mbtiFactor)))
+                        toMBTIEmotionAmountSumAndCountStatisticsData(toMBTIEmotionAmountDtoList(emotionAmountSaveSumsAndCounts, mbtiFactor)))
                 .dailyAmountSpendSums(
                         toMBTIDateMap(toMBTIDailyAmountDtoList(dailyAmountSpendSums, mbtiFactor)))
                 .dailyAmountSaveSums(
                         toMBTIDateMap(toMBTIDailyAmountDtoList(dailyAmountSaveSums, mbtiFactor)))
                 .satisfactionSpendSumAndCountStatisticsData(
-                        toSatisfactionSumAndCountStatisticsData(toMBTISatisfactionDtoList(satisfactionSpendSumsAndCounts, mbtiFactor)))
+                        toMBTISatisfactionSumAndCountStatisticsData(toMBTISatisfactionDtoList(satisfactionSpendSumsAndCounts, mbtiFactor)))
                 .satisfactionSaveSumAndCountStatisticsData(
-                        toSatisfactionSumAndCountStatisticsData(toMBTISatisfactionDtoList(satisfactionSaveSumsAndCounts, mbtiFactor)))
+                        toMBTISatisfactionSumAndCountStatisticsData(toMBTISatisfactionDtoList(satisfactionSaveSumsAndCounts, mbtiFactor)))
                 .build();
     }
 }

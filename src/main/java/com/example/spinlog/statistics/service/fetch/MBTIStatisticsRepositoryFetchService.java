@@ -52,7 +52,7 @@ public class MBTIStatisticsRepositoryFetchService {
                 registerType,
                 startDate,
                 endDate);
-        return toAmountSumAndCountStatisticsData(amountSumsAndCounts);
+        return toMBTIEmotionAmountSumAndCountStatisticsData(amountSumsAndCounts);
     }
 
     public Map<String, Long> getMBTIDateAmountSums(RegisterType registerType, LocalDate startDate, LocalDate endDate) {
@@ -67,7 +67,7 @@ public class MBTIStatisticsRepositoryFetchService {
                 registerType,
                 startDate,
                 endDate);
-        return toSatisfactionSumAndCountStatisticsData(satisfactionSumsAndCounts);
+        return toMBTISatisfactionSumAndCountStatisticsData(satisfactionSumsAndCounts);
     }
 
     public AllMBTIStatisticsRepositoryData getAllMBTIStatisticsRepositoryDataByUserId(Long userId, LocalDate startDate, LocalDate endDate) {

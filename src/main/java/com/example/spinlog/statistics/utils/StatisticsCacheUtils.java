@@ -79,7 +79,7 @@ public class StatisticsCacheUtils {
                 .toList();
     }
 
-    public static SumAndCountStatisticsData<Long> toAmountSumAndCountStatisticsData(List<MBTIEmotionAmountSumAndCountDto> dtos) {
+    public static SumAndCountStatisticsData<Long> toMBTIEmotionAmountSumAndCountStatisticsData(List<MBTIEmotionAmountSumAndCountDto> dtos) {
         Map<String, Long> sumsMap = dtos.stream()
                 .collect(Collectors.toMap(
                         dto -> dto.getMbtiFactor() + "::" + dto.getEmotion(),
@@ -100,7 +100,7 @@ public class StatisticsCacheUtils {
                 .toList();
     }
 
-    public static SumAndCountStatisticsData<Double> toSatisfactionSumAndCountStatisticsData(List<MBTISatisfactionSumAndCountDto> dtos) {
+    public static SumAndCountStatisticsData<Double> toMBTISatisfactionSumAndCountStatisticsData(List<MBTISatisfactionSumAndCountDto> dtos) {
         Map<String, Double> sumsMap = dtos.stream()
                 .collect(Collectors.toMap(
                         dto -> dto.getMbtiFactor().toString(),
