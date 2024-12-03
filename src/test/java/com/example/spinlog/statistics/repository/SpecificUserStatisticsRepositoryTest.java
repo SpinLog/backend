@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class StatisticsRepositoryQueryByUserIdTest {
+public class SpecificUserStatisticsRepositoryTest {
     @Autowired
     MBTIStatisticsRepository mbtiStatisticsRepository;
     @Autowired
@@ -259,6 +259,18 @@ public class StatisticsRepositoryQueryByUserIdTest {
                     .findAny()
                     .orElseThrow())
                     .isEqualTo(8L);
+        }
+
+        @Test
+        void 데이터가_없을_때_count가_0인_원소를_하나_반환한다() throws Exception {
+            // when
+            List<SatisfactionSumAndCountDto> specificUserDto =
+                    specificUserStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
+                            Long.MAX_VALUE, RegisterType.SAVE, startDate, endDate);
+
+            // then
+            assertThat(specificUserDto).hasSize(1);
+            assertThat(specificUserDto.get(0).getSatisfactionCount()).isEqualTo(0L);
         }
     }
 }
