@@ -7,6 +7,7 @@ import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.statistics.dto.repository.AllStatisticsRepositoryData;
 import com.example.spinlog.statistics.dto.repository.MBTIDailyAmountSumDto;
 import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
+import com.example.spinlog.statistics.repository.SpecificUserStatisticsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.*;
 @Slf4j
 public class MBTIStatisticsRepositoryFetchService {
     private final MBTIStatisticsRepository mbtiStatisticsRepository;
+    private final SpecificUserStatisticsRepository specificUserStatisticsRepository;
 
     public AllStatisticsCacheData getMBTIStatisticsAllData(LocalDate startDate, LocalDate endDate) {
         SumAndCountStatisticsData<Long> mbtiEmotionAmountSpendSumAndCountStatisticsData = getMBTIEmotionAmountCountsAndSums(SPEND, startDate, endDate);
@@ -71,24 +73,24 @@ public class MBTIStatisticsRepositoryFetchService {
     }
 
     public AllStatisticsRepositoryData getAllMBTIStatisticsRepositoryDataByUserId(Long userId, LocalDate startDate, LocalDate endDate) {
-        List<EmotionAmountSumAndCountDto> emotionAmountSpendSumsAndCounts = mbtiStatisticsRepository
+        List<EmotionAmountSumAndCountDto> emotionAmountSpendSumsAndCounts = specificUserStatisticsRepository
                 .getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
                         userId, SPEND, startDate, endDate);
-        List<EmotionAmountSumAndCountDto> emotionAmountSaveSumsAndCounts = mbtiStatisticsRepository
+        List<EmotionAmountSumAndCountDto> emotionAmountSaveSumsAndCounts = specificUserStatisticsRepository
                 .getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
                         userId, SAVE, startDate, endDate);
 
-        List<DailyAmountSumDto> dailyAmountSpendSums = mbtiStatisticsRepository
+        List<DailyAmountSumDto> dailyAmountSpendSums = specificUserStatisticsRepository
                 .getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
                         userId, SPEND, startDate, endDate);
-        List<DailyAmountSumDto> dailyAmountSaveSums = mbtiStatisticsRepository
+        List<DailyAmountSumDto> dailyAmountSaveSums = specificUserStatisticsRepository
                 .getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
                         userId, SAVE, startDate, endDate);
 
-        List<SatisfactionSumAndCountDto> satisfactionSpendSumsAndCounts = mbtiStatisticsRepository
+        List<SatisfactionSumAndCountDto> satisfactionSpendSumsAndCounts = specificUserStatisticsRepository
                 .getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
                         userId, SPEND, startDate, endDate);
-        List<SatisfactionSumAndCountDto> satisfactionSaveSumsAndCounts = mbtiStatisticsRepository
+        List<SatisfactionSumAndCountDto> satisfactionSaveSumsAndCounts = specificUserStatisticsRepository
                 .getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
                         userId, SAVE, startDate, endDate);
 

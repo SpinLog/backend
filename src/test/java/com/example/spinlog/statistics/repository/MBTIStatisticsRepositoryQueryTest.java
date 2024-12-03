@@ -40,6 +40,8 @@ public class MBTIStatisticsRepositoryQueryTest {
     @Autowired
     MBTIStatisticsRepository mbtiStatisticsRepository;
     @Autowired
+    SpecificUserStatisticsRepository specificUserStatisticsRepository;
+    @Autowired
     private ArticleRepository articleRepository;
     @Autowired
     private UserRepository userRepository;
@@ -313,7 +315,7 @@ public class MBTIStatisticsRepositoryQueryTest {
         void 감정별로_그룹핑한다() throws Exception {
             // when
             List<EmotionAmountSumAndCountDto> dtos =
-                    mbtiStatisticsRepository.getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
+                    specificUserStatisticsRepository.getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
                             user1.getId(), RegisterType.SPEND, startDate, endDate);
 
             // then
@@ -326,7 +328,7 @@ public class MBTIStatisticsRepositoryQueryTest {
         void 필터링_이후_각_amount_의_합을_반환한다() throws Exception {
             // when
             List<EmotionAmountSumAndCountDto> dtos =
-                    mbtiStatisticsRepository.getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
+                    specificUserStatisticsRepository.getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
                             user1.getId(), RegisterType.SPEND, startDate, endDate);
             // then
             var sadStream = dtos.stream().filter(dto -> dto.getEmotion().equals(Emotion.SAD));
@@ -357,7 +359,7 @@ public class MBTIStatisticsRepositoryQueryTest {
         void 일별로_그룹핑한다() throws Exception {
             // when
             List<DailyAmountSumDto> dtos =
-                    mbtiStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
+                    specificUserStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
                             user1.getId(), RegisterType.SPEND, startDate, endDate);
 
             // then
@@ -370,7 +372,7 @@ public class MBTIStatisticsRepositoryQueryTest {
         void 필터링_이후_각_amount_의_합를_반환한다() throws Exception {
             // when
             List<DailyAmountSumDto> dtos =
-                    mbtiStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
+                    specificUserStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
                             user1.getId(), RegisterType.SPEND, startDate, endDate);
 
             // then
@@ -396,7 +398,7 @@ public class MBTIStatisticsRepositoryQueryTest {
         void 필터링_이후_각_satisfaction_의_합과_개수를_반환한다() throws Exception {
             // when
             List<SatisfactionSumAndCountDto> dtos =
-                    mbtiStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
+                    specificUserStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
                             user1.getId(), RegisterType.SPEND, startDate, endDate);
 
             // then

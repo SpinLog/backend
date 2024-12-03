@@ -1,15 +1,12 @@
 package com.example.spinlog.statistics.service.fetch;
 
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.statistics.dto.GenderEmotionAmountSumAndCountDto;
-import com.example.spinlog.statistics.dto.GenderSatisfactionSumAndCountDto;
+import com.example.spinlog.statistics.dto.*;
 import com.example.spinlog.statistics.dto.cache.AllStatisticsCacheData;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
-import com.example.spinlog.statistics.dto.repository.AllGenderStatisticsRepositoryData;
+import com.example.spinlog.statistics.dto.repository.*;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
-import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
-import com.example.spinlog.statistics.dto.repository.GenderDataDto;
-import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
+import com.example.spinlog.statistics.repository.SpecificUserStatisticsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +25,7 @@ import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.*;
 @Slf4j
 public class GenderStatisticsRepositoryFetchService {
     private final GenderStatisticsRepository genderStatisticsRepository;
+    private final SpecificUserStatisticsRepository specificUserStatisticsRepository;
 
     public AllStatisticsCacheData getGenderStatisticsAllData(LocalDate startDate, LocalDate endDate) {
         SumAndCountStatisticsData<Long> genderEmotionAmountSpendSumAndCountStatisticsData = getGenderEmotionAmountCountsAndSums(SPEND, startDate, endDate);
@@ -75,52 +73,35 @@ public class GenderStatisticsRepositoryFetchService {
         return toGenderSatisfactionSumAndCountStatisticsData(satisfactionSumsAndCounts);
     }
 
-    public AllGenderStatisticsRepositoryData getGenderStatisticsAllDataByUserId(Long userId, LocalDate startDate, LocalDate endDate) { // todo : rename
-        List<GenderEmotionAmountAverageDto> genderEmotionAmountSpendSums = genderStatisticsRepository
-                .getAmountSumsEachEmotionByUserIdBetweenStartDateAndEndDate(
+    public AllStatisticsRepositoryData getGenderStatisticsAllDataByUserId(Long userId, LocalDate startDate, LocalDate endDate) { // todo : rename
+        List<EmotionAmountSumAndCountDto> emotionAmountSpendSumsAndCounts = specificUserStatisticsRepository
+                .getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
                         userId, SPEND, startDate, endDate);
-        List<GenderEmotionAmountAverageDto> genderEmotionAmountSpendCounts = genderStatisticsRepository
-                .getAmountCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
-                        userId, SPEND, startDate, endDate);
-        List<GenderEmotionAmountAverageDto> genderEmotionAmountSaveSums = genderStatisticsRepository
-                .getAmountSumsEachEmotionByUserIdBetweenStartDateAndEndDate(
-                        userId, SAVE, startDate, endDate);
-        List<GenderEmotionAmountAverageDto> genderEmotionAmountSaveCounts = genderStatisticsRepository
-                .getAmountCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
+        List<EmotionAmountSumAndCountDto> emotionAmountSaveSumsAndCounts = specificUserStatisticsRepository
+                .getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
                         userId, SAVE, startDate, endDate);
 
-        List<GenderDailyAmountSumDto> genderDailyAmountSpendSums = genderStatisticsRepository
+        List<DailyAmountSumDto> dailyAmountSpendSums = specificUserStatisticsRepository
                 .getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
                         userId, SPEND, startDate, endDate);
-        List<GenderDailyAmountSumDto> genderDailyAmountSaveSums = genderStatisticsRepository
+        List<DailyAmountSumDto> dailyAmountSaveSums = specificUserStatisticsRepository
                 .getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
                         userId, SAVE, startDate, endDate);
 
-        List<GenderDataDto<Double>> genderSatisfactionSpendSums = genderStatisticsRepository
-                .getSatisfactionSumsByUserIdBetweenStartDateAndEndDate(
+        List<SatisfactionSumAndCountDto> satisfactionSpendSumsAndCounts = specificUserStatisticsRepository
+                .getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
                         userId, SPEND, startDate, endDate);
-        List<GenderDataDto<Long>> genderSatisfactionSpendCounts = genderStatisticsRepository
-                .getSatisfactionCountsByUserIdBetweenStartDateAndEndDate(
-                        userId, SPEND, startDate, endDate);
-        List<GenderDataDto<Double>> genderSatisfactionSaveSums = genderStatisticsRepository
-                .getSatisfactionSumsByUserIdBetweenStartDateAndEndDate(
-                        userId, SAVE, startDate, endDate);
-        List<GenderDataDto<Long>> genderSatisfactionSaveCounts = genderStatisticsRepository
-                .getSatisfactionCountsByUserIdBetweenStartDateAndEndDate(
+        List<SatisfactionSumAndCountDto> satisfactionSaveSumsAndCounts = specificUserStatisticsRepository
+                .getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
                         userId, SAVE, startDate, endDate);
 
-        return AllGenderStatisticsRepositoryData.builder()
-                .genderDailyAmountSaveSums(genderDailyAmountSaveSums)
-                .genderDailyAmountSpendSums(genderDailyAmountSpendSums)
-                .genderEmotionAmountSaveCounts(genderEmotionAmountSaveCounts)
-                .genderEmotionAmountSaveSums(genderEmotionAmountSaveSums)
-                .genderEmotionAmountSpendCounts(genderEmotionAmountSpendCounts)
-                .genderEmotionAmountSpendSums(genderEmotionAmountSpendSums)
-                .genderSatisfactionSaveCounts(genderSatisfactionSaveCounts)
-                .genderSatisfactionSaveSums(genderSatisfactionSaveSums)
-                .genderSatisfactionSpendCounts(genderSatisfactionSpendCounts)
-                .genderSatisfactionSpendSums(genderSatisfactionSpendSums)
+        return AllStatisticsRepositoryData.builder()
+                .emotionAmountSpendSumsAndCounts(emotionAmountSpendSumsAndCounts)
+                .emotionAmountSaveSumsAndCounts(emotionAmountSaveSumsAndCounts)
+                .dailyAmountSpendSums(dailyAmountSpendSums)
+                .dailyAmountSaveSums(dailyAmountSaveSums)
+                .satisfactionSpendSumsAndCounts(satisfactionSpendSumsAndCounts)
+                .satisfactionSaveSumsAndCounts(satisfactionSaveSumsAndCounts)
                 .build();
-
     }
 }

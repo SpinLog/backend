@@ -77,7 +77,7 @@ class StatisticsCacheSynchronizerAfterUserWriteTest {
                 .build();
         UserUpdatedEvent event = new UserUpdatedEvent(user, newUser);
         when(genderStatisticsRepositoryFetchService.getGenderStatisticsAllDataByUserId(any(), any(), any()))
-                .thenReturn(getAllGenderStatisticsRepositoryData(newGender));
+                .thenReturn(getAllStatisticsRepositoryTestData());
 
         // when
         targetService.updateStatisticsCacheFromUpdatedUser(event);
@@ -222,25 +222,19 @@ class StatisticsCacheSynchronizerAfterUserWriteTest {
                 .build();
     }
 
-    private AllGenderStatisticsRepositoryData getAllGenderStatisticsRepositoryData(Gender newGender) {
+    private AllStatisticsRepositoryData getAllStatisticsRepositoryTestData() {
         Emotion emotion = article.getEmotion();
         Gender gender = user.getGender();
-        return AllGenderStatisticsRepositoryData.builder()
-                .genderEmotionAmountSpendSums(List.of(
-                        new GenderEmotionAmountAverageDto(newGender, emotion, 50L)))
-                .genderEmotionAmountSpendCounts(List.of(
-                        new GenderEmotionAmountAverageDto(newGender, emotion, 5L)))
-                .genderEmotionAmountSaveSums(List.of())
-                .genderEmotionAmountSaveCounts(List.of())
-                .genderDailyAmountSpendSums(List.of(
-                        new GenderDailyAmountSumDto(newGender, article.getSpendDate().toLocalDate(), 50L)))
-                .genderDailyAmountSaveSums(List.of())
-                .genderSatisfactionSpendSums(List.of(
-                        new GenderDataDto<>(newGender, 5.0)))
-                .genderSatisfactionSpendCounts(List.of(
-                        new GenderDataDto<>(newGender, 5L)))
-                .genderSatisfactionSaveSums(List.of())
-                .genderSatisfactionSaveCounts(List.of())
+        return AllStatisticsRepositoryData.builder()
+                .emotionAmountSpendSumsAndCounts(List.of(
+                        new EmotionAmountSumAndCountDto(emotion, 50L, 5L)))
+                .emotionAmountSaveSumsAndCounts(List.of())
+                .dailyAmountSpendSums(List.of(
+                        new DailyAmountSumDto(article.getSpendDate().toLocalDate(), 50L)))
+                .dailyAmountSaveSums(List.of())
+                .satisfactionSpendSumsAndCounts(List.of(
+                        new SatisfactionSumAndCountDto(5.0, 5L)))
+                .satisfactionSaveSumsAndCounts(List.of())
                 .build();
     }
 }

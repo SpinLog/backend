@@ -41,11 +41,11 @@ public class StatisticsCacheSynchronizerAfterUserWrite {
         LocalDate startDate = period.startDate();
 
         if(isGenderChanged(originalUser, updatedUser)) {
-            AllGenderStatisticsRepositoryData repositoryResult = genderStatisticsRepositoryFetchService
+            AllStatisticsRepositoryData repositoryResult = genderStatisticsRepositoryFetchService
                     .getGenderStatisticsAllDataByUserId(updatedUser.getId(), startDate, endDate);
 
-            updateGenderStatisticsCacheForPreviousGender(repositoryResult);
-            updateGenderStatisticsCacheForChangedGender(repositoryResult);
+            updateGenderStatisticsCacheForPreviousGender(repositoryResult, originalUser);
+            updateGenderStatisticsCacheForChangedGender(repositoryResult, updatedUser);
         }
 
         if(isMBTIChanged(originalUser, updatedUser)) {
@@ -65,43 +65,13 @@ public class StatisticsCacheSynchronizerAfterUserWrite {
         return originalUser.getGender() != updatedUser.getGender();
     }
 
-    private void updateGenderStatisticsCacheForPreviousGender(AllGenderStatisticsRepositoryData repositoryResult) {
-        AllStatisticsCacheData genderReversedData = AllStatisticsCacheData.builder()
-                .emotionAmountSpendSumAndCountStatisticsData(
-                        new SumAndCountStatisticsData<>(toReverseGenderEmotionMap(repositoryResult.genderEmotionAmountSpendSums()),
-                                toReverseGenderEmotionMap(repositoryResult.genderEmotionAmountSpendCounts())))
-                .emotionAmountSaveSumAndCountStatisticsData(
-                        new SumAndCountStatisticsData<>(toReverseGenderEmotionMap(repositoryResult.genderEmotionAmountSaveSums()),
-                                toReverseGenderEmotionMap(repositoryResult.genderEmotionAmountSaveCounts())))
-                .dailyAmountSpendSums(toReverseGenderDateMap(repositoryResult.genderDailyAmountSpendSums()))
-                .dailyAmountSaveSums(toReverseGenderDateMap(repositoryResult.genderDailyAmountSaveSums()))
-                .satisfactionSpendSumAndCountStatisticsData(
-                        new SumAndCountStatisticsData<>(toReverseGenderMap(repositoryResult.genderSatisfactionSpendSums()),
-                                toReverseGenderMap(repositoryResult.genderSatisfactionSpendCounts())))
-                .satisfactionSaveSumAndCountStatisticsData(
-                        new SumAndCountStatisticsData<>(toReverseGenderMap(repositoryResult.genderSatisfactionSaveSums()),
-                                toReverseGenderMap(repositoryResult.genderSatisfactionSaveCounts())))
-                .build();
+    private void updateGenderStatisticsCacheForPreviousGender(AllStatisticsRepositoryData repositoryResult, User originalUser) {
+        AllStatisticsCacheData genderReversedData = repositoryResult.toCacheDate(originalUser.getGender());
         genderStatisticsCacheWriteService.decrementAllData(genderReversedData);
     }
 
-    private void updateGenderStatisticsCacheForChangedGender(AllGenderStatisticsRepositoryData repositoryResult) {
-        AllStatisticsCacheData statisticsAllData = AllStatisticsCacheData.builder()
-                .emotionAmountSpendSumAndCountStatisticsData(
-                        new SumAndCountStatisticsData<>(toGenderEmotionMap(repositoryResult.genderEmotionAmountSpendSums()),
-                                toGenderEmotionMap(repositoryResult.genderEmotionAmountSpendCounts())))
-                .emotionAmountSaveSumAndCountStatisticsData(
-                        new SumAndCountStatisticsData<>(toGenderEmotionMap(repositoryResult.genderEmotionAmountSaveSums()),
-                                toGenderEmotionMap(repositoryResult.genderEmotionAmountSaveCounts())))
-                .dailyAmountSpendSums(toGenderDateMap(repositoryResult.genderDailyAmountSpendSums()))
-                .dailyAmountSaveSums(toGenderDateMap(repositoryResult.genderDailyAmountSaveSums()))
-                .satisfactionSpendSumAndCountStatisticsData(
-                        new SumAndCountStatisticsData<>(toGenderMap(repositoryResult.genderSatisfactionSpendSums()),
-                                toGenderMap(repositoryResult.genderSatisfactionSpendCounts())))
-                .satisfactionSaveSumAndCountStatisticsData(
-                        new SumAndCountStatisticsData<>(toGenderMap(repositoryResult.genderSatisfactionSaveSums()),
-                                toGenderMap(repositoryResult.genderSatisfactionSaveCounts())))
-                .build();
+    private void updateGenderStatisticsCacheForChangedGender(AllStatisticsRepositoryData repositoryResult, User updatedUser) {
+        AllStatisticsCacheData statisticsAllData = repositoryResult.toCacheDate(updatedUser.getGender());
         genderStatisticsCacheWriteService.incrementAllData(statisticsAllData);
     }
 

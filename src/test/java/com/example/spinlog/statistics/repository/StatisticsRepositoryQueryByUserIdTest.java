@@ -36,6 +36,8 @@ public class StatisticsRepositoryQueryByUserIdTest {
     @Autowired
     GenderStatisticsRepository genderStatisticsRepository; // ByUserId 쿼리 중복 제거
     @Autowired
+    SpecificUserStatisticsRepository specificUserStatisticsRepository;
+    @Autowired
     private ArticleRepository articleRepository;
     @Autowired
     private UserRepository userRepository;
@@ -160,7 +162,7 @@ public class StatisticsRepositoryQueryByUserIdTest {
         void 특정_유저의_정보만_가져온다() throws Exception {
             // when
             List<EmotionAmountSumAndCountDto> specificUserDto =
-                    mbtiStatisticsRepository.getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
+                    specificUserStatisticsRepository.getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
                             user1.getId(), RegisterType.SPEND, startDate, endDate);
             List<MBTIEmotionAmountSumAndCountDto> allUsersDtos = mbtiStatisticsRepository.getAmountSumsAndCountsEachMBTIAndEmotionBetweenStartDateAndEndDate(
                     RegisterType.SPEND, startDate, endDate);
@@ -200,7 +202,7 @@ public class StatisticsRepositoryQueryByUserIdTest {
         void 특정_유저의_정보만_가져온다() throws Exception {
             // when
             List<DailyAmountSumDto> specificUserDto =
-                    mbtiStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
+                    specificUserStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
                             user1.getId(), RegisterType.SPEND, startDate, endDate);
             List<MBTIDailyAmountSumDto> allUsersDtos = mbtiStatisticsRepository.getAmountSumsEachMBTIAndDayBetweenStartDateAndEndDate(
                     RegisterType.SPEND, startDate, endDate);
@@ -240,7 +242,7 @@ public class StatisticsRepositoryQueryByUserIdTest {
         void 특정_유저의_정보만_가져온다() throws Exception {
             // when
             List<SatisfactionSumAndCountDto> specificUserDto =
-                    mbtiStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
+                    specificUserStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
                             user1.getId(), RegisterType.SPEND, startDate, endDate);
             List<MBTISatisfactionSumAndCountDto> allUsersDtos = mbtiStatisticsRepository.getSatisfactionSumsAndCountsEachMBTIBetweenStartDateAndEndDate(
                     RegisterType.SPEND, startDate, endDate);

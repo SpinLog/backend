@@ -9,6 +9,7 @@ import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
+import com.example.spinlog.statistics.repository.SpecificUserStatisticsRepository;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.fetch.GenderStatisticsRepositoryFetchService;
 import com.example.spinlog.statistics.service.fetch.MBTIStatisticsRepositoryFetchService;
@@ -34,10 +35,11 @@ import static org.mockito.Mockito.when;
 class StatisticsCacheStartupServiceTest {
     GenderStatisticsRepository genderStatisticsRepository = mock(GenderStatisticsRepository.class);
     MBTIStatisticsRepository mbtiStatisticsRepository = mock(MBTIStatisticsRepository.class);
+    SpecificUserStatisticsRepository specificUserStatisticsRepository = mock(SpecificUserStatisticsRepository.class);
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService =
-            new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
+            new GenderStatisticsRepositoryFetchService(genderStatisticsRepository, specificUserStatisticsRepository);
     MBTIStatisticsRepositoryFetchService mbtiStatisticsRepositoryFetchService =
-            new MBTIStatisticsRepositoryFetchService(mbtiStatisticsRepository);
+            new MBTIStatisticsRepositoryFetchService(mbtiStatisticsRepository, specificUserStatisticsRepository);
     CacheHashRepository cacheHashRepository = new MockCacheHashRepository();
 
     // todo set fixed clock and test

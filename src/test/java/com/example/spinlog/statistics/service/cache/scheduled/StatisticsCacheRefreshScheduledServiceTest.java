@@ -7,6 +7,7 @@ import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
+import com.example.spinlog.statistics.repository.SpecificUserStatisticsRepository;
 import com.example.spinlog.statistics.service.StatisticsPeriodManager;
 import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheWriteService;
 import com.example.spinlog.statistics.service.cache.MBTIStatisticsCacheWriteService;
@@ -36,14 +37,15 @@ import static org.mockito.Mockito.*;
 class StatisticsCacheRefreshScheduledServiceTest {
     GenderStatisticsRepository genderStatisticsRepository = mock(GenderStatisticsRepository.class);
     MockCacheHashRepository cacheService = new MockCacheHashRepository();
+    SpecificUserStatisticsRepository specificUserStatisticsRepository = mock(SpecificUserStatisticsRepository.class);
     GenderStatisticsRepositoryFetchService genderStatisticsRepositoryFetchService =
-            new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
+            new GenderStatisticsRepositoryFetchService(genderStatisticsRepository, specificUserStatisticsRepository);
     GenderStatisticsCacheWriteService genderStatisticsCacheWriteService =
             new GenderStatisticsCacheWriteService(cacheService);
 
     MBTIStatisticsRepository mbtiStatisticsRepository = mock(MBTIStatisticsRepository.class);
     MBTIStatisticsRepositoryFetchService mbtiStatisticsRepositoryFetchService =
-            new MBTIStatisticsRepositoryFetchService(mbtiStatisticsRepository);
+            new MBTIStatisticsRepositoryFetchService(mbtiStatisticsRepository, specificUserStatisticsRepository);
     MBTIStatisticsCacheWriteService mbtiStatisticsCacheWriteService =
              new MBTIStatisticsCacheWriteService(cacheService);
     Clock clock = Clock.systemDefaultZone();

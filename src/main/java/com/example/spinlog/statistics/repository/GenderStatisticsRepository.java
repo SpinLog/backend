@@ -44,46 +44,12 @@ public interface GenderStatisticsRepository {
 
     // ---
 
-    // todo 별도 클래스로 분리
-    // todo sum, count 를 한번에 가져오기
     List<GenderEmotionAmountSumAndCountDto> getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate(
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
 
     List<GenderSatisfactionSumAndCountDto> getSatisfactionSumsAndCountsEachGenderBetweenStartDateAndEndDate(
-            @Param("registerType") RegisterType registerType,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
-
-    // ---
-
-    List<GenderEmotionAmountAverageDto> getAmountSumsEachEmotionByUserIdBetweenStartDateAndEndDate(
-            @Param("userId") Long userId,
-            @Param("registerType") RegisterType registerType,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
-
-    List<GenderEmotionAmountAverageDto> getAmountCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
-            @Param("userId") Long userId,
-            @Param("registerType") RegisterType registerType,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
-
-    List<GenderDailyAmountSumDto> getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
-            @Param("userId") Long userId,
-            @Param("registerType") RegisterType registerType,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
-
-    List<GenderDataDto<Double>> getSatisfactionSumsByUserIdBetweenStartDateAndEndDate(
-            @Param("userId") Long userId,
-            @Param("registerType") RegisterType registerType,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
-
-    List<GenderDataDto<Long>> getSatisfactionCountsByUserIdBetweenStartDateAndEndDate(
-            @Param("userId") Long userId,
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
