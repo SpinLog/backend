@@ -30,11 +30,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class StatisticsRepositoryQueryByUserIdTest {
+public class SpecificUserStatisticsRepositoryTest {
     @Autowired
     MBTIStatisticsRepository mbtiStatisticsRepository;
     @Autowired
-    GenderStatisticsRepository genderStatisticsRepository;
+    GenderStatisticsRepository genderStatisticsRepository; // ByUserId 쿼리 중복 제거
+    @Autowired
+    SpecificUserStatisticsRepository specificUserStatisticsRepository;
     @Autowired
     private ArticleRepository articleRepository;
     @Autowired
@@ -160,7 +162,7 @@ public class StatisticsRepositoryQueryByUserIdTest {
         void 특정_유저의_정보만_가져온다() throws Exception {
             // when
             List<EmotionAmountSumAndCountDto> specificUserDto =
-                    mbtiStatisticsRepository.getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
+                    specificUserStatisticsRepository.getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
                             user1.getId(), RegisterType.SPEND, startDate, endDate);
             List<MBTIEmotionAmountSumAndCountDto> allUsersDtos = mbtiStatisticsRepository.getAmountSumsAndCountsEachMBTIAndEmotionBetweenStartDateAndEndDate(
                     RegisterType.SPEND, startDate, endDate);
@@ -200,7 +202,7 @@ public class StatisticsRepositoryQueryByUserIdTest {
         void 특정_유저의_정보만_가져온다() throws Exception {
             // when
             List<DailyAmountSumDto> specificUserDto =
-                    mbtiStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
+                    specificUserStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
                             user1.getId(), RegisterType.SPEND, startDate, endDate);
             List<MBTIDailyAmountSumDto> allUsersDtos = mbtiStatisticsRepository.getAmountSumsEachMBTIAndDayBetweenStartDateAndEndDate(
                     RegisterType.SPEND, startDate, endDate);
@@ -240,7 +242,7 @@ public class StatisticsRepositoryQueryByUserIdTest {
         void 특정_유저의_정보만_가져온다() throws Exception {
             // when
             List<SatisfactionSumAndCountDto> specificUserDto =
-                    mbtiStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
+                    specificUserStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
                             user1.getId(), RegisterType.SPEND, startDate, endDate);
             List<MBTISatisfactionSumAndCountDto> allUsersDtos = mbtiStatisticsRepository.getSatisfactionSumsAndCountsEachMBTIBetweenStartDateAndEndDate(
                     RegisterType.SPEND, startDate, endDate);
@@ -257,6 +259,18 @@ public class StatisticsRepositoryQueryByUserIdTest {
                     .findAny()
                     .orElseThrow())
                     .isEqualTo(8L);
+        }
+
+        @Test
+        void 데이터가_없을_때_count가_0인_원소를_하나_반환한다() throws Exception {
+            // when
+            List<SatisfactionSumAndCountDto> specificUserDto =
+                    specificUserStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
+                            Long.MAX_VALUE, RegisterType.SAVE, startDate, endDate);
+
+            // then
+            assertThat(specificUserDto).hasSize(1);
+            assertThat(specificUserDto.get(0).getSatisfactionCount()).isEqualTo(0L);
         }
     }
 }

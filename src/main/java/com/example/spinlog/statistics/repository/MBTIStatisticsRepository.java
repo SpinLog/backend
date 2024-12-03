@@ -47,24 +47,4 @@ public interface MBTIStatisticsRepository {
             @Param("registerType") RegisterType registerType,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
-
-    // ---
-
-    List<EmotionAmountSumAndCountDto> getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(
-            @Param("userId") Long userId,
-            @Param("registerType") RegisterType registerType,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
-
-    List<DailyAmountSumDto> getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(
-            @Param("userId") Long userId,
-            @Param("registerType") RegisterType registerType,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
-
-    List<SatisfactionSumAndCountDto> getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
-            @Param("userId") Long userId,
-            @Param("registerType") RegisterType registerType,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
 }

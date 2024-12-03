@@ -11,8 +11,9 @@ import com.example.spinlog.statistics.entity.MBTIFactor;
 import com.example.spinlog.statistics.repository.MBTIStatisticsRepository;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.statistics.dto.repository.MBTIDailyAmountSumDto;
-import com.example.spinlog.statistics.dto.repository.AllMBTIStatisticsRepositoryData;
+import com.example.spinlog.statistics.dto.repository.AllStatisticsRepositoryData;
 import com.example.spinlog.article.entity.RegisterType;
+import com.example.spinlog.statistics.repository.SpecificUserStatisticsRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -27,9 +28,10 @@ import java.util.Map;
 class MBTIStatisticsRepositoryFetchServiceTest {
 
     MBTIStatisticsRepository mbtiStatisticsRepository = mock(MBTIStatisticsRepository.class);
+    SpecificUserStatisticsRepository specificUserStatisticsRepository = mock(SpecificUserStatisticsRepository.class);
 
     MBTIStatisticsRepositoryFetchService mbtiStatisticsRepositoryFetchService =
-            new MBTIStatisticsRepositoryFetchService(mbtiStatisticsRepository);
+            new MBTIStatisticsRepositoryFetchService(mbtiStatisticsRepository, specificUserStatisticsRepository);
 
     @Test
     void getMBTIEmotionAmountCountsAndSums_returnsCorrectData() {
@@ -105,16 +107,16 @@ class MBTIStatisticsRepositoryFetchServiceTest {
         List<SatisfactionSumAndCountDto> satisfactionSpendSumsAndCounts = List.of(new SatisfactionSumAndCountDto(4.5, 20L));
         List<SatisfactionSumAndCountDto> satisfactionSaveSumsAndCounts = List.of(new SatisfactionSumAndCountDto(3.5, 30L));
 
-        when(mbtiStatisticsRepository.getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(emotionAmountSpendSumsAndCounts);
-        when(mbtiStatisticsRepository.getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(emotionAmountSaveSumsAndCounts);
+        when(specificUserStatisticsRepository.getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(emotionAmountSpendSumsAndCounts);
+        when(specificUserStatisticsRepository.getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(emotionAmountSaveSumsAndCounts);
 
-        when(mbtiStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(dailyAmountSpendSums);
-        when(mbtiStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(dailyAmountSaveSums);
+        when(specificUserStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(dailyAmountSpendSums);
+        when(specificUserStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(dailyAmountSaveSums);
 
-        when(mbtiStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(satisfactionSpendSumsAndCounts);
-        when(mbtiStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(satisfactionSaveSumsAndCounts);
+        when(specificUserStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(satisfactionSpendSumsAndCounts);
+        when(specificUserStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(satisfactionSaveSumsAndCounts);
 
-        AllMBTIStatisticsRepositoryData result = mbtiStatisticsRepositoryFetchService.getAllMBTIStatisticsRepositoryDataByUserId(userId, startDate, endDate);
+        AllStatisticsRepositoryData result = mbtiStatisticsRepositoryFetchService.getAllMBTIStatisticsRepositoryDataByUserId(userId, startDate, endDate);
 
 
         assertThat(result).isNotNull();
