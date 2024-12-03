@@ -18,6 +18,7 @@ import java.util.Map;
 
 import static com.example.spinlog.article.entity.RegisterType.*;
 import static com.example.spinlog.statistics.utils.StatisticsCacheUtils.*;
+import static com.example.spinlog.statistics.utils.StatisticsZeroPaddingUtils.removeIfCountIsZero;
 
 @Service
 @Transactional(readOnly = true)
@@ -94,6 +95,8 @@ public class GenderStatisticsRepositoryFetchService {
         List<SatisfactionSumAndCountDto> satisfactionSaveSumsAndCounts = specificUserStatisticsRepository
                 .getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(
                         userId, SAVE, startDate, endDate);
+        satisfactionSpendSumsAndCounts = removeIfCountIsZero(satisfactionSpendSumsAndCounts);
+        satisfactionSaveSumsAndCounts = removeIfCountIsZero(satisfactionSaveSumsAndCounts);
 
         return AllStatisticsRepositoryData.builder()
                 .emotionAmountSpendSumsAndCounts(emotionAmountSpendSumsAndCounts)
