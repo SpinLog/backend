@@ -31,12 +31,7 @@ import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
-@ActiveProfiles("test")
-@SpringBootTest
-@Transactional
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class MBTIStatisticsRepositoryQueryTest {
+public class MBTIStatisticsRepositoryQueryTest extends MBTIStatisticsRepositoryTestSupport {
     @Autowired
     MBTIStatisticsRepository mbtiStatisticsRepository;
     @Autowired
@@ -54,11 +49,7 @@ public class MBTIStatisticsRepositoryQueryTest {
     static User user2;
 
     @BeforeAll
-    static void setUp(@Autowired DataSource dataSource, @Autowired UserRepository userRepository, @Autowired ArticleRepository articleRepository) {
-        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.addScript(new ClassPathResource("view/before-test-schema.sql"));
-        populator.execute(dataSource);
-
+    static void setUp(@Autowired UserRepository userRepository, @Autowired ArticleRepository articleRepository) {
         user1 = User.builder()
                 .email("survived@email")
                 .authenticationName("survivedUser")
