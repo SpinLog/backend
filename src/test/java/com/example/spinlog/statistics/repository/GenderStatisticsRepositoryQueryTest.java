@@ -148,7 +148,7 @@ class GenderStatisticsRepositoryQueryTest {
     }
 
     @Nested
-    class getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate_성별_감정별_금액_합과_개수를_반환하는_메서드 {
+    class getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate {
         @Test
         void 성별로_그룹핑한다() throws Exception {
             // when
@@ -227,7 +227,7 @@ class GenderStatisticsRepositoryQueryTest {
     }
 
     @Nested
-    class getAmountSumsEachGenderAndDayBetweenStartDateAndEndDate_성별_일별_금액_합을_반환하는_메서드 {
+    class getAmountSumsEachGenderAndDayBetweenStartDateAndEndDate {
         @Test
         void 성별로_그룹핑한다() throws Exception {
             // when
@@ -282,7 +282,7 @@ class GenderStatisticsRepositoryQueryTest {
     }
 
     @Nested
-    class getSatisfactionSumsAndCountsEachGenderBetweenStartDateAndEndDate_성별_만족도_합과_개수를_반환하는_메서드 {
+    class getSatisfactionSumsAndCountsEachGenderBetweenStartDateAndEndDate {
         @Test
         void 성별로_그룹핑한다() throws Exception {
             // when

@@ -149,7 +149,7 @@ public class SpecificUserStatisticsRepositoryTest extends MBTIStatisticsReposito
     }
 
     @Nested
-    class getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate_특정_유저에_대한_감정별_금액_합과_개수를_반환하는_메서드 {
+    class getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate {
         @Test
         void 특정_유저의_정보만_가져온다() throws Exception {
             // when
@@ -189,7 +189,7 @@ public class SpecificUserStatisticsRepositoryTest extends MBTIStatisticsReposito
     }
 
     @Nested
-    class getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate_특정_유저에_대한_일별_금액_합을_반환하는_메서드 {
+    class getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate {
         @Test
         void 특정_유저의_정보만_가져온다() throws Exception {
             // when
@@ -229,7 +229,7 @@ public class SpecificUserStatisticsRepositoryTest extends MBTIStatisticsReposito
     }
 
     @Nested
-    class getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate_특정_유저에_대한_만족도_합과_개수를_반환하는_메서드 {
+    class getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate {
         @Test
         void 특정_유저의_정보만_가져온다() throws Exception {
             // when

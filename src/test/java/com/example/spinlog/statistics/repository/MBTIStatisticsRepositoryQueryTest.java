@@ -152,7 +152,7 @@ public class MBTIStatisticsRepositoryQueryTest extends MBTIStatisticsRepositoryT
     }
 
     @Nested
-    class getAmountSumsAndCountsEachMBTIAndEmotionBetweenStartDateAndEndDate_MBTI_별_감정별_금액_합과_개수를_반환하는_메서드 {
+    class getAmountSumsAndCountsEachMBTIAndEmotionBetweenStartDateAndEndDate {
         @Test
         void MBTI_별로_그룹핑한다() throws Exception {
             // when
@@ -212,7 +212,7 @@ public class MBTIStatisticsRepositoryQueryTest extends MBTIStatisticsRepositoryT
     }
 
     @Nested
-    class getAmountSumsEachMBTIAndDayBetweenStartDateAndEndDate_MBTI_별_일별_금액_합을_반환하는_메서드 {
+    class getAmountSumsEachMBTIAndDayBetweenStartDateAndEndDate {
         @Test
         void MBTI_별로_그룹핑한다() throws Exception {
             // when
@@ -264,7 +264,7 @@ public class MBTIStatisticsRepositoryQueryTest extends MBTIStatisticsRepositoryT
     }
 
     @Nested
-    class getSatisfactionSumsAndCountsEachMBTIBetweenStartDateAndEndDate_MBTI_별_만족도_합과_개수를_반환하는_메서드 {
+    class getSatisfactionSumsAndCountsEachMBTIBetweenStartDateAndEndDate {
         @Test
         void MBTI_별로_그룹핑한다() throws Exception {
             // when
@@ -301,7 +301,7 @@ public class MBTIStatisticsRepositoryQueryTest extends MBTIStatisticsRepositoryT
     }
 
     @Nested
-    class getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate_특정_유저에_대한_감정별_금액_합과_개수를_반환하는_메서드 {
+    class getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate {
         @Test
         void 감정별로_그룹핑한다() throws Exception {
             // when
@@ -346,7 +346,7 @@ public class MBTIStatisticsRepositoryQueryTest extends MBTIStatisticsRepositoryT
     }
 
     @Nested
-    class getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate_특정_유저에_대한_일별_금액_합을_반환하는_메서드 {@Test
+    class getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate {@Test
         void 일별로_그룹핑한다() throws Exception {
             // when
             List<DailyAmountSumDto> dtos =
@@ -384,7 +384,7 @@ public class MBTIStatisticsRepositoryQueryTest extends MBTIStatisticsRepositoryT
     }
 
     @Nested
-    class getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate_특정_유저에_대한_만족도_합과_개수를_반환하는_메서드 {
+    class getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate {
         @Test
         void 필터링_이후_각_satisfaction_의_합과_개수를_반환한다() throws Exception {
             // when
