@@ -30,12 +30,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
-@ActiveProfiles("test")
-@SpringBootTest
-@Transactional
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class MBTIStatisticsRepositoryTest {
+class MBTIStatisticsRepositoryTest extends MBTIStatisticsRepositoryTestSupport{
     @Autowired
     MBTIStatisticsRepository mbtiStatisticsRepository;
 
@@ -64,16 +59,6 @@ class MBTIStatisticsRepositoryTest {
     );
 
     LocalDate startDate, endDate;
-
-    /**
-     * JPA에서 등록된 엔티티를 테이블로 생성 해주지만, 뷰는 생성 안되서, sql 파일로 직접 생성
-     * */
-    @BeforeAll
-    public static void createView(@Autowired DataSource dataSource) {
-        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.addScript(new ClassPathResource("view/before-test-schema.sql"));
-        populator.execute(dataSource);
-    }
 
     /**
      * 필터링 결과를 구분하기 위해, 필터링 대상 MBTI를 가지고 있는 유저 객체 2개를 생성한다.

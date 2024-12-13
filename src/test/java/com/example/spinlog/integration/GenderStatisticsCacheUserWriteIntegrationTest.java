@@ -10,6 +10,7 @@ import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
 import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
 import com.example.spinlog.statistics.dto.repository.GenderSatisfactionAverageDto;
 import com.example.spinlog.integration.init.GenderStatisticsCacheSetupService;
+import com.example.spinlog.statistics.repository.SpecificUserStatisticsRepository;
 import com.example.spinlog.statistics.service.cache.GenderStatisticsCacheFallbackService;
 import com.example.spinlog.user.dto.request.UpdateUserRequestDto;
 import com.example.spinlog.user.entity.Gender;
@@ -50,6 +51,9 @@ public class GenderStatisticsCacheUserWriteIntegrationTest {
     GenderStatisticsCacheSetupService genderStatisticsCacheSetupService;
     @Autowired
     RepositoryDataSetupService repositoryDataSetupService;
+
+    @Autowired
+    SpecificUserStatisticsRepository specificUserStatisticsRepository;
 
     LocalDate spendDate = LocalDate.now().minusDays(1);
     Emotion emotion = Emotion.SAD;

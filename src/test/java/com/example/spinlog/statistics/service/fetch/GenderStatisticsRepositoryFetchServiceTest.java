@@ -6,12 +6,11 @@ import static org.mockito.Mockito.*;
 
 import com.example.spinlog.article.entity.Emotion;
 import com.example.spinlog.article.entity.RegisterType;
-import com.example.spinlog.statistics.dto.repository.AllGenderStatisticsRepositoryData;
+import com.example.spinlog.statistics.dto.*;
+import com.example.spinlog.statistics.dto.repository.*;
 import com.example.spinlog.statistics.repository.GenderStatisticsRepository;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
-import com.example.spinlog.statistics.dto.repository.GenderEmotionAmountAverageDto;
-import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
-import com.example.spinlog.statistics.dto.repository.GenderDataDto;
+import com.example.spinlog.statistics.repository.SpecificUserStatisticsRepository;
 import com.example.spinlog.user.entity.Gender;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -28,9 +27,10 @@ import java.util.Map;
 class GenderStatisticsRepositoryFetchServiceTest {
 
     GenderStatisticsRepository genderStatisticsRepository = mock(GenderStatisticsRepository.class);
+    SpecificUserStatisticsRepository specificUserStatisticsRepository = mock(SpecificUserStatisticsRepository.class);
 
     GenderStatisticsRepositoryFetchService targetService =
-            new GenderStatisticsRepositoryFetchService(genderStatisticsRepository);
+            new GenderStatisticsRepositoryFetchService(genderStatisticsRepository, specificUserStatisticsRepository);
 
     @Test
     void getGenderEmotionAmountCountsAndSums_returnsCorrectData() {
@@ -38,10 +38,9 @@ class GenderStatisticsRepositoryFetchServiceTest {
         LocalDate startDate = LocalDate.now().minusDays(10);
         LocalDate endDate = LocalDate.now();
         RegisterType registerType = SPEND;
-        List<GenderEmotionAmountAverageDto> amountSums = List.of(new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 100L));
-        List<GenderEmotionAmountAverageDto> amountCounts = List.of(new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 10L));
-        when(genderStatisticsRepository.getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate(registerType, startDate, endDate)).thenReturn(amountSums);
-        when(genderStatisticsRepository.getAmountCountsEachGenderAndEmotionBetweenStartDateAndEndDate(registerType, startDate, endDate)).thenReturn(amountCounts);
+        List<GenderEmotionAmountSumAndCountDto> amountSums = List.of(new GenderEmotionAmountSumAndCountDto(Gender.MALE, Emotion.SAD, 100L, 10L));
+        when(genderStatisticsRepository.getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate(registerType, startDate, endDate))
+                .thenReturn(amountSums);
 
         // when
         SumAndCountStatisticsData<Long> result = targetService.getGenderEmotionAmountCountsAndSums(registerType, startDate, endDate);
@@ -78,14 +77,9 @@ class GenderStatisticsRepositoryFetchServiceTest {
         LocalDate endDate = LocalDate.now();
         RegisterType registerType = SPEND;
 
-        List<GenderDataDto<Double>> satisfactionSums = List.of(
-                GenderDataDto.<Double>builder()
-                        .gender(Gender.MALE).value(4.5).build());
-        List<GenderDataDto<Long>> satisfactionCounts = List.of(
-                GenderDataDto.<Long>builder()
-                        .gender(Gender.MALE).value(20L).build());
-        when(genderStatisticsRepository.getSatisfactionSumsEachGenderBetweenStartDateAndEndDate(registerType, startDate, endDate)).thenReturn(satisfactionSums);
-        when(genderStatisticsRepository.getSatisfactionCountsEachGenderBetweenStartDateAndEndDate(registerType, startDate, endDate)).thenReturn(satisfactionCounts);
+        List<GenderSatisfactionSumAndCountDto> satisfactionSumsAndCounts = List.of(
+                new GenderSatisfactionSumAndCountDto(Gender.MALE, 4.5, 20L));
+        when(genderStatisticsRepository.getSatisfactionSumsAndCountsEachGenderBetweenStartDateAndEndDate(registerType, startDate, endDate)).thenReturn(satisfactionSumsAndCounts);
 
         // when
         SumAndCountStatisticsData<Double> result = targetService.getGenderSatisfactionCountsAndSums(registerType, startDate, endDate);
@@ -106,46 +100,34 @@ class GenderStatisticsRepositoryFetchServiceTest {
         LocalDate startDate = LocalDate.now().minusDays(10);
         LocalDate endDate = LocalDate.now();
 
-        List<GenderEmotionAmountAverageDto> genderEmotionAmountSpendSums = List.of(new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 100L));
-        List<GenderEmotionAmountAverageDto> genderEmotionAmountSpendCounts = List.of(new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 10L));
-        List<GenderEmotionAmountAverageDto> genderEmotionAmountSaveSums = List.of(new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 200L));
-        List<GenderEmotionAmountAverageDto> genderEmotionAmountSaveCounts = List.of(new GenderEmotionAmountAverageDto(Gender.MALE, Emotion.SAD, 20L));
+        List<EmotionAmountSumAndCountDto> genderEmotionAmountSpendSums = List.of(new EmotionAmountSumAndCountDto(Emotion.SAD, 100L, 10L));
+        List<EmotionAmountSumAndCountDto> genderEmotionAmountSaveSums = List.of(new EmotionAmountSumAndCountDto(Emotion.SAD, 200L, 20L));
 
-        List<GenderDailyAmountSumDto> genderDailyAmountSpendSums = List.of(new GenderDailyAmountSumDto(Gender.MALE, LocalDate.now(), 300L));
-        List<GenderDailyAmountSumDto> genderDailyAmountSaveSums = List.of(new GenderDailyAmountSumDto(Gender.MALE, LocalDate.now(), 400L));
+        List<DailyAmountSumDto> genderDailyAmountSpendSums = List.of(new DailyAmountSumDto(LocalDate.now(), 300L));
+        List<DailyAmountSumDto> genderDailyAmountSaveSums = List.of(new DailyAmountSumDto(LocalDate.now(), 400L));
 
-        List<GenderDataDto<Double>> genderSatisfactionSpendSums = List.of(new GenderDataDto<>(Gender.MALE, 4.5));
-        List<GenderDataDto<Long>> genderSatisfactionSpendCounts = List.of(new GenderDataDto<>(Gender.MALE, 20L));
-        List<GenderDataDto<Double>> genderSatisfactionSaveSums = List.of(new GenderDataDto<>(Gender.MALE, 3.5));
-        List<GenderDataDto<Long>> genderSatisfactionSaveCounts = List.of(new GenderDataDto<>(Gender.MALE, 30L));
+        List<SatisfactionSumAndCountDto> genderSatisfactionSpendSums = List.of(new SatisfactionSumAndCountDto(4.5, 20L));
+        List<SatisfactionSumAndCountDto> genderSatisfactionSaveSums = List.of(new SatisfactionSumAndCountDto(3.5, 30L));
 
-        when(genderStatisticsRepository.getAmountSumsEachEmotionByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(genderEmotionAmountSpendSums);
-        when(genderStatisticsRepository.getAmountCountsEachEmotionByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(genderEmotionAmountSpendCounts);
-        when(genderStatisticsRepository.getAmountSumsEachEmotionByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(genderEmotionAmountSaveSums);
-        when(genderStatisticsRepository.getAmountCountsEachEmotionByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(genderEmotionAmountSaveCounts);
+        when(specificUserStatisticsRepository.getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(genderEmotionAmountSpendSums);
+        when(specificUserStatisticsRepository.getAmountSumsAndCountsEachEmotionByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(genderEmotionAmountSaveSums);
 
-        when(genderStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(genderDailyAmountSpendSums);
-        when(genderStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(genderDailyAmountSaveSums);
+        when(specificUserStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(genderDailyAmountSpendSums);
+        when(specificUserStatisticsRepository.getAmountSumsEachDayByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(genderDailyAmountSaveSums);
 
-        when(genderStatisticsRepository.getSatisfactionSumsByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(genderSatisfactionSpendSums);
-        when(genderStatisticsRepository.getSatisfactionCountsByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(genderSatisfactionSpendCounts);
-        when(genderStatisticsRepository.getSatisfactionSumsByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(genderSatisfactionSaveSums);
-        when(genderStatisticsRepository.getSatisfactionCountsByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(genderSatisfactionSaveCounts);
+        when(specificUserStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(userId, SPEND, startDate, endDate)).thenReturn(genderSatisfactionSpendSums);
+        when(specificUserStatisticsRepository.getSatisfactionSumsAndCountsByUserIdBetweenStartDateAndEndDate(userId, SAVE, startDate, endDate)).thenReturn(genderSatisfactionSaveSums);
 
         // when
-        AllGenderStatisticsRepositoryData result = targetService.getGenderStatisticsAllDataByUserId(userId, startDate, endDate);
+        AllStatisticsRepositoryData result = targetService.getGenderStatisticsAllDataByUserId(userId, startDate, endDate);
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.genderDailyAmountSaveSums()).hasSize(1).contains(genderDailyAmountSaveSums.get(0));
-        assertThat(result.genderDailyAmountSpendSums()).hasSize(1).contains(genderDailyAmountSpendSums.get(0));
-        assertThat(result.genderEmotionAmountSaveCounts()).hasSize(1).contains(genderEmotionAmountSaveCounts.get(0));
-        assertThat(result.genderEmotionAmountSaveSums()).hasSize(1).contains(genderEmotionAmountSaveSums.get(0));
-        assertThat(result.genderEmotionAmountSpendCounts()).hasSize(1).contains(genderEmotionAmountSpendCounts.get(0));
-        assertThat(result.genderEmotionAmountSpendSums()).hasSize(1).contains(genderEmotionAmountSpendSums.get(0));
-        assertThat(result.genderSatisfactionSaveCounts()).hasSize(1).contains(genderSatisfactionSaveCounts.get(0));
-        assertThat(result.genderSatisfactionSaveSums()).hasSize(1).contains(genderSatisfactionSaveSums.get(0));
-        assertThat(result.genderSatisfactionSpendCounts()).hasSize(1).contains(genderSatisfactionSpendCounts.get(0));
-        assertThat(result.genderSatisfactionSpendSums()).hasSize(1).contains(genderSatisfactionSpendSums.get(0));
+        assertThat(result.emotionAmountSpendSumsAndCounts()).isEqualTo(genderEmotionAmountSpendSums);
+        assertThat(result.emotionAmountSaveSumsAndCounts()).isEqualTo(genderEmotionAmountSaveSums);
+        assertThat(result.dailyAmountSpendSums()).isEqualTo(genderDailyAmountSpendSums);
+        assertThat(result.dailyAmountSaveSums()).isEqualTo(genderDailyAmountSaveSums);
+        assertThat(result.satisfactionSpendSumsAndCounts()).isEqualTo(genderSatisfactionSpendSums);
+        assertThat(result.satisfactionSaveSumsAndCounts()).isEqualTo(genderSatisfactionSaveSums);
     }
 }

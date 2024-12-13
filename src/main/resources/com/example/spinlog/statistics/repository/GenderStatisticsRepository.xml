@@ -31,29 +31,15 @@
 
     <!--  -->
 
-    <select id="getAmountSumsEachGenderAndEmotionBetweenStartDateAndEndDate" resultType="GenderEmotionAmountAverageDto">
-        select u.gender, a.emotion, sum(a.amount) as amountAverage
+    <select id="getAmountSumsAndCountsEachGenderAndEmotionBetweenStartDateAndEndDate" resultType="GenderEmotionAmountSumAndCountDto">
+        select u.gender, a.emotion, sum(a.amount) as amountSum, count(a.amount) as amountCount
         from articles a join users u on(a.user_id = u.user_id)
         where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         group by u.gender, a.emotion
     </select>
 
-    <select id="getAmountCountsEachGenderAndEmotionBetweenStartDateAndEndDate" resultType="GenderEmotionAmountAverageDto">
-        select u.gender, a.emotion, count(a.amount) as amountAverage
-        from articles a join users u on(a.user_id = u.user_id)
-        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
-        group by u.gender, a.emotion
-    </select>
-
-    <select id="getSatisfactionSumsEachGenderBetweenStartDateAndEndDate" resultType="GenderDataDto">
-        select u.gender, sum(a.satisfaction) as satisfactionAverage
-        from articles a join users u on(a.user_id = u.user_id)
-        where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
-        group by u.gender
-    </select>
-
-    <select id="getSatisfactionCountsEachGenderBetweenStartDateAndEndDate" resultType="GenderDataDto">
-        select u.gender, count(a.satisfaction) as satisfactionAverage
+    <select id="getSatisfactionSumsAndCountsEachGenderBetweenStartDateAndEndDate" resultType="GenderSatisfactionSumAndCountDto">
+        select u.gender, sum(a.satisfaction) as satisfactionSum, count(a.satisfaction) as satisfactionCount
         from articles a join users u on(a.user_id = u.user_id)
         where a.register_type = #{registerType} and a.spend_date <![CDATA[>=]]> #{startDate} and a.spend_date <![CDATA[<]]> #{endDate}
         group by u.gender

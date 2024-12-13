@@ -1,6 +1,7 @@
 package com.example.spinlog.statistics.utils;
 
 import com.example.spinlog.article.entity.Emotion;
+import com.example.spinlog.statistics.dto.SatisfactionSumAndCountDto;
 import com.example.spinlog.statistics.dto.cache.AllStatisticsCacheData;
 import com.example.spinlog.statistics.dto.cache.SumAndCountStatisticsData;
 import com.example.spinlog.statistics.dto.repository.GenderDailyAmountSumDto;
@@ -223,5 +224,12 @@ public class StatisticsZeroPaddingUtils {
                 .satisfactionSaveSumAndCountStatisticsData(
                         zeroPaddingToSatisfactionAmountCountsAndSums(allData.satisfactionSaveSumAndCountStatisticsData(), getMBTIKeys()))
                 .build();
+    }
+
+    public static List<SatisfactionSumAndCountDto> removeIfCountIsZero(List<SatisfactionSumAndCountDto> satisfactionSpendSumsAndCounts) {
+        if(satisfactionSpendSumsAndCounts.size() == 1 && satisfactionSpendSumsAndCounts.get(0).getSatisfactionCount() == 0){
+            satisfactionSpendSumsAndCounts = List.of();
+        }
+        return satisfactionSpendSumsAndCounts;
     }
 }

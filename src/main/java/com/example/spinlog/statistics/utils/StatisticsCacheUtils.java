@@ -31,11 +31,66 @@ public class StatisticsCacheUtils {
                         GenderEmotionAmountAverageDto::getAmountAverage));
     }
 
+    public static SumAndCountStatisticsData<Long> toGenderEmotionAmountSumAndCountStatisticsData(List<GenderEmotionAmountSumAndCountDto> amountSumAndCount) {
+        Map<String, Long> sumsMap = amountSumAndCount.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getGender() + "::" + dto.getEmotion(),
+                        GenderEmotionAmountSumAndCountDto::getAmountSum));
+        Map<String, Long> countsMap = amountSumAndCount.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getGender() + "::" + dto.getEmotion(),
+                        GenderEmotionAmountSumAndCountDto::getAmountCount));
+        return new SumAndCountStatisticsData<>(sumsMap, countsMap);
+    }
+
+    public static SumAndCountStatisticsData<Long> toGenderEmotionAmountSumAndCountStatisticsData(List<EmotionAmountSumAndCountDto> amountSumAndCount, Gender gender) {
+        Map<String, Long> sumsMap = amountSumAndCount.stream()
+                .collect(Collectors.toMap(
+                        dto -> gender + "::" + dto.getEmotion(),
+                        EmotionAmountSumAndCountDto::getAmountSum));
+        Map<String, Long> countsMap = amountSumAndCount.stream()
+                .collect(Collectors.toMap(
+                        dto -> gender + "::" + dto.getEmotion(),
+                        EmotionAmountSumAndCountDto::getAmountCount));
+        return new SumAndCountStatisticsData<>(sumsMap, countsMap);
+    }
+
+    public static SumAndCountStatisticsData<Double> toGenderSatisfactionSumAndCountStatisticsData(List<GenderSatisfactionSumAndCountDto> satisfactionSumsAndCounts) {
+        Map<String, Double> sumsMap = satisfactionSumsAndCounts.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getGender().toString(),
+                        GenderSatisfactionSumAndCountDto::getSatisfactionSum));
+        Map<String, Long> countsMap = satisfactionSumsAndCounts.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getGender().toString(),
+                        GenderSatisfactionSumAndCountDto::getSatisfactionCount));
+        return new SumAndCountStatisticsData<>(sumsMap, countsMap);
+    }
+
+    public static SumAndCountStatisticsData<Double> toGenderSatisfactionSumAndCountStatisticsData(List<SatisfactionSumAndCountDto> satisfactionSumsAndCounts, Gender gender) {
+        Map<String, Double> sumsMap = satisfactionSumsAndCounts.stream()
+                .collect(Collectors.toMap(
+                        dto -> gender.toString(),
+                        SatisfactionSumAndCountDto::getSatisfactionSum));
+        Map<String, Long> countsMap = satisfactionSumsAndCounts.stream()
+                .collect(Collectors.toMap(
+                        dto -> gender.toString(),
+                        SatisfactionSumAndCountDto::getSatisfactionCount));
+        return new SumAndCountStatisticsData<>(sumsMap, countsMap);
+    }
+
     public static Map<String, Long> toGenderDateMap(List<GenderDailyAmountSumDto> dtos){
         return dtos.stream()
                 .collect(Collectors.toMap(
                         dto -> dto.getGender() + "::" + dto.getLocalDate(),
                         GenderDailyAmountSumDto::getAmountSum));
+    }
+
+    public static Map<String, Long> toGenderDateMap(List<DailyAmountSumDto> dtos, Gender gender){
+        return dtos.stream()
+                .collect(Collectors.toMap(
+                        dto -> gender + "::" + dto.getLocalDate(),
+                        DailyAmountSumDto::getAmountSum));
     }
 
     public static <T extends Number> Map<String, T> toGenderMap(List<GenderDataDto<T>> dtos){
@@ -79,7 +134,7 @@ public class StatisticsCacheUtils {
                 .toList();
     }
 
-    public static SumAndCountStatisticsData<Long> toAmountSumAndCountStatisticsData(List<MBTIEmotionAmountSumAndCountDto> dtos) {
+    public static SumAndCountStatisticsData<Long> toMBTIEmotionAmountSumAndCountStatisticsData(List<MBTIEmotionAmountSumAndCountDto> dtos) {
         Map<String, Long> sumsMap = dtos.stream()
                 .collect(Collectors.toMap(
                         dto -> dto.getMbtiFactor() + "::" + dto.getEmotion(),
@@ -100,7 +155,7 @@ public class StatisticsCacheUtils {
                 .toList();
     }
 
-    public static SumAndCountStatisticsData<Double> toSatisfactionSumAndCountStatisticsData(List<MBTISatisfactionSumAndCountDto> dtos) {
+    public static SumAndCountStatisticsData<Double> toMBTISatisfactionSumAndCountStatisticsData(List<MBTISatisfactionSumAndCountDto> dtos) {
         Map<String, Double> sumsMap = dtos.stream()
                 .collect(Collectors.toMap(
                         dto -> dto.getMbtiFactor().toString(),
